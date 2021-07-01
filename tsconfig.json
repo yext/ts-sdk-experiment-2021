@@ -10,6 +10,7 @@
     ]
   },
   "exclude": [
+    "deno",
     "dist",
     "node_modules"
   ]
