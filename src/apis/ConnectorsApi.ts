@@ -37,6 +37,7 @@ export interface TriggerConnectorRequest {
     accountId: string;
     v: string;
     connectorId: string;
+    runMode?: TriggerConnectorRunModeEnum;
 }
 
 /**
@@ -45,7 +46,7 @@ export interface TriggerConnectorRequest {
 export class ConnectorsApi extends runtime.BaseAPI {
 
     /**
-     * Pushes data to be processed by a connector, then iniates a run for that connector.  **NOTE**: If no connector is specified, all connectors with app-based source configurations will run. 
+     * Pushes data to be processed by a connector, then initiates a run for that connector.  **NOTE**: If no connector is specified, all connectors with app-based source configurations will run. 
      * Connectors: Push Data
      */
     async pushDataRaw(requestParameters: PushDataRequest): Promise<runtime.ApiResponse<PushDataResponse>> {
@@ -95,7 +96,7 @@ export class ConnectorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Pushes data to be processed by a connector, then iniates a run for that connector.  **NOTE**: If no connector is specified, all connectors with app-based source configurations will run. 
+     * Pushes data to be processed by a connector, then initiates a run for that connector.  **NOTE**: If no connector is specified, all connectors with app-based source configurations will run. 
      * Connectors: Push Data
      */
     async pushData(requestParameters: PushDataRequest): Promise<PushDataResponse> {
@@ -104,7 +105,7 @@ export class ConnectorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Triggers a run of the specified connector
+     * Triggers a run of the specified connector.
      * Connectors: Trigger
      */
     async triggerConnectorRaw(requestParameters: TriggerConnectorRequest): Promise<runtime.ApiResponse<IdResponse>> {
@@ -124,6 +125,10 @@ export class ConnectorsApi extends runtime.BaseAPI {
 
         if (requestParameters.v !== undefined) {
             queryParameters['v'] = requestParameters.v;
+        }
+
+        if (requestParameters.runMode !== undefined) {
+            queryParameters['runMode'] = requestParameters.runMode;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -147,7 +152,7 @@ export class ConnectorsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Triggers a run of the specified connector
+     * Triggers a run of the specified connector.
      * Connectors: Trigger
      */
     async triggerConnector(requestParameters: TriggerConnectorRequest): Promise<IdResponse> {
@@ -155,4 +160,13 @@ export class ConnectorsApi extends runtime.BaseAPI {
         return await response.value();
     }
 
+}
+
+/**
+    * @export
+    * @enum {string}
+    */
+export enum TriggerConnectorRunModeEnum {
+    Default = 'DEFAULT',
+    Comprehensive = 'COMPREHENSIVE'
 }
