@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# Publish a new release to npm and deno.land/x.
+
+set -euo pipefail
+
+if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != 'true' ]]; then
+  echo 'ERROR: Current working directory must be in the work tree of the git repo to be published.' >&2
+  exit 1
+fi
+cd "$(git rev-parse --show-cdup)"
+
+rm -rf dist node_modules package-lock.json
+if [[ -n "$(git status --porcelain --ignored)" ]]; then
+  echo 'ERROR: Current working directory must be a clean checkout with no uncommitted changes.' >&2
+  exit 1
+fi
+
+npm install
+npm publish
+
+version="$(npm pkg get version)"
+version="${version#\"}"
+version="${version%\"}"
+version="v${version}"
+
+git tag --annotate --message="${version} release tagged by ./ci/publish" "${version}"
+git push origin "${version}"
+
+cat <<EOF
+
+* * *
+
+Publish finished successfully!
+
+Next, go to this page to create a GitHub release from the new tag:
+https://github.com/yext/ts-sdk-experiment-2021/releases/new?tag=${version}&prerelease=1
+EOF

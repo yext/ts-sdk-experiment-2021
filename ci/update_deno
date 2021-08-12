@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# Regenerate deno/ from src/.
+
+set -euo pipefail
+
+if [[ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != 'true' ]]; then
+  echo 'ERROR: Current working directory must be in the work tree of the git repo to be updated.' >&2
+  exit 1
+fi
+
+cd "$(git rev-parse --show-cdup)"
+
+rm -rf deno
+cp -R src deno
+
+cd deno
+
+# TODO(eefi): Support GNU sed as well, not just BSD sed.
+sed -i '' "s| from '\\.\\./runtime';$| from '../runtime.ts';|" apis/* models/*
+sed -i '' "s| from '\\.\\./models';$| from '../models/index.ts';|" apis/*
+sed -i '' "s| from '\\./';$| from './index.ts';|" models/*
+sed -i '' "s|';$|.ts';|" apis/index.ts models/index.ts
+sed -i '' "s|';$|/index.ts';|" index.ts
+sed -i '' "s| from '\\./runtime/index.ts';$| from './runtime.ts';|" index.ts
+
+# Required for WindowOrWorkerGlobalScope.
+sed -i '' '1i\
+/// <reference no-default-lib="true" />\
+/// <reference lib="deno.ns" />\
+/// <reference lib="dom" />\
+' runtime.ts
+
+# Check that everything still compiles correctly.
+deno run - <<'EOF'
+import * as yext_api from "./index.ts";
+EOF
