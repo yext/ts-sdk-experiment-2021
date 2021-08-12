@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Yext API
- * # Policies and Conventions  This section gives you the basic information you need to use our APIs.  ## API Availability  We currently offer three APIs: * **Knowledge API** * **Live API** * **Administrative API**  Each API is designed for a particular set of users.  To determine which APIs are available to users like you, see the \"Overview\" page in the Docs section of this site.  <a href=\"https://app.getpostman.com/run-collection/c42e6f39b0b10e56b1ca\"><img src=\"https://run.pstmn.io/button.svg\" alt=\"Run in Postman\" /></a>  (Postman collection includes Knowledge API, Live API, and Administrative API calls.)  ## Authentication All requests must be authenticated using an app’s API key via the api_key query parameter. Additionally, the API key can also be passed in as a header parameter named api-key. Note that this is slightly different from the parameter name accepted as a query param (api_key)  <pre>GET https://api.yext.com/v2/accounts/[accountId]/locations?<b>api_key=API_KEY</b>&v=YYYYMMDD</pre>  The API key should be kept secret.  ## Versioning All requests must be versioned using the **`v`** parameter.  <pre>GET https://api.yext.com/v2/accounts/[accountId]/locations?api_key=API_KEY&<b>v=YYYYMMDD</b></pre>  The **`v`** parameter (a date in `YYYYMMDD` format) is designed to give you the freedom to adapt to Yext API changes on your own schedule. When you pass this parameter, any backward-incompatible changes we made to the API after the specified date will not affect the behavior of the request or the content of the response. You will still benefit from any bug fixes or backward-compatible changes we may have made after the date you\'ve specified.  **NOTE:** Yext has the ability to make changes that affect previous versions of the API, if necessary.  ## Serialization API v2 only accepts data in JSON format.  ## Content-Type Headers For all requests that include a request body, the `Content-Type` header must be included and set to `application/json`.  ## PUT Requests Generally, all `PUT` operations behave as true RESTful `PUT`s, in which entire objects are overwritten with the provided content.  However, certain endpoints used to work with large, frequently-changing object models may have different semantics to prevent the accidental removal of content (e.g., Locations: Update lets you omit fields you don’t wish to change).  ## Errors and Warnings There are three kinds of issues that can be reported for a given request:  * **`FATAL_ERROR`**     * An issue caused the entire request to be rejected. * **`NON_FATAL_ERROR`**     * An item is rejected, but other items present in the request are accepted (e.g., one invalid Product List item).     * A field is rejected, but the item otherwise is accepted (e.g., invalid website URL in a Location). * **`WARNING`**     * The request did not adhere to our best practices or recommendations, but the data was accepted anyway (e.g., data was sent that may cause some listings to become unavailable, a deprecated API was used, or we changed the format of a field\'s content to meet our requirements).  ## Dates and Times * We always use milliseconds since epoch (a.k.a. Unix time) for timestamps (e.g., review creation times, webhook update times). * We always use ISO 8601 without timezone for local date times (e.g., Event start time, Event end time). Event times are always interpreted in the local timezone of their associated locations. * Dates are transmitted as strings: `YYYY-MM-DD`.  ## Account ID In keeping with RESTful design principles, every URL in API v2 has an account ID prefix. This prefix helps to ensure that you have unique URLs for all resources.  In addition to specifying resources by explicit account ID, the following two macros are defined: * **`me`** - refers to the account that owns the API key sent with the request * **`all`** - refers to the account that owns the API key sent with the request, as well as all sub-accounts (recursively)  **IMPORTANT:** The **`me`** macro is supported in all API methods.  The **`all`** macro will only be supported in certain URLs. Currently, it can only be used in Analytics, Reviews, and some Listings endpoints.  ### Examples This URL refers to an analytics report for all locations in account 123. <pre>https://api.yext.com/v2/accounts/<b>123</b>/analytics/reports?api_key=456&v=20160822</pre>  This URL refers to an analytics report for all locations in the account that owns API key 456. <pre>https://api.yext.com/v2/accounts/<b>me</b>/analytics/reports?<b>api_key=456</b>&v=20160822</pre>  This URL refers to an analytics report for all locations in the account that owns API key 456, as well as all locations from any of its child accounts. <pre>https://api.yext.com/v2/accounts/<b>all</b>/analytics/reports?<b>api_key=456</b>&v=20160822</pre>  ## Actor Headers  To attribute changes to a particular user, all `PUT`, `POST`, and `DELETE` requests may be passed with the following headers.  **NOTE:** If you choose to provide actor headers, and we are unable to authenticate the request using the values you provide, the request will result in an error and fail.  * Attribute activity to customer user via username     * Header: `Yext-Username`     * Value: Customer user’s username * Attribute activity to customer user via Yext user ID     * Header: `Yext-User-Id`     * Value: Customer user’s Yext user ID  Changes will be logged as follows:  * App with no designated actor     * History Entry \"Updated By\" Value: `App [App ID] - ‘[App Name]’`     * Example: `App 432 - ‘Hello World App’` * App with customer user actor     * History Entry \"Updated By\" Value: `[user name] ([user email]) (App [App ID] - ‘[App Name]’)`     * Example: `Jordan Smith (jsmith@example.com) (App 432 - ‘Hello World App’)`  ## Response Format * **`meta`**     * Response metadata * **`meta.uuid`**     * Unique ID for this request / response * **`meta.errors[]`**     * List of errors and warnings * **`meta.errors[].code`**     * Code that uniquely identifies the error or warning * **`meta.errors[].type`**     * One of:         * `FATAL_ERROR`         * `NON_FATAL_ERROR`         * `WARNING`     * See \"Errors and Warnings\" above for details. * **`meta.errors[].message`**     * An explanation of the issue * **`response`**     * The main content (body) of the response  Example: <pre><code> {     \"meta\": {         \"uuid\": \"bb0c7e19-4dc3-4891-bfa5-8593b1f124ad\",         \"errors\": [             {                 \"code\": ...error code...,                 \"type\": ...error, fatal error, non fatal error, or warning...,                 \"message\": ...explanation of the issue...             }         ]     },     \"response\": {         ...results...     } } </code></pre>  ## Status Codes * `200 OK`    * Either there are no errors or warnings, or the only issues are of type `WARNING`. * `207 Multi-Status`     * There are errors of type `itemError` or `fieldError` (but none of type `requestError`). * `400 Bad Request`     * A parameter is invalid, or a required parameter is missing. This includes the case where no API key is provided and the case where a resource ID is specified incorrectly in a path.     * This status is if any of the response errors are of type `requestError`. * `401 Unauthorized`     * The API key provided is invalid. * `403 Forbidden`     * The requested information cannot be viewed by the acting user. * `404 Not Found`     * The endpoint does not exist. * `405 Method Not Allowed`     * The request is using a method that is not allowed (e.g., `POST` with a `GET`-only endpoint). * `409 Conflict`     * The request could not be completed in its current state.     * Use the information included in the response to modify the request and retry. * `429 Too Many Requests`     * You have exceeded your rate limit / quota. * `500 Internal Server Error`     * Yext’s servers are not operating as expected. The request is likely valid but should be resent later. * `504 Timeout`     * Yext’s servers took too long to handle this request, and it timed out.  ## Quotas and Rate Limits Default quotas and rate limits are as follows.  * **Knowledge API** *(includes Analytics, Listings, Knowledge Manager, Reviews, Social, and User endpoints)*: 5,000 requests per hour * **Analytics API**: 1,000 requests per 60-minute sliding window (in addition to the Knowledge API quota) * **Administrative API**: 1,000 requests per hour * **Live API**: 100,000 requests per hour  With the exception of the Analytics API quota, hourly quotas are calculated from the beginning of the hour (minute zero, `:00`), not on a rolling basis past 60 minutes.  **NOTE:** Webhook requests do not count towards an account’s quota.  For the most current and accurate rate-limit usage information for a particular request type, check the **`Rate-Limit-Remaining`** and **`Rate-Limit-Limit`** HTTP headers of your API responses.  If you are currently over your limit, our API will return a `429` error, and the response object returned by our API will be empty. We will also include a **`Rate-Limit-Reset`** header in the response, which indicates when you will have additional quota.  ## Client- vs. Yext-assigned IDs You can set the ID for the following objects when you create them. If you do not provide an ID, Yext will generate one for you.  * Account * User * Location * Bio List * Menu * Product List * Event List * Bio List Item * Menu Item * Product List Item * Event List Item  ## Logging With the exception of Live API requests, all API requests are logged. API logs can be found in your Developer Console and are stored for 30 days. 
+ * No description provided (generated by Openapi Generator https://github.com/openapitools/openapi-generator)
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -20,13 +20,280 @@ import { exists, mapValues } from '../runtime';
  */
 export interface AnalyticsFilter {
     /**
-     * The inclusive start date for the report data.  Defaults to 90 days before the end date. Must be before the date given in **`endDate`**.
-     * E.g. ‘2016-08-22’
-     * NOTE: If `WEEKS`, `MONTHS`, or `MONTHS_RETAIL` is in **`dimensions`**, **`startDate`** must coincide with the beginning and end of a week or month, depending on the dimension chosen.
-     * @type {Date}
+     * Backend(s) used to return results.
+     * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
-    startDate?: Date;
+    aNSWERSBACKEND?: Array<AnalyticsFilterANSWERSBACKENDEnum>;
+    /**
+     * Indicates whether no Search Term was entered for Search.
+     * @type {boolean}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSBLANKSEARCHTERM?: boolean;
+    /**
+     * Label assigned to CTA_CLICK types.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSCLICKLABEL?: string;
+    /**
+     * Type of click performed by user.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSCLICKTYPE?: string;
+    /**
+     * URL user was sent to on click, e.g. Google Maps on Driving Directions click.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSCLICKURL?: string;
+    /**
+     * Name of the Cluster a Search Term belongs to. Search Term Clusters are named by using the most popular Search Term (based on Sessions) within the Cluster.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSCLUSTER?: string;
+    /**
+     * Version Number of Configuration Search was run on.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSCONFIGURATIONVERSION?: Array<string>;
+    /**
+     * Version Label of Configuration Search was run on.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSCONFIGURATIONVERSIONLABEL?: Array<string>;
+    /**
+     * Indicates whether click was a from Direct Answer.
+     * @type {boolean}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSDIRECTANSWERCLICK?: boolean;
+    /**
+     * Field returned in Direct Answer.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSDIRECTANSWERFIELD?: string;
+    /**
+     * Value returned in Direct Answer.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSDIRECTANSWERFIELDVALUE?: string;
+    /**
+     * Name of Answers Experience.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSEXPERIENCE?: Array<string>;
+    /**
+     * Include only searches with results from the Knowledge Graph.
+     * @type {boolean}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSHASKGRESULTS?: boolean;
+    /**
+     * Indicates whether a Search Term belongs to a Search Term Cluster. Search Terms may not belong to a cluster if they do not pertain to any other terms searched on your experience or if it is a new term that has been searched for the first time since clustering was last run.
+     * @type {boolean}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSHASSEARCHTERMCLUSTER?: boolean;
+    /**
+     * The integration source from which this search originated. This includes the following options: STANDARD (standard search bar) and OVERLAY (within an search overlay).
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSQUERYSOURCE?: Array<AnalyticsFilterANSWERSQUERYSOURCEEnum>;
+    /**
+     * Raw Search Term entered by user for Search.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSRAWSEARCHTERM?: string;
+    /**
+     * Domain of page where user was sent from, e.g. jobs.mysite.com.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSREFERRERDOMAIN?: string;
+    /**
+     * URL of page where user was sent from e.g. https://jobs.mysite.com/careers/open-positions/.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSREFERRERPAGEURL?: string;
+    /**
+     * Position Entity was returned within Vertical.
+     * @type {number}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSRESULTENTITYPOSITION?: number;
+    /**
+     * Title of Result from Third Party Backends. For results that come from Knowledge Graph backends this will be blank.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSRESULTTITLE?: string;
+    /**
+     * Position of Verticals in Result.
+     * @type {number}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSRESULTVERTICALPOSITION?: number;
+    /**
+     * ID of Search.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSSEARCHID?: string;
+    /**
+     * Normalized Search Term of Search. Normalization removes: Capitalization, Punctuation, White Space.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSSEARCHTERM?: string;
+    /**
+     * Identify how well a cluster is performing based on % of Total Searches and Click Through Rate.
+     * Cluster Performance breaks down into four groups with ids between 0-3.
+     * 0: Needs Attention - Large Cluster
+     * 1: Needs Attention - Small Cluster
+     * 2: Performing Well - Small Cluster
+     * 3: Performing Well - Large Cluster
+     * @type {Array<number>}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSSEARCHTERMCLUSTERPERFORMANCE?: Array<number>;
+    /**
+     * Whether Search Term should be boosted or blacklisted based on your experience config. Options include BOOSTED and BLACKLISTED.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSSEARCHTERMINTENT?: string;
+    /**
+     * Vertical Search was ran on.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSSEARCHVERTICAL?: Array<string>;
+    /**
+     * ID of Session Search was run in.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSSESSIONID?: string;
+    /**
+     * Type of Traffic.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSTRAFFICTYPE?: Array<AnalyticsFilterANSWERSTRAFFICTYPEEnum>;
+    /**
+     * City of user running Search.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSUSERCITY?: string;
+    /**
+     * Country of user running Search.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSUSERCOUNTRY?: string;
+    /**
+     * Device of user running Search.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSUSERDEVICECLASS?: string;
+    /**
+     * Lat, Long of user running Search.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSUSERLATLONG?: string;
+    /**
+     * Method for identifying user location. Options include Unknown, Device, and IP.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    aNSWERSUSERLOCATIONACCURACY?: string;
+    /**
+     * Conversion Tracking click type.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    cLICKTYPE?: Array<AnalyticsFilterCLICKTYPEEnum>;
+    /**
+     * Configuration Version Label.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    cONFIGURATIONVERSIONLABEL?: Array<AnalyticsFilterCONFIGURATIONVERSIONLABELEnum>;
+    /**
+     * Conversion Type.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    cONVERSIONTYPE?: Array<AnalyticsFilterCONVERSIONTYPEEnum>;
+    /**
+     * Conversion tracking medium.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    mEDIUM?: string;
+    /**
+     * Identify conversion analytics by the product in which they occurred.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    pRODUCT?: Array<AnalyticsFilterPRODUCTEnum>;
+    /**
+     * Identify conversion analytics by the source of the traffic.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    tRAFFICSOURCE?: Array<AnalyticsFilterTRAFFICSOURCEEnum>;
+    /**
+     * Identify conversion analytics by their value proposition.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    vALUEPROPOSITION?: Array<AnalyticsFilterVALUEPROPOSITIONEnum>;
+    /**
+     * Vertical Config ID.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    vERTICALCONFIGID?: string;
+    /**
+     * Array of age groups. Can only be used with Facebook metrics.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    age?: Array<AnalyticsFilterAgeEnum>;
+    /**
+     * Competitors monitored by the Intelligent Search Tracker. Can only be used with Intelligent Search Tracker metrics.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    competitor?: Array<string>;
+    /**
+     * Array of 3166 Alpha-2 country codes.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    countries?: Array<string>;
+    /**
+     * Specifies the type of customer actions to be included in the report. Can only be used with the `GOOGLE_CUSTOMER_ACTIONS` and `YELP_CUSTOMER_ACTIONS` metrics.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    customerActionType?: Array<AnalyticsFilterCustomerActionTypeEnum>;
     /**
      * The exclusive end date for the report data. Defaults to the earliest of the relevant maximum reporting dates. Must be after the date given in **`startDate`**.
      * NOTES:
@@ -37,11 +304,47 @@ export interface AnalyticsFilter {
      */
     endDate?: Date;
     /**
-     * Array of locationIds
+     * Array of entity groups.
      * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
-    locationIds?: Array<string>;
+    entityGroup?: Array<AnalyticsFilterEntityGroupEnum>;
+    /**
+     * Array of entity IDs.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    entityIds?: Array<string>;
+    /**
+     * Array of entity types.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    entityType?: Array<AnalyticsFilterEntityTypeEnum>;
+    /**
+     * Array of event search conditions.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    eventSearchCondition?: Array<AnalyticsFilterEventSearchConditionEnum>;
+    /**
+     * Array of Facebook impression types.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    facebookImpressionType?: Array<AnalyticsFilterFacebookImpressionTypeEnum>;
+    /**
+     * Array of Facebook RSVP types.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    facebookRsvpType?: Array<AnalyticsFilterFacebookRsvpTypeEnum>;
+    /**
+     * Array of Facebook RSVP types.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    facebookStoryType?: Array<AnalyticsFilterFacebookStoryTypeEnum>;
     /**
      * Specifies a list of folders whose locations and subfolders should be included in the results. Defaults to all folders.
      * Cannot be used when `ACCOUNT_ID` is in **`dimensions`**.
@@ -50,55 +353,47 @@ export interface AnalyticsFilter {
      */
     folderIds?: Array<number>;
     /**
-     * Array of 3166 Alpha-2 country codes.
+     * Array of Foursquare check-in age groups.
      * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
-    countries?: Array<string>;
+    foursquareCheckinAge?: Array<AnalyticsFilterFoursquareCheckinAgeEnum>;
     /**
-     * Array of location labels. Cannot be used with `NEW_REVIEWS` or `AVERAGE_RATING` metrics.
-     * @type {Array<string>}
+     * Foursquare check-in gender.
+     * @type {string}
      * @memberof AnalyticsFilter
      */
-    locationLabels?: Array<string>;
+    foursquareCheckinGender?: AnalyticsFilterFoursquareCheckinGenderEnum;
     /**
-     * Array of entityIds
+     * Array of Foursquare check-in times.
      * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
-    entityIds?: Array<string>;
+    foursquareCheckinTimeOfDay?: Array<AnalyticsFilterFoursquareCheckinTimeOfDayEnum>;
+    /**
+     * Foursquare check-in type.
+     * @type {string}
+     * @memberof AnalyticsFilter
+     */
+    foursquareCheckinType?: AnalyticsFilterFoursquareCheckinTypeEnum;
+    /**
+     * Specifies the words that should be included in the report. Can only be used with Reviews metrics.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    frequentWords?: Array<string>;
     /**
      * 
-     * @type {Array<string>}
+     * @type {string}
      * @memberof AnalyticsFilter
      */
-    entityType?: Array<AnalyticsFilterEntityTypeEnum>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    entityGroup?: Array<AnalyticsFilterEntityGroupEnum>;
-    /**
-     * Array of platform IDs.
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    platforms?: Array<string>;
+    gender?: AnalyticsFilterGenderEnum;
     /**
      * Specifies the type of customer actions to be included in the report. Can only be used with the `GOOGLE_CUSTOMER_ACTIONS` metric.
-     * This works with v parameters before 20170914.
      * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
     googleActionType?: Array<AnalyticsFilterGoogleActionTypeEnum>;
-    /**
-     * Specifies the type of customer actions to be included in the report. Can only be used with the `GOOGLE_CUSTOMER_ACTIONS` and `YELP_CUSTOMER_ACTIONS` metrics.
-     * This works with v parameters 20170914 and later.
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    customerActionType?: Array<AnalyticsFilterCustomerActionTypeEnum>;
     /**
      * Specifies the type of queries to be included in the report. Can only be used with the `GOOGLE_SEARCH_QUERIES` metric.
      * @type {Array<string>}
@@ -112,35 +407,59 @@ export interface AnalyticsFilter {
      */
     hours?: Array<number>;
     /**
-     * Specifies the ratings to be included in the report. Can only be used with Reviews metrics.
-     * @type {Array<number>}
+     * Instagram content type.
+     * @type {string}
      * @memberof AnalyticsFilter
      */
-    ratings?: Array<number>;
+    instagramContentType?: AnalyticsFilterInstagramContentTypeEnum;
     /**
-     * Specifies the words that should be included in the report. Can only be used with Reviews metrics.
+     * The keyword used to create search requests. Can only be used with Intelligent Search Tracker metrics.
      * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
-    frequentWords?: Array<string>;
+    keyword?: Array<string>;
     /**
-     * Specifies the partners that should be included in the report. Can only be used with Reviews metrics.
-     * @type {Array<number>}
+     * Specifies the type of listings live that should be included in the report. Can only be used with `LISTINGS_LIVE` metric.
+     * @type {string}
      * @memberof AnalyticsFilter
      */
-    partners?: Array<number>;
+    listingsLiveType?: AnalyticsFilterListingsLiveTypeEnum;
     /**
-     * Specifies the review labels that should be included in the report. Can only be used with Reviews metrics.
-     * @type {Array<number>}
+     * Array of location IDs
+     * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
-    reviewLabels?: Array<number>;
+    locationIds?: Array<string>;
     /**
-     * Specifies the sentiment collection that should be included in the report. Can only be used with Reviews metrics.
-     * @type {Array<number>}
+     * Array of location labels. Cannot be used with `NEW_REVIEWS` or `AVERAGE_RATING` metrics.
+     * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
-    sentimentCollection?: Array<number>;
+    locationLabels?: Array<string>;
+    /**
+     * The local pack or organic position of the search result. Can only be used with Intelligent Search Tracker metrics.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    matchPosition?: Array<AnalyticsFilterMatchPositionEnum>;
+    /**
+     * One of Local Map Pack, Listings, Pages and Corporate Website. Can only be used with Intelligent Search Tracker metrics.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    matchType?: Array<AnalyticsFilterMatchTypeEnum>;
+    /**
+     * Maximum number of times a search term may have been used.
+     * @type {number}
+     * @memberof AnalyticsFilter
+     */
+    maxSearchFrequency?: number;
+    /**
+     * Minimum number of times a search term may have been used.
+     * @type {number}
+     * @memberof AnalyticsFilter
+     */
+    minSearchFrequency?: number;
     /**
      * Specifies the Pages page types that should be included in the report. Can only be used with Store Pages metrics
      * @type {Array<string>}
@@ -148,11 +467,17 @@ export interface AnalyticsFilter {
      */
     pageTypes?: Array<AnalyticsFilterPageTypesEnum>;
     /**
-     * Specifies the type of listings live that should be included in the report. Can only be used with `LISTINGS_LIVE` metric.
-     * @type {string}
+     * Specifies the partners that should be included in the report. Can only be used with Reviews metrics.
+     * @type {Array<number>}
      * @memberof AnalyticsFilter
      */
-    listingsLiveType?: AnalyticsFilterListingsLiveTypeEnum;
+    partners?: Array<number>;
+    /**
+     * Array of platform types.
+     * @type {Array<string>}
+     * @memberof AnalyticsFilter
+     */
+    platformType?: Array<AnalyticsFilterPlatformTypeEnum>;
     /**
      * Specifies the types of publisher suggestions that should be included in the report. Can only be used with `PUBLISHER_SUGGESTIONS` metric.
      * @type {Array<string>}
@@ -166,29 +491,23 @@ export interface AnalyticsFilter {
      */
     queryTemplate?: Array<AnalyticsFilterQueryTemplateEnum>;
     /**
+     * Specifies the ratings to be included in the report. Can only be used with Reviews metrics.
+     * @type {Array<number>}
+     * @memberof AnalyticsFilter
+     */
+    ratings?: Array<number>;
+    /**
+     * Specifies the review labels that should be included in the report. Can only be used with Reviews metrics.
+     * @type {Array<number>}
+     * @memberof AnalyticsFilter
+     */
+    reviewLabels?: Array<number>;
+    /**
      * The search engine used for the Intelligent Search Tracker. Can only be used with Intelligent Search Tracker metrics.
      * @type {Array<string>}
      * @memberof AnalyticsFilter
      */
     searchEngine?: Array<AnalyticsFilterSearchEngineEnum>;
-    /**
-     * The keyword used to create search requests. Can only be used with Intelligent Search Tracker metrics.
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    keyword?: Array<string>;
-    /**
-     * Competitors monitored by the Intelligent Search Tracker. Can only be used with Intelligent Search Tracker metrics.
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    competitor?: Array<string>;
-    /**
-     * The local pack or organic position of the search result. Can only be used with Intelligent Search Tracker metrics.
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    matchPosition?: Array<AnalyticsFilterMatchPositionEnum>;
     /**
      * One of Organic, Local Pack or Knowledge Card. Can only be used with Intelligent Search Tracker metrics.
      * @type {Array<string>}
@@ -196,221 +515,121 @@ export interface AnalyticsFilter {
      */
     searchResultType?: Array<AnalyticsFilterSearchResultTypeEnum>;
     /**
-     * One of Local Map Pack, Listings, Pages and Corporate Website. Can only be used with Intelligent Search Tracker metrics.
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    matchType?: Array<AnalyticsFilterMatchTypeEnum>;
-    /**
-     * 
-     * @type {number}
-     * @memberof AnalyticsFilter
-     */
-    minSearchFrequency?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof AnalyticsFilter
-     */
-    maxSearchFrequency?: number;
-    /**
      * 
      * @type {string}
      * @memberof AnalyticsFilter
      */
     searchTerms?: string;
     /**
-     * 
-     * @type {string}
+     * Specifies the sentiment collection that should be included in the report. Can only be used with Reviews metrics.
+     * @type {Array<number>}
      * @memberof AnalyticsFilter
      */
-    searchType?: string;
+    sentimentCollection?: Array<number>;
     /**
-     * 
-     * @type {string}
+     * The inclusive start date for the report data. Defaults to 90 days before the end date. Must be before the date given in **`endDate`**.
+     * E.g. ‘2016-08-22’
+     * NOTE: If `WEEKS`, `MONTHS`, or `MONTHS_RETAIL` is in **`dimensions`**, **`startDate`** must coincide with the beginning and end of a week or month, depending on the dimension chosen.
+     * @type {Date}
      * @memberof AnalyticsFilter
      */
-    foursquareCheckinType?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AnalyticsFilter
-     */
-    foursquareCheckinAge?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AnalyticsFilter
-     */
-    foursquareCheckinGender?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AnalyticsFilter
-     */
-    foursquareCheckinTimeOfDay?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AnalyticsFilter
-     */
-    instagramContentType?: string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    age?: Array<AnalyticsFilterAgeEnum>;
-    /**
-     * 
-     * @type {string}
-     * @memberof AnalyticsFilter
-     */
-    gender?: AnalyticsFilterGenderEnum;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    facebookImpressionType?: Array<AnalyticsFilterFacebookImpressionTypeEnum>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    facebookStoryType?: Array<AnalyticsFilterFacebookStoryTypeEnum>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    facebookRsvpType?: Array<AnalyticsFilterFacebookRsvpTypeEnum>;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof AnalyticsFilter
-     */
-    eventSearchCondition?: Array<AnalyticsFilterEventSearchConditionEnum>;
+    startDate?: Date;
 }
 
 /**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterEntityTypeEnum {
-    Location = 'LOCATION',
-    HealthcareProfessional = 'HEALTHCARE_PROFESSIONAL',
-    HealthcareFacility = 'HEALTHCARE_FACILITY',
-    Event = 'EVENT',
-    Atm = 'ATM',
-    Restaurant = 'RESTAURANT'
+export enum AnalyticsFilterANSWERSBACKENDEnum {
+    Algolia = 'ALGOLIA',
+    BingCse = 'BING_CSE',
+    CustomSearcher = 'CUSTOM_SEARCHER',
+    GoogleCse = 'GOOGLE_CSE',
+    KnowledgeManager = 'KNOWLEDGE_MANAGER',
+    Zendesk = 'ZENDESK',
+    Unknown = 'UNKNOWN'
 }/**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterEntityGroupEnum {
-    Unknown = 'UNKNOWN',
-    Locations = 'LOCATIONS',
-    Events = 'EVENTS',
-    People = 'PEOPLE'
+export enum AnalyticsFilterANSWERSQUERYSOURCEEnum {
+    Standard = 'STANDARD',
+    Overlay = 'OVERLAY'
 }/**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterGoogleActionTypeEnum {
-    DrivingDirections = 'ACTION_DRIVING_DIRECTIONS',
-    Phone = 'ACTION_PHONE',
-    Website = 'ACTION_WEBSITE'
+export enum AnalyticsFilterANSWERSTRAFFICTYPEEnum {
+    External = 'EXTERNAL',
+    Internal = 'INTERNAL'
 }/**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterCustomerActionTypeEnum {
-    DrivingDirections = 'ACTION_DRIVING_DIRECTIONS',
-    Phone = 'ACTION_PHONE',
-    Website = 'ACTION_WEBSITE'
+export enum AnalyticsFilterCLICKTYPEEnum {
+    AddToCart = 'ADD_TO_CART',
+    ApplyNow = 'APPLY_NOW',
+    BookAppointment = 'BOOK_APPOINTMENT',
+    Call = 'CALL',
+    CallToAction = 'CALL_TO_ACTION',
+    Detail = 'DETAIL',
+    DrivingDirections = 'DRIVING_DIRECTIONS',
+    Email = 'EMAIL',
+    FeaturedMessage = 'FEATURED_MESSAGE',
+    OrderNow = 'ORDER_NOW',
+    RowExpand = 'ROW_EXPAND',
+    Rsvp = 'RSVP',
+    ThumbsUp = 'THUMBS_UP',
+    Title = 'TITLE',
+    UberLink = 'UBER_LINK',
+    Web = 'WEB',
+    Other = 'OTHER',
+    Unknown = 'UNKNOWN'
 }/**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterGoogleQueryTypeEnum {
-    Direct = 'QUERIES_DIRECT',
-    Indirect = 'QUERIES_INDIRECT',
-    Chain = 'QUERIES_CHAIN'
+export enum AnalyticsFilterCONFIGURATIONVERSIONLABELEnum {
+    Production = 'PRODUCTION',
+    Staging = 'STAGING'
 }/**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterPageTypesEnum {
-    Store = 'STORE',
-    Directory = 'DIRECTORY',
-    Search = 'SEARCH'
+export enum AnalyticsFilterCONVERSIONTYPEEnum {
+    CostSavingCustomerSupport = 'COST_SAVING_CUSTOMER_SUPPORT',
+    CostSavingOther = 'COST_SAVING_OTHER',
+    Lead = 'LEAD',
+    NoType = 'NO_TYPE',
+    PageView = 'PAGE_VIEW',
+    Purchase = 'PURCHASE',
+    SignUp = 'SIGN_UP',
+    OtherConversionType = 'OTHER_CONVERSION_TYPE',
+    UnknownConversionType = 'UNKNOWN_CONVERSION_TYPE'
 }/**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterListingsLiveTypeEnum {
-    Claimed = 'CLAIMED',
-    Created = 'CREATED'
-}/**
-* @export
-* @enum {string}
-*/
-export enum AnalyticsFilterPublisherSuggestionTypeEnum {
-    Accepted = 'ACCEPTED',
-    Rejected = 'REJECTED',
-    New = 'NEW'
-}/**
-* @export
-* @enum {string}
-*/
-export enum AnalyticsFilterQueryTemplateEnum {
-    Keyword = 'KEYWORD',
-    KeywordCity = 'KEYWORD_CITY',
-    KeywordCityState = 'KEYWORD_CITY_STATE',
-    KeywordInCity = 'KEYWORD_IN_CITY',
-    KeywordNearMe = 'KEYWORD_NEAR_ME',
-    KeywordZip = 'KEYWORD_ZIP'
-}/**
-* @export
-* @enum {string}
-*/
-export enum AnalyticsFilterSearchEngineEnum {
-    GoogleDesktop = 'GOOGLE_DESKTOP',
-    GoogleMobile = 'GOOGLE_MOBILE',
-    BingDesktop = 'BING_DESKTOP',
-    YahooDesktop = 'YAHOO_DESKTOP'
-}/**
-* @export
-* @enum {string}
-*/
-export enum AnalyticsFilterMatchPositionEnum {
-    One = 'ONE',
-    Two = 'TWO',
-    Three = 'THREE',
-    Four = 'FOUR',
-    Five = 'FIVE',
-    SixToTen = 'SIX_TO_TEN',
-    ElevenToFifteen = 'ELEVEN_TO_FIFTEEN'
-}/**
-* @export
-* @enum {string}
-*/
-export enum AnalyticsFilterSearchResultTypeEnum {
-    OrganicResult = 'ORGANIC_RESULT',
-    LocalPackResult = 'LOCAL_PACK_RESULT',
-    KnowledgeCardResult = 'KNOWLEDGE_CARD_RESULT'
-}/**
-* @export
-* @enum {string}
-*/
-export enum AnalyticsFilterMatchTypeEnum {
-    LocationPages = 'LOCATION_PAGES',
-    CorporateWebsite = 'CORPORATE_WEBSITE',
+export enum AnalyticsFilterPRODUCTEnum {
+    Answers = 'ANSWERS',
     Listings = 'LISTINGS',
-    NoMatch = 'NO_MATCH',
-    LocalPack = 'LOCAL_PACK',
-    Competitor = 'COMPETITOR'
+    Pages = 'PAGES',
+    Unknown = 'UNKNOWN'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterTRAFFICSOURCEEnum {
+    External = 'EXTERNAL',
+    Internal = 'INTERNAL',
+    UnknownTrafficSource = 'UNKNOWN_TRAFFIC_SOURCE'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterVALUEPROPOSITIONEnum {
+    CostSavings = 'COST_SAVINGS',
+    RevenueGenerating = 'REVENUE_GENERATING'
 }/**
 * @export
 * @enum {string}
@@ -427,10 +646,44 @@ export enum AnalyticsFilterAgeEnum {
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterGenderEnum {
-    Female = 'FEMALE',
-    Male = 'MALE',
-    Unidentified = 'UNIDENTIFIED'
+export enum AnalyticsFilterCustomerActionTypeEnum {
+    DrivingDirections = 'ACTION_DRIVING_DIRECTIONS',
+    Phone = 'ACTION_PHONE',
+    Website = 'ACTION_WEBSITE'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterEntityGroupEnum {
+    Categories = 'CATEGORIES',
+    Events = 'EVENTS',
+    Locations = 'LOCATIONS',
+    Organizations = 'ORGANIZATIONS',
+    People = 'PEOPLE',
+    Unknown = 'UNKNOWN'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterEntityTypeEnum {
+    Atm = 'ATM',
+    CategoryPage = 'CATEGORY_PAGE',
+    Event = 'EVENT',
+    HealthcareProfessional = 'HEALTHCARE_PROFESSIONAL',
+    HealthcareFacility = 'HEALTHCARE_FACILITY',
+    Location = 'LOCATION',
+    Organization = 'ORGANIZATION',
+    Restaurant = 'RESTAURANT'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterEventSearchConditionEnum {
+    InitialScan = 'INITIAL_SCAN',
+    Days28Prior = 'DAYS28_PRIOR',
+    Days7Prior = 'DAYS7_PRIOR',
+    DayOf = 'DAY_OF',
+    Days7After = 'DAYS7_AFTER'
 }/**
 * @export
 * @enum {string}
@@ -443,33 +696,176 @@ export enum AnalyticsFilterFacebookImpressionTypeEnum {
 * @export
 * @enum {string}
 */
+export enum AnalyticsFilterFacebookRsvpTypeEnum {
+    Attending = 'ATTENDING',
+    Declined = 'DECLINED',
+    Interested = 'INTERESTED',
+    Maybe = 'MAYBE'
+}/**
+* @export
+* @enum {string}
+*/
 export enum AnalyticsFilterFacebookStoryTypeEnum {
     Checkin = 'CHECKIN',
     Coupon = 'COUPON',
     Event = 'EVENT',
     Fan = 'FAN',
     Mention = 'MENTION',
+    Other = 'OTHER',
     PagePost = 'PAGE_POST',
     Question = 'QUESTION',
-    UserPost = 'USER_POST',
-    Other = 'OTHER'
+    UserPost = 'USER_POST'
 }/**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterFacebookRsvpTypeEnum {
-    Attending = 'ATTENDING',
-    Interested = 'INTERESTED'
+export enum AnalyticsFilterFoursquareCheckinAgeEnum {
+    Age1317 = 'AGE13_17',
+    Age1824 = 'AGE18_24',
+    Age2534 = 'AGE25_34',
+    Age3544 = 'AGE35_44',
+    Age4554 = 'AGE45_54'
 }/**
 * @export
 * @enum {string}
 */
-export enum AnalyticsFilterEventSearchConditionEnum {
-    InitialScan = 'INITIAL_SCAN',
-    Days28Prior = 'DAYS28_PRIOR',
-    Days7Prior = 'DAYS7_PRIOR',
-    DayOf = 'DAY_OF',
-    Days7After = 'DAYS7_AFTER'
+export enum AnalyticsFilterFoursquareCheckinGenderEnum {
+    Female = 'FEMALE',
+    Male = 'MALE'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterFoursquareCheckinTimeOfDayEnum {
+    Morning = 'MORNING',
+    Noon = 'NOON',
+    Afternoon = 'AFTERNOON',
+    Evening = 'EVENING',
+    Night = 'NIGHT'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterFoursquareCheckinTypeEnum {
+    New = 'NEW',
+    Repeat = 'REPEAT'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterGenderEnum {
+    Female = 'FEMALE',
+    Male = 'MALE',
+    Unidentified = 'UNIDENTIFIED'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterGoogleActionTypeEnum {
+    DrivingDirections = 'ACTION_DRIVING_DIRECTIONS',
+    Phone = 'ACTION_PHONE',
+    Website = 'ACTION_WEBSITE'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterGoogleQueryTypeEnum {
+    Chain = 'QUERIES_CHAIN',
+    Direct = 'QUERIES_DIRECT',
+    Indirect = 'QUERIES_INDIRECT'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterInstagramContentTypeEnum {
+    Photo = 'PHOTO',
+    Video = 'VIDEO'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterListingsLiveTypeEnum {
+    Claimed = 'CLAIMED',
+    Created = 'CREATED'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterMatchPositionEnum {
+    One = 'ONE',
+    Two = 'TWO',
+    Three = 'THREE',
+    Four = 'FOUR',
+    Five = 'FIVE',
+    SixToTen = 'SIX_TO_TEN'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterMatchTypeEnum {
+    Competitor = 'COMPETITOR',
+    CompetitorPaidAd = 'COMPETITOR_PAID_AD',
+    CorporateWebsite = 'CORPORATE_WEBSITE',
+    Listings = 'LISTINGS',
+    LocalPack = 'LOCAL_PACK',
+    LocationPages = 'LOCATION_PAGES',
+    NoMatch = 'NO_MATCH',
+    PaidAd = 'PAID_AD'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterPageTypesEnum {
+    Directory = 'DIRECTORY',
+    Search = 'SEARCH',
+    Store = 'STORE'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterPlatformTypeEnum {
+    Bot = 'BOT',
+    Desktop = 'DESKTOP',
+    Mobile = 'MOBILE',
+    Tablet = 'TABLET',
+    Unknown = 'UNKNOWN'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterPublisherSuggestionTypeEnum {
+    Accepted = 'ACCEPTED',
+    Canceled = 'CANCELED',
+    New = 'NEW',
+    Rejected = 'REJECTED'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterQueryTemplateEnum {
+    Keyword = 'KEYWORD',
+    KeywordCity = 'KEYWORD_CITY',
+    KeywordCityState = 'KEYWORD_CITY_STATE',
+    KeywordInCity = 'KEYWORD_IN_CITY',
+    KeywordNearMe = 'KEYWORD_NEAR_ME',
+    KeywordZip = 'KEYWORD_ZIP'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterSearchEngineEnum {
+    BingDesktop = 'BING_DESKTOP',
+    GoogleDesktop = 'GOOGLE_DESKTOP',
+    GoogleMobile = 'GOOGLE_MOBILE',
+    YahooDesktop = 'YAHOO_DESKTOP'
+}/**
+* @export
+* @enum {string}
+*/
+export enum AnalyticsFilterSearchResultTypeEnum {
+    KnowledgeCardResult = 'KNOWLEDGE_CARD_RESULT',
+    LocalPackResult = 'LOCAL_PACK_RESULT',
+    OrganicResult = 'ORGANIC_RESULT'
 }
 
 export function AnalyticsFilterFromJSON(json: any): AnalyticsFilter {
@@ -482,50 +878,90 @@ export function AnalyticsFilterFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'startDate': !exists(json, 'startDate') ? undefined : (new Date(json['startDate'])),
-        'endDate': !exists(json, 'endDate') ? undefined : (new Date(json['endDate'])),
-        'locationIds': !exists(json, 'locationIds') ? undefined : json['locationIds'],
-        'folderIds': !exists(json, 'folderIds') ? undefined : json['folderIds'],
+        'aNSWERSBACKEND': !exists(json, 'ANSWERS_BACKEND') ? undefined : json['ANSWERS_BACKEND'],
+        'aNSWERSBLANKSEARCHTERM': !exists(json, 'ANSWERS_BLANK_SEARCH_TERM') ? undefined : json['ANSWERS_BLANK_SEARCH_TERM'],
+        'aNSWERSCLICKLABEL': !exists(json, 'ANSWERS_CLICK_LABEL') ? undefined : json['ANSWERS_CLICK_LABEL'],
+        'aNSWERSCLICKTYPE': !exists(json, 'ANSWERS_CLICK_TYPE') ? undefined : json['ANSWERS_CLICK_TYPE'],
+        'aNSWERSCLICKURL': !exists(json, 'ANSWERS_CLICK_URL') ? undefined : json['ANSWERS_CLICK_URL'],
+        'aNSWERSCLUSTER': !exists(json, 'ANSWERS_CLUSTER') ? undefined : json['ANSWERS_CLUSTER'],
+        'aNSWERSCONFIGURATIONVERSION': !exists(json, 'ANSWERS_CONFIGURATION_VERSION') ? undefined : json['ANSWERS_CONFIGURATION_VERSION'],
+        'aNSWERSCONFIGURATIONVERSIONLABEL': !exists(json, 'ANSWERS_CONFIGURATION_VERSION_LABEL') ? undefined : json['ANSWERS_CONFIGURATION_VERSION_LABEL'],
+        'aNSWERSDIRECTANSWERCLICK': !exists(json, 'ANSWERS_DIRECT_ANSWER_CLICK') ? undefined : json['ANSWERS_DIRECT_ANSWER_CLICK'],
+        'aNSWERSDIRECTANSWERFIELD': !exists(json, 'ANSWERS_DIRECT_ANSWER_FIELD') ? undefined : json['ANSWERS_DIRECT_ANSWER_FIELD'],
+        'aNSWERSDIRECTANSWERFIELDVALUE': !exists(json, 'ANSWERS_DIRECT_ANSWER_FIELD_VALUE') ? undefined : json['ANSWERS_DIRECT_ANSWER_FIELD_VALUE'],
+        'aNSWERSEXPERIENCE': !exists(json, 'ANSWERS_EXPERIENCE') ? undefined : json['ANSWERS_EXPERIENCE'],
+        'aNSWERSHASKGRESULTS': !exists(json, 'ANSWERS_HAS_KG_RESULTS') ? undefined : json['ANSWERS_HAS_KG_RESULTS'],
+        'aNSWERSHASSEARCHTERMCLUSTER': !exists(json, 'ANSWERS_HAS_SEARCH_TERM_CLUSTER') ? undefined : json['ANSWERS_HAS_SEARCH_TERM_CLUSTER'],
+        'aNSWERSQUERYSOURCE': !exists(json, 'ANSWERS_QUERY_SOURCE') ? undefined : json['ANSWERS_QUERY_SOURCE'],
+        'aNSWERSRAWSEARCHTERM': !exists(json, 'ANSWERS_RAW_SEARCH_TERM') ? undefined : json['ANSWERS_RAW_SEARCH_TERM'],
+        'aNSWERSREFERRERDOMAIN': !exists(json, 'ANSWERS_REFERRER_DOMAIN') ? undefined : json['ANSWERS_REFERRER_DOMAIN'],
+        'aNSWERSREFERRERPAGEURL': !exists(json, 'ANSWERS_REFERRER_PAGE_URL') ? undefined : json['ANSWERS_REFERRER_PAGE_URL'],
+        'aNSWERSRESULTENTITYPOSITION': !exists(json, 'ANSWERS_RESULT_ENTITY_POSITION') ? undefined : json['ANSWERS_RESULT_ENTITY_POSITION'],
+        'aNSWERSRESULTTITLE': !exists(json, 'ANSWERS_RESULT_TITLE') ? undefined : json['ANSWERS_RESULT_TITLE'],
+        'aNSWERSRESULTVERTICALPOSITION': !exists(json, 'ANSWERS_RESULT_VERTICAL_POSITION') ? undefined : json['ANSWERS_RESULT_VERTICAL_POSITION'],
+        'aNSWERSSEARCHID': !exists(json, 'ANSWERS_SEARCH_ID') ? undefined : json['ANSWERS_SEARCH_ID'],
+        'aNSWERSSEARCHTERM': !exists(json, 'ANSWERS_SEARCH_TERM') ? undefined : json['ANSWERS_SEARCH_TERM'],
+        'aNSWERSSEARCHTERMCLUSTERPERFORMANCE': !exists(json, 'ANSWERS_SEARCH_TERM_CLUSTER_PERFORMANCE') ? undefined : json['ANSWERS_SEARCH_TERM_CLUSTER_PERFORMANCE'],
+        'aNSWERSSEARCHTERMINTENT': !exists(json, 'ANSWERS_SEARCH_TERM_INTENT') ? undefined : json['ANSWERS_SEARCH_TERM_INTENT'],
+        'aNSWERSSEARCHVERTICAL': !exists(json, 'ANSWERS_SEARCH_VERTICAL') ? undefined : json['ANSWERS_SEARCH_VERTICAL'],
+        'aNSWERSSESSIONID': !exists(json, 'ANSWERS_SESSION_ID') ? undefined : json['ANSWERS_SESSION_ID'],
+        'aNSWERSTRAFFICTYPE': !exists(json, 'ANSWERS_TRAFFIC_TYPE') ? undefined : json['ANSWERS_TRAFFIC_TYPE'],
+        'aNSWERSUSERCITY': !exists(json, 'ANSWERS_USER_CITY') ? undefined : json['ANSWERS_USER_CITY'],
+        'aNSWERSUSERCOUNTRY': !exists(json, 'ANSWERS_USER_COUNTRY') ? undefined : json['ANSWERS_USER_COUNTRY'],
+        'aNSWERSUSERDEVICECLASS': !exists(json, 'ANSWERS_USER_DEVICE_CLASS') ? undefined : json['ANSWERS_USER_DEVICE_CLASS'],
+        'aNSWERSUSERLATLONG': !exists(json, 'ANSWERS_USER_LAT_LONG') ? undefined : json['ANSWERS_USER_LAT_LONG'],
+        'aNSWERSUSERLOCATIONACCURACY': !exists(json, 'ANSWERS_USER_LOCATION_ACCURACY') ? undefined : json['ANSWERS_USER_LOCATION_ACCURACY'],
+        'cLICKTYPE': !exists(json, 'CLICK_TYPE') ? undefined : json['CLICK_TYPE'],
+        'cONFIGURATIONVERSIONLABEL': !exists(json, 'CONFIGURATION_VERSION_LABEL') ? undefined : json['CONFIGURATION_VERSION_LABEL'],
+        'cONVERSIONTYPE': !exists(json, 'CONVERSION_TYPE') ? undefined : json['CONVERSION_TYPE'],
+        'mEDIUM': !exists(json, 'MEDIUM') ? undefined : json['MEDIUM'],
+        'pRODUCT': !exists(json, 'PRODUCT') ? undefined : json['PRODUCT'],
+        'tRAFFICSOURCE': !exists(json, 'TRAFFIC_SOURCE') ? undefined : json['TRAFFIC_SOURCE'],
+        'vALUEPROPOSITION': !exists(json, 'VALUE_PROPOSITION') ? undefined : json['VALUE_PROPOSITION'],
+        'vERTICALCONFIGID': !exists(json, 'VERTICAL_CONFIG_ID') ? undefined : json['VERTICAL_CONFIG_ID'],
+        'age': !exists(json, 'age') ? undefined : json['age'],
+        'competitor': !exists(json, 'competitor') ? undefined : json['competitor'],
         'countries': !exists(json, 'countries') ? undefined : json['countries'],
-        'locationLabels': !exists(json, 'locationLabels') ? undefined : json['locationLabels'],
+        'customerActionType': !exists(json, 'customerActionType') ? undefined : json['customerActionType'],
+        'endDate': !exists(json, 'endDate') ? undefined : (new Date(json['endDate'])),
+        'entityGroup': !exists(json, 'entityGroup') ? undefined : json['entityGroup'],
         'entityIds': !exists(json, 'entityIds') ? undefined : json['entityIds'],
         'entityType': !exists(json, 'entityType') ? undefined : json['entityType'],
-        'entityGroup': !exists(json, 'entityGroup') ? undefined : json['entityGroup'],
-        'platforms': !exists(json, 'platforms') ? undefined : json['platforms'],
-        'googleActionType': !exists(json, 'googleActionType') ? undefined : json['googleActionType'],
-        'customerActionType': !exists(json, 'customerActionType') ? undefined : json['customerActionType'],
-        'googleQueryType': !exists(json, 'googleQueryType') ? undefined : json['googleQueryType'],
-        'hours': !exists(json, 'hours') ? undefined : json['hours'],
-        'ratings': !exists(json, 'ratings') ? undefined : json['ratings'],
-        'frequentWords': !exists(json, 'frequentWords') ? undefined : json['frequentWords'],
-        'partners': !exists(json, 'partners') ? undefined : json['partners'],
-        'reviewLabels': !exists(json, 'reviewLabels') ? undefined : json['reviewLabels'],
-        'sentimentCollection': !exists(json, 'sentimentCollection') ? undefined : json['sentimentCollection'],
-        'pageTypes': !exists(json, 'pageTypes') ? undefined : json['pageTypes'],
-        'listingsLiveType': !exists(json, 'listingsLiveType') ? undefined : json['listingsLiveType'],
-        'publisherSuggestionType': !exists(json, 'publisherSuggestionType') ? undefined : json['publisherSuggestionType'],
-        'queryTemplate': !exists(json, 'queryTemplate') ? undefined : json['queryTemplate'],
-        'searchEngine': !exists(json, 'searchEngine') ? undefined : json['searchEngine'],
-        'keyword': !exists(json, 'keyword') ? undefined : json['keyword'],
-        'competitor': !exists(json, 'competitor') ? undefined : json['competitor'],
-        'matchPosition': !exists(json, 'matchPosition') ? undefined : json['matchPosition'],
-        'searchResultType': !exists(json, 'searchResultType') ? undefined : json['searchResultType'],
-        'matchType': !exists(json, 'matchType') ? undefined : json['matchType'],
-        'minSearchFrequency': !exists(json, 'minSearchFrequency') ? undefined : json['minSearchFrequency'],
-        'maxSearchFrequency': !exists(json, 'maxSearchFrequency') ? undefined : json['maxSearchFrequency'],
-        'searchTerms': !exists(json, 'searchTerms') ? undefined : json['searchTerms'],
-        'searchType': !exists(json, 'searchType') ? undefined : json['searchType'],
-        'foursquareCheckinType': !exists(json, 'foursquareCheckinType') ? undefined : json['foursquareCheckinType'],
+        'eventSearchCondition': !exists(json, 'eventSearchCondition') ? undefined : json['eventSearchCondition'],
+        'facebookImpressionType': !exists(json, 'facebookImpressionType') ? undefined : json['facebookImpressionType'],
+        'facebookRsvpType': !exists(json, 'facebookRsvpType') ? undefined : json['facebookRsvpType'],
+        'facebookStoryType': !exists(json, 'facebookStoryType') ? undefined : json['facebookStoryType'],
+        'folderIds': !exists(json, 'folderIds') ? undefined : json['folderIds'],
         'foursquareCheckinAge': !exists(json, 'foursquareCheckinAge') ? undefined : json['foursquareCheckinAge'],
         'foursquareCheckinGender': !exists(json, 'foursquareCheckinGender') ? undefined : json['foursquareCheckinGender'],
         'foursquareCheckinTimeOfDay': !exists(json, 'foursquareCheckinTimeOfDay') ? undefined : json['foursquareCheckinTimeOfDay'],
-        'instagramContentType': !exists(json, 'instagramContentType') ? undefined : json['instagramContentType'],
-        'age': !exists(json, 'age') ? undefined : json['age'],
+        'foursquareCheckinType': !exists(json, 'foursquareCheckinType') ? undefined : json['foursquareCheckinType'],
+        'frequentWords': !exists(json, 'frequentWords') ? undefined : json['frequentWords'],
         'gender': !exists(json, 'gender') ? undefined : json['gender'],
-        'facebookImpressionType': !exists(json, 'facebookImpressionType') ? undefined : json['facebookImpressionType'],
-        'facebookStoryType': !exists(json, 'facebookStoryType') ? undefined : json['facebookStoryType'],
-        'facebookRsvpType': !exists(json, 'facebookRsvpType') ? undefined : json['facebookRsvpType'],
-        'eventSearchCondition': !exists(json, 'eventSearchCondition') ? undefined : json['eventSearchCondition'],
+        'googleActionType': !exists(json, 'googleActionType') ? undefined : json['googleActionType'],
+        'googleQueryType': !exists(json, 'googleQueryType') ? undefined : json['googleQueryType'],
+        'hours': !exists(json, 'hours') ? undefined : json['hours'],
+        'instagramContentType': !exists(json, 'instagramContentType') ? undefined : json['instagramContentType'],
+        'keyword': !exists(json, 'keyword') ? undefined : json['keyword'],
+        'listingsLiveType': !exists(json, 'listingsLiveType') ? undefined : json['listingsLiveType'],
+        'locationIds': !exists(json, 'locationIds') ? undefined : json['locationIds'],
+        'locationLabels': !exists(json, 'locationLabels') ? undefined : json['locationLabels'],
+        'matchPosition': !exists(json, 'matchPosition') ? undefined : json['matchPosition'],
+        'matchType': !exists(json, 'matchType') ? undefined : json['matchType'],
+        'maxSearchFrequency': !exists(json, 'maxSearchFrequency') ? undefined : json['maxSearchFrequency'],
+        'minSearchFrequency': !exists(json, 'minSearchFrequency') ? undefined : json['minSearchFrequency'],
+        'pageTypes': !exists(json, 'pageTypes') ? undefined : json['pageTypes'],
+        'partners': !exists(json, 'partners') ? undefined : json['partners'],
+        'platformType': !exists(json, 'platformType') ? undefined : json['platformType'],
+        'publisherSuggestionType': !exists(json, 'publisherSuggestionType') ? undefined : json['publisherSuggestionType'],
+        'queryTemplate': !exists(json, 'queryTemplate') ? undefined : json['queryTemplate'],
+        'ratings': !exists(json, 'ratings') ? undefined : json['ratings'],
+        'reviewLabels': !exists(json, 'reviewLabels') ? undefined : json['reviewLabels'],
+        'searchEngine': !exists(json, 'searchEngine') ? undefined : json['searchEngine'],
+        'searchResultType': !exists(json, 'searchResultType') ? undefined : json['searchResultType'],
+        'searchTerms': !exists(json, 'searchTerms') ? undefined : json['searchTerms'],
+        'sentimentCollection': !exists(json, 'sentimentCollection') ? undefined : json['sentimentCollection'],
+        'startDate': !exists(json, 'startDate') ? undefined : (new Date(json['startDate'])),
     };
 }
 
@@ -538,50 +974,90 @@ export function AnalyticsFilterToJSON(value?: AnalyticsFilter | null): any {
     }
     return {
         
-        'startDate': value.startDate === undefined ? undefined : (value.startDate.toISOString().substr(0,10)),
-        'endDate': value.endDate === undefined ? undefined : (value.endDate.toISOString().substr(0,10)),
-        'locationIds': value.locationIds,
-        'folderIds': value.folderIds,
+        'ANSWERS_BACKEND': value.aNSWERSBACKEND,
+        'ANSWERS_BLANK_SEARCH_TERM': value.aNSWERSBLANKSEARCHTERM,
+        'ANSWERS_CLICK_LABEL': value.aNSWERSCLICKLABEL,
+        'ANSWERS_CLICK_TYPE': value.aNSWERSCLICKTYPE,
+        'ANSWERS_CLICK_URL': value.aNSWERSCLICKURL,
+        'ANSWERS_CLUSTER': value.aNSWERSCLUSTER,
+        'ANSWERS_CONFIGURATION_VERSION': value.aNSWERSCONFIGURATIONVERSION,
+        'ANSWERS_CONFIGURATION_VERSION_LABEL': value.aNSWERSCONFIGURATIONVERSIONLABEL,
+        'ANSWERS_DIRECT_ANSWER_CLICK': value.aNSWERSDIRECTANSWERCLICK,
+        'ANSWERS_DIRECT_ANSWER_FIELD': value.aNSWERSDIRECTANSWERFIELD,
+        'ANSWERS_DIRECT_ANSWER_FIELD_VALUE': value.aNSWERSDIRECTANSWERFIELDVALUE,
+        'ANSWERS_EXPERIENCE': value.aNSWERSEXPERIENCE,
+        'ANSWERS_HAS_KG_RESULTS': value.aNSWERSHASKGRESULTS,
+        'ANSWERS_HAS_SEARCH_TERM_CLUSTER': value.aNSWERSHASSEARCHTERMCLUSTER,
+        'ANSWERS_QUERY_SOURCE': value.aNSWERSQUERYSOURCE,
+        'ANSWERS_RAW_SEARCH_TERM': value.aNSWERSRAWSEARCHTERM,
+        'ANSWERS_REFERRER_DOMAIN': value.aNSWERSREFERRERDOMAIN,
+        'ANSWERS_REFERRER_PAGE_URL': value.aNSWERSREFERRERPAGEURL,
+        'ANSWERS_RESULT_ENTITY_POSITION': value.aNSWERSRESULTENTITYPOSITION,
+        'ANSWERS_RESULT_TITLE': value.aNSWERSRESULTTITLE,
+        'ANSWERS_RESULT_VERTICAL_POSITION': value.aNSWERSRESULTVERTICALPOSITION,
+        'ANSWERS_SEARCH_ID': value.aNSWERSSEARCHID,
+        'ANSWERS_SEARCH_TERM': value.aNSWERSSEARCHTERM,
+        'ANSWERS_SEARCH_TERM_CLUSTER_PERFORMANCE': value.aNSWERSSEARCHTERMCLUSTERPERFORMANCE,
+        'ANSWERS_SEARCH_TERM_INTENT': value.aNSWERSSEARCHTERMINTENT,
+        'ANSWERS_SEARCH_VERTICAL': value.aNSWERSSEARCHVERTICAL,
+        'ANSWERS_SESSION_ID': value.aNSWERSSESSIONID,
+        'ANSWERS_TRAFFIC_TYPE': value.aNSWERSTRAFFICTYPE,
+        'ANSWERS_USER_CITY': value.aNSWERSUSERCITY,
+        'ANSWERS_USER_COUNTRY': value.aNSWERSUSERCOUNTRY,
+        'ANSWERS_USER_DEVICE_CLASS': value.aNSWERSUSERDEVICECLASS,
+        'ANSWERS_USER_LAT_LONG': value.aNSWERSUSERLATLONG,
+        'ANSWERS_USER_LOCATION_ACCURACY': value.aNSWERSUSERLOCATIONACCURACY,
+        'CLICK_TYPE': value.cLICKTYPE,
+        'CONFIGURATION_VERSION_LABEL': value.cONFIGURATIONVERSIONLABEL,
+        'CONVERSION_TYPE': value.cONVERSIONTYPE,
+        'MEDIUM': value.mEDIUM,
+        'PRODUCT': value.pRODUCT,
+        'TRAFFIC_SOURCE': value.tRAFFICSOURCE,
+        'VALUE_PROPOSITION': value.vALUEPROPOSITION,
+        'VERTICAL_CONFIG_ID': value.vERTICALCONFIGID,
+        'age': value.age,
+        'competitor': value.competitor,
         'countries': value.countries,
-        'locationLabels': value.locationLabels,
+        'customerActionType': value.customerActionType,
+        'endDate': value.endDate === undefined ? undefined : (value.endDate.toISOString().substr(0,10)),
+        'entityGroup': value.entityGroup,
         'entityIds': value.entityIds,
         'entityType': value.entityType,
-        'entityGroup': value.entityGroup,
-        'platforms': value.platforms,
-        'googleActionType': value.googleActionType,
-        'customerActionType': value.customerActionType,
-        'googleQueryType': value.googleQueryType,
-        'hours': value.hours,
-        'ratings': value.ratings,
-        'frequentWords': value.frequentWords,
-        'partners': value.partners,
-        'reviewLabels': value.reviewLabels,
-        'sentimentCollection': value.sentimentCollection,
-        'pageTypes': value.pageTypes,
-        'listingsLiveType': value.listingsLiveType,
-        'publisherSuggestionType': value.publisherSuggestionType,
-        'queryTemplate': value.queryTemplate,
-        'searchEngine': value.searchEngine,
-        'keyword': value.keyword,
-        'competitor': value.competitor,
-        'matchPosition': value.matchPosition,
-        'searchResultType': value.searchResultType,
-        'matchType': value.matchType,
-        'minSearchFrequency': value.minSearchFrequency,
-        'maxSearchFrequency': value.maxSearchFrequency,
-        'searchTerms': value.searchTerms,
-        'searchType': value.searchType,
-        'foursquareCheckinType': value.foursquareCheckinType,
+        'eventSearchCondition': value.eventSearchCondition,
+        'facebookImpressionType': value.facebookImpressionType,
+        'facebookRsvpType': value.facebookRsvpType,
+        'facebookStoryType': value.facebookStoryType,
+        'folderIds': value.folderIds,
         'foursquareCheckinAge': value.foursquareCheckinAge,
         'foursquareCheckinGender': value.foursquareCheckinGender,
         'foursquareCheckinTimeOfDay': value.foursquareCheckinTimeOfDay,
-        'instagramContentType': value.instagramContentType,
-        'age': value.age,
+        'foursquareCheckinType': value.foursquareCheckinType,
+        'frequentWords': value.frequentWords,
         'gender': value.gender,
-        'facebookImpressionType': value.facebookImpressionType,
-        'facebookStoryType': value.facebookStoryType,
-        'facebookRsvpType': value.facebookRsvpType,
-        'eventSearchCondition': value.eventSearchCondition,
+        'googleActionType': value.googleActionType,
+        'googleQueryType': value.googleQueryType,
+        'hours': value.hours,
+        'instagramContentType': value.instagramContentType,
+        'keyword': value.keyword,
+        'listingsLiveType': value.listingsLiveType,
+        'locationIds': value.locationIds,
+        'locationLabels': value.locationLabels,
+        'matchPosition': value.matchPosition,
+        'matchType': value.matchType,
+        'maxSearchFrequency': value.maxSearchFrequency,
+        'minSearchFrequency': value.minSearchFrequency,
+        'pageTypes': value.pageTypes,
+        'partners': value.partners,
+        'platformType': value.platformType,
+        'publisherSuggestionType': value.publisherSuggestionType,
+        'queryTemplate': value.queryTemplate,
+        'ratings': value.ratings,
+        'reviewLabels': value.reviewLabels,
+        'searchEngine': value.searchEngine,
+        'searchResultType': value.searchResultType,
+        'searchTerms': value.searchTerms,
+        'sentimentCollection': value.sentimentCollection,
+        'startDate': value.startDate === undefined ? undefined : (value.startDate.toISOString().substr(0,10)),
     };
 }
 

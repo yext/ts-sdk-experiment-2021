@@ -1,6 +1,6 @@
 {
   "name": "yext-sdk-experiment-2021",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "OpenAPI client for yext-sdk-experiment-2021",
   "author": "OpenAPI-Generator",
   "main": "./dist/index.js",
@@ -10,6 +10,6 @@
     "prepare": "npm run build"
   },
   "devDependencies": {
-    "typescript": "^3.6"
+    "typescript": "^3.9.5"
   }
 }

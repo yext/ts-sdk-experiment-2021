@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Yext API
- * # Policies and Conventions  This section gives you the basic information you need to use our APIs.  ## API Availability  We currently offer three APIs: * **Knowledge API** * **Live API** * **Administrative API**  Each API is designed for a particular set of users.  To determine which APIs are available to users like you, see the \"Overview\" page in the Docs section of this site.  <a href=\"https://app.getpostman.com/run-collection/c42e6f39b0b10e56b1ca\"><img src=\"https://run.pstmn.io/button.svg\" alt=\"Run in Postman\" /></a>  (Postman collection includes Knowledge API, Live API, and Administrative API calls.)  ## Authentication All requests must be authenticated using an app’s API key via the api_key query parameter. Additionally, the API key can also be passed in as a header parameter named api-key. Note that this is slightly different from the parameter name accepted as a query param (api_key)  <pre>GET https://api.yext.com/v2/accounts/[accountId]/locations?<b>api_key=API_KEY</b>&v=YYYYMMDD</pre>  The API key should be kept secret.  ## Versioning All requests must be versioned using the **`v`** parameter.  <pre>GET https://api.yext.com/v2/accounts/[accountId]/locations?api_key=API_KEY&<b>v=YYYYMMDD</b></pre>  The **`v`** parameter (a date in `YYYYMMDD` format) is designed to give you the freedom to adapt to Yext API changes on your own schedule. When you pass this parameter, any backward-incompatible changes we made to the API after the specified date will not affect the behavior of the request or the content of the response. You will still benefit from any bug fixes or backward-compatible changes we may have made after the date you\'ve specified.  **NOTE:** Yext has the ability to make changes that affect previous versions of the API, if necessary.  ## Serialization API v2 only accepts data in JSON format.  ## Content-Type Headers For all requests that include a request body, the `Content-Type` header must be included and set to `application/json`.  ## PUT Requests Generally, all `PUT` operations behave as true RESTful `PUT`s, in which entire objects are overwritten with the provided content.  However, certain endpoints used to work with large, frequently-changing object models may have different semantics to prevent the accidental removal of content (e.g., Locations: Update lets you omit fields you don’t wish to change).  ## Errors and Warnings There are three kinds of issues that can be reported for a given request:  * **`FATAL_ERROR`**     * An issue caused the entire request to be rejected. * **`NON_FATAL_ERROR`**     * An item is rejected, but other items present in the request are accepted (e.g., one invalid Product List item).     * A field is rejected, but the item otherwise is accepted (e.g., invalid website URL in a Location). * **`WARNING`**     * The request did not adhere to our best practices or recommendations, but the data was accepted anyway (e.g., data was sent that may cause some listings to become unavailable, a deprecated API was used, or we changed the format of a field\'s content to meet our requirements).  ## Dates and Times * We always use milliseconds since epoch (a.k.a. Unix time) for timestamps (e.g., review creation times, webhook update times). * We always use ISO 8601 without timezone for local date times (e.g., Event start time, Event end time). Event times are always interpreted in the local timezone of their associated locations. * Dates are transmitted as strings: `YYYY-MM-DD`.  ## Account ID In keeping with RESTful design principles, every URL in API v2 has an account ID prefix. This prefix helps to ensure that you have unique URLs for all resources.  In addition to specifying resources by explicit account ID, the following two macros are defined: * **`me`** - refers to the account that owns the API key sent with the request * **`all`** - refers to the account that owns the API key sent with the request, as well as all sub-accounts (recursively)  **IMPORTANT:** The **`me`** macro is supported in all API methods.  The **`all`** macro will only be supported in certain URLs. Currently, it can only be used in Analytics, Reviews, and some Listings endpoints.  ### Examples This URL refers to an analytics report for all locations in account 123. <pre>https://api.yext.com/v2/accounts/<b>123</b>/analytics/reports?api_key=456&v=20160822</pre>  This URL refers to an analytics report for all locations in the account that owns API key 456. <pre>https://api.yext.com/v2/accounts/<b>me</b>/analytics/reports?<b>api_key=456</b>&v=20160822</pre>  This URL refers to an analytics report for all locations in the account that owns API key 456, as well as all locations from any of its child accounts. <pre>https://api.yext.com/v2/accounts/<b>all</b>/analytics/reports?<b>api_key=456</b>&v=20160822</pre>  ## Actor Headers  To attribute changes to a particular user, all `PUT`, `POST`, and `DELETE` requests may be passed with the following headers.  **NOTE:** If you choose to provide actor headers, and we are unable to authenticate the request using the values you provide, the request will result in an error and fail.  * Attribute activity to customer user via username     * Header: `Yext-Username`     * Value: Customer user’s username * Attribute activity to customer user via Yext user ID     * Header: `Yext-User-Id`     * Value: Customer user’s Yext user ID  Changes will be logged as follows:  * App with no designated actor     * History Entry \"Updated By\" Value: `App [App ID] - ‘[App Name]’`     * Example: `App 432 - ‘Hello World App’` * App with customer user actor     * History Entry \"Updated By\" Value: `[user name] ([user email]) (App [App ID] - ‘[App Name]’)`     * Example: `Jordan Smith (jsmith@example.com) (App 432 - ‘Hello World App’)`  ## Response Format * **`meta`**     * Response metadata * **`meta.uuid`**     * Unique ID for this request / response * **`meta.errors[]`**     * List of errors and warnings * **`meta.errors[].code`**     * Code that uniquely identifies the error or warning * **`meta.errors[].type`**     * One of:         * `FATAL_ERROR`         * `NON_FATAL_ERROR`         * `WARNING`     * See \"Errors and Warnings\" above for details. * **`meta.errors[].message`**     * An explanation of the issue * **`response`**     * The main content (body) of the response  Example: <pre><code> {     \"meta\": {         \"uuid\": \"bb0c7e19-4dc3-4891-bfa5-8593b1f124ad\",         \"errors\": [             {                 \"code\": ...error code...,                 \"type\": ...error, fatal error, non fatal error, or warning...,                 \"message\": ...explanation of the issue...             }         ]     },     \"response\": {         ...results...     } } </code></pre>  ## Status Codes * `200 OK`    * Either there are no errors or warnings, or the only issues are of type `WARNING`. * `207 Multi-Status`     * There are errors of type `itemError` or `fieldError` (but none of type `requestError`). * `400 Bad Request`     * A parameter is invalid, or a required parameter is missing. This includes the case where no API key is provided and the case where a resource ID is specified incorrectly in a path.     * This status is if any of the response errors are of type `requestError`. * `401 Unauthorized`     * The API key provided is invalid. * `403 Forbidden`     * The requested information cannot be viewed by the acting user. * `404 Not Found`     * The endpoint does not exist. * `405 Method Not Allowed`     * The request is using a method that is not allowed (e.g., `POST` with a `GET`-only endpoint). * `409 Conflict`     * The request could not be completed in its current state.     * Use the information included in the response to modify the request and retry. * `429 Too Many Requests`     * You have exceeded your rate limit / quota. * `500 Internal Server Error`     * Yext’s servers are not operating as expected. The request is likely valid but should be resent later. * `504 Timeout`     * Yext’s servers took too long to handle this request, and it timed out.  ## Quotas and Rate Limits Default quotas and rate limits are as follows.  * **Knowledge API** *(includes Analytics, Listings, Knowledge Manager, Reviews, Social, and User endpoints)*: 5,000 requests per hour * **Analytics API**: 1,000 requests per 60-minute sliding window (in addition to the Knowledge API quota) * **Administrative API**: 1,000 requests per hour * **Live API**: 100,000 requests per hour  With the exception of the Analytics API quota, hourly quotas are calculated from the beginning of the hour (minute zero, `:00`), not on a rolling basis past 60 minutes.  **NOTE:** Webhook requests do not count towards an account’s quota.  For the most current and accurate rate-limit usage information for a particular request type, check the **`Rate-Limit-Remaining`** and **`Rate-Limit-Limit`** HTTP headers of your API responses.  If you are currently over your limit, our API will return a `429` error, and the response object returned by our API will be empty. We will also include a **`Rate-Limit-Reset`** header in the response, which indicates when you will have additional quota.  ## Client- vs. Yext-assigned IDs You can set the ID for the following objects when you create them. If you do not provide an ID, Yext will generate one for you.  * Account * User * Location * Bio List * Menu * Product List * Event List * Bio List Item * Menu Item * Product List Item * Event List Item  ## Logging With the exception of Live API requests, all API requests are logged. API logs can be found in your Developer Console and are stored for 30 days. 
+ * No description provided (generated by Openapi Generator https://github.com/openapitools/openapi-generator)
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -21,6 +21,9 @@ import {
     CreateReviewCommentResponse,
     CreateReviewCommentResponseFromJSON,
     CreateReviewCommentResponseToJSON,
+    CreateReviewInvitationRequest,
+    CreateReviewInvitationRequestFromJSON,
+    CreateReviewInvitationRequestToJSON,
     CreateReviewInvitationsResponse,
     CreateReviewInvitationsResponseFromJSON,
     CreateReviewInvitationsResponseToJSON,
@@ -45,9 +48,6 @@ import {
     ReviewGenerationSettingsResponse,
     ReviewGenerationSettingsResponseFromJSON,
     ReviewGenerationSettingsResponseToJSON,
-    ReviewInvitation,
-    ReviewInvitationFromJSON,
-    ReviewInvitationToJSON,
     ReviewInvitationResponse,
     ReviewInvitationResponseFromJSON,
     ReviewInvitationResponseToJSON,
@@ -69,6 +69,9 @@ import {
     UpdateReviewInvitationRequest,
     UpdateReviewInvitationRequestFromJSON,
     UpdateReviewInvitationRequestToJSON,
+    UpdateReviewInvitationResponse,
+    UpdateReviewInvitationResponseFromJSON,
+    UpdateReviewInvitationResponseToJSON,
     UpdateReviewLabelsRequest,
     UpdateReviewLabelsRequestFromJSON,
     UpdateReviewLabelsRequestToJSON,
@@ -81,25 +84,31 @@ export interface CreateCommentRequest {
     accountId: string;
     reviewId: number;
     v: string;
-    commentRequest: ReviewComment;
+    reviewComment: ReviewComment;
 }
 
 export interface CreateReviewRequest {
     accountId: string;
     v: string;
-    createReviewRequestBody: CreateReview;
+    createReview: CreateReview;
 }
 
 export interface CreateReviewInvitesRequest {
     accountId: string;
     v: string;
-    reviews: Array<ReviewInvitation>;
+    createReviewInvitationRequest: Array<CreateReviewInvitationRequest>;
 }
 
 export interface DeleteCommentRequest {
     accountId: string;
     reviewId: number;
     commentId: string;
+    v: string;
+}
+
+export interface DeleteInvitationRequest {
+    accountId: string;
+    invitationUid: string;
     v: string;
 }
 
@@ -116,7 +125,7 @@ export interface GetReviewGenerationSettingsRequest {
 
 export interface GetReviewInvitationRequest {
     accountId: string;
-    invitationId: string;
+    invitationUid: string;
     v: string;
 }
 
@@ -168,25 +177,25 @@ export interface UpdateCommentRequest {
     reviewId: number;
     commentId: string;
     v: string;
-    commentUpdateRequest: ReviewCommentUpdate;
+    reviewCommentUpdate: ReviewCommentUpdate;
 }
 
 export interface UpdateReviewRequest {
     accountId: string;
     reviewId: number;
     v: string;
-    updateReviewRequestBody: UpdateReview;
+    updateReview: UpdateReview;
 }
 
 export interface UpdateReviewGenerationSettingsRequest {
     accountId: string;
     v: string;
-    reviewGenerationSettingsRequest: ReviewGenerationSettings;
+    reviewGenerationSettings: ReviewGenerationSettings;
 }
 
 export interface UpdateReviewInvitationOperationRequest {
     accountId: string;
-    invitationId: string;
+    invitationUid: string;
     v: string;
     updateReviewInvitationRequest: UpdateReviewInvitationRequest;
 }
@@ -195,7 +204,7 @@ export interface UpdateReviewLabelsOperationRequest {
     accountId: string;
     reviewId: number;
     v: string;
-    updateReviewLabelsRequest: UpdateReviewLabelsRequest;
+    updateReviewLabelsRequest?: UpdateReviewLabelsRequest;
 }
 
 /**
@@ -220,8 +229,8 @@ export class ReviewsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createComment.');
         }
 
-        if (requestParameters.commentRequest === null || requestParameters.commentRequest === undefined) {
-            throw new runtime.RequiredError('commentRequest','Required parameter requestParameters.commentRequest was null or undefined when calling createComment.');
+        if (requestParameters.reviewComment === null || requestParameters.reviewComment === undefined) {
+            throw new runtime.RequiredError('reviewComment','Required parameter requestParameters.reviewComment was null or undefined when calling createComment.');
         }
 
         const queryParameters: any = {};
@@ -247,7 +256,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ReviewCommentToJSON(requestParameters.commentRequest),
+            body: ReviewCommentToJSON(requestParameters.reviewComment),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CreateReviewCommentResponseFromJSON(jsonValue));
@@ -275,8 +284,8 @@ export class ReviewsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createReview.');
         }
 
-        if (requestParameters.createReviewRequestBody === null || requestParameters.createReviewRequestBody === undefined) {
-            throw new runtime.RequiredError('createReviewRequestBody','Required parameter requestParameters.createReviewRequestBody was null or undefined when calling createReview.');
+        if (requestParameters.createReview === null || requestParameters.createReview === undefined) {
+            throw new runtime.RequiredError('createReview','Required parameter requestParameters.createReview was null or undefined when calling createReview.');
         }
 
         const queryParameters: any = {};
@@ -302,7 +311,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: CreateReviewToJSON(requestParameters.createReviewRequestBody),
+            body: CreateReviewToJSON(requestParameters.createReview),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -330,8 +339,8 @@ export class ReviewsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createReviewInvites.');
         }
 
-        if (requestParameters.reviews === null || requestParameters.reviews === undefined) {
-            throw new runtime.RequiredError('reviews','Required parameter requestParameters.reviews was null or undefined when calling createReviewInvites.');
+        if (requestParameters.createReviewInvitationRequest === null || requestParameters.createReviewInvitationRequest === undefined) {
+            throw new runtime.RequiredError('createReviewInvitationRequest','Required parameter requestParameters.createReviewInvitationRequest was null or undefined when calling createReviewInvites.');
         }
 
         const queryParameters: any = {};
@@ -357,7 +366,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.reviews.map(ReviewInvitationToJSON),
+            body: requestParameters.createReviewInvitationRequest.map(CreateReviewInvitationRequestToJSON),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CreateReviewInvitationsResponseFromJSON(jsonValue));
@@ -425,6 +434,58 @@ export class ReviewsApi extends runtime.BaseAPI {
      */
     async deleteComment(requestParameters: DeleteCommentRequest): Promise<EmptyResponse> {
         const response = await this.deleteCommentRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Delete a specific review invitation.
+     * Review Invitation: Delete
+     */
+    async deleteInvitationRaw(requestParameters: DeleteInvitationRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteInvitation.');
+        }
+
+        if (requestParameters.invitationUid === null || requestParameters.invitationUid === undefined) {
+            throw new runtime.RequiredError('invitationUid','Required parameter requestParameters.invitationUid was null or undefined when calling deleteInvitation.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling deleteInvitation.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/reviewinvites/{invitationUid}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"invitationUid"}}`, encodeURIComponent(String(requestParameters.invitationUid))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Delete a specific review invitation.
+     * Review Invitation: Delete
+     */
+    async deleteInvitation(requestParameters: DeleteInvitationRequest): Promise<EmptyResponse> {
+        const response = await this.deleteInvitationRaw(requestParameters);
         return await response.value();
     }
 
@@ -529,7 +590,7 @@ export class ReviewsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieve a specific review invitation
+     * Retrieve a specific review invitation.
      * Review Invitation: Get
      */
     async getReviewInvitationRaw(requestParameters: GetReviewInvitationRequest): Promise<runtime.ApiResponse<ReviewInvitationResponse>> {
@@ -537,8 +598,8 @@ export class ReviewsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getReviewInvitation.');
         }
 
-        if (requestParameters.invitationId === null || requestParameters.invitationId === undefined) {
-            throw new runtime.RequiredError('invitationId','Required parameter requestParameters.invitationId was null or undefined when calling getReviewInvitation.');
+        if (requestParameters.invitationUid === null || requestParameters.invitationUid === undefined) {
+            throw new runtime.RequiredError('invitationUid','Required parameter requestParameters.invitationUid was null or undefined when calling getReviewInvitation.');
         }
 
         if (requestParameters.v === null || requestParameters.v === undefined) {
@@ -562,7 +623,7 @@ export class ReviewsApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/accounts/{accountId}/reviewinvites/{invitationId}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"invitationId"}}`, encodeURIComponent(String(requestParameters.invitationId))),
+            path: `/accounts/{accountId}/reviewinvites/{invitationUid}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"invitationUid"}}`, encodeURIComponent(String(requestParameters.invitationUid))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -572,7 +633,7 @@ export class ReviewsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieve a specific review invitation
+     * Retrieve a specific review invitation.
      * Review Invitation: Get
      */
     async getReviewInvitation(requestParameters: GetReviewInvitationRequest): Promise<ReviewInvitationResponse> {
@@ -612,15 +673,15 @@ export class ReviewsApi extends runtime.BaseAPI {
         }
 
         if (requestParameters.folderIds) {
-            queryParameters['folderIds'] = requestParameters.folderIds.join(runtime.COLLECTION_FORMATS["csv"]);
+            queryParameters['folderIds'] = requestParameters.folderIds;
         }
 
         if (requestParameters.locationLabels) {
-            queryParameters['locationLabels'] = requestParameters.locationLabels.join(runtime.COLLECTION_FORMATS["csv"]);
+            queryParameters['locationLabels'] = requestParameters.locationLabels;
         }
 
         if (requestParameters.templateIds) {
-            queryParameters['templateIds'] = requestParameters.templateIds.join(runtime.COLLECTION_FORMATS["csv"]);
+            queryParameters['templateIds'] = requestParameters.templateIds;
         }
 
         if (requestParameters.status !== undefined) {
@@ -700,11 +761,11 @@ export class ReviewsApi extends runtime.BaseAPI {
         }
 
         if (requestParameters.countries) {
-            queryParameters['countries'] = requestParameters.countries.join(runtime.COLLECTION_FORMATS["csv"]);
+            queryParameters['countries'] = requestParameters.countries;
         }
 
         if (requestParameters.locationLabels) {
-            queryParameters['locationLabels'] = requestParameters.locationLabels.join(runtime.COLLECTION_FORMATS["csv"]);
+            queryParameters['locationLabels'] = requestParameters.locationLabels;
         }
 
         if (requestParameters.publisherIds) {
@@ -764,7 +825,7 @@ export class ReviewsApi extends runtime.BaseAPI {
         }
 
         if (requestParameters.labelIds) {
-            queryParameters['labelIds'] = requestParameters.labelIds.join(runtime.COLLECTION_FORMATS["csv"]);
+            queryParameters['labelIds'] = requestParameters.labelIds;
         }
 
         if (requestParameters.reviewType !== undefined) {
@@ -829,8 +890,8 @@ export class ReviewsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateComment.');
         }
 
-        if (requestParameters.commentUpdateRequest === null || requestParameters.commentUpdateRequest === undefined) {
-            throw new runtime.RequiredError('commentUpdateRequest','Required parameter requestParameters.commentUpdateRequest was null or undefined when calling updateComment.');
+        if (requestParameters.reviewCommentUpdate === null || requestParameters.reviewCommentUpdate === undefined) {
+            throw new runtime.RequiredError('reviewCommentUpdate','Required parameter requestParameters.reviewCommentUpdate was null or undefined when calling updateComment.');
         }
 
         const queryParameters: any = {};
@@ -856,7 +917,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ReviewCommentUpdateToJSON(requestParameters.commentUpdateRequest),
+            body: ReviewCommentUpdateToJSON(requestParameters.reviewCommentUpdate),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
@@ -888,8 +949,8 @@ export class ReviewsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateReview.');
         }
 
-        if (requestParameters.updateReviewRequestBody === null || requestParameters.updateReviewRequestBody === undefined) {
-            throw new runtime.RequiredError('updateReviewRequestBody','Required parameter requestParameters.updateReviewRequestBody was null or undefined when calling updateReview.');
+        if (requestParameters.updateReview === null || requestParameters.updateReview === undefined) {
+            throw new runtime.RequiredError('updateReview','Required parameter requestParameters.updateReview was null or undefined when calling updateReview.');
         }
 
         const queryParameters: any = {};
@@ -915,7 +976,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: UpdateReviewToJSON(requestParameters.updateReviewRequestBody),
+            body: UpdateReviewToJSON(requestParameters.updateReview),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -943,8 +1004,8 @@ export class ReviewsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateReviewGenerationSettings.');
         }
 
-        if (requestParameters.reviewGenerationSettingsRequest === null || requestParameters.reviewGenerationSettingsRequest === undefined) {
-            throw new runtime.RequiredError('reviewGenerationSettingsRequest','Required parameter requestParameters.reviewGenerationSettingsRequest was null or undefined when calling updateReviewGenerationSettings.');
+        if (requestParameters.reviewGenerationSettings === null || requestParameters.reviewGenerationSettings === undefined) {
+            throw new runtime.RequiredError('reviewGenerationSettings','Required parameter requestParameters.reviewGenerationSettings was null or undefined when calling updateReviewGenerationSettings.');
         }
 
         const queryParameters: any = {};
@@ -970,7 +1031,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ReviewGenerationSettingsToJSON(requestParameters.reviewGenerationSettingsRequest),
+            body: ReviewGenerationSettingsToJSON(requestParameters.reviewGenerationSettings),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UpdateReviewGenerationSettingsResponseFromJSON(jsonValue));
@@ -986,16 +1047,16 @@ export class ReviewsApi extends runtime.BaseAPI {
     }
 
     /**
-     * Updates the metadata for a specific review invitation. May also be used to cancel pending invitations. 
-     * Review Invitation: Update Metadata
+     * Supports updating an existing review invitation. This endpoint will not create a new review invitation or trigger a new SMS/Email to be sent, it will only update the data and/or metadata for an existing review invitation. Any optional parameters which are excluded from the request will simply be ignored. 
+     * Review Invitation: Update
      */
-    async updateReviewInvitationRaw(requestParameters: UpdateReviewInvitationOperationRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async updateReviewInvitationRaw(requestParameters: UpdateReviewInvitationOperationRequest): Promise<runtime.ApiResponse<UpdateReviewInvitationResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateReviewInvitation.');
         }
 
-        if (requestParameters.invitationId === null || requestParameters.invitationId === undefined) {
-            throw new runtime.RequiredError('invitationId','Required parameter requestParameters.invitationId was null or undefined when calling updateReviewInvitation.');
+        if (requestParameters.invitationUid === null || requestParameters.invitationUid === undefined) {
+            throw new runtime.RequiredError('invitationUid','Required parameter requestParameters.invitationUid was null or undefined when calling updateReviewInvitation.');
         }
 
         if (requestParameters.v === null || requestParameters.v === undefined) {
@@ -1025,21 +1086,21 @@ export class ReviewsApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/accounts/{accountId}/reviewinvites/{invitationId}:updatemetadata`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"invitationId"}}`, encodeURIComponent(String(requestParameters.invitationId))),
+            path: `/accounts/{accountId}/reviewinvites/{invitationUid}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"invitationUid"}}`, encodeURIComponent(String(requestParameters.invitationUid))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UpdateReviewInvitationRequestToJSON(requestParameters.updateReviewInvitationRequest),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => UpdateReviewInvitationResponseFromJSON(jsonValue));
     }
 
     /**
-     * Updates the metadata for a specific review invitation. May also be used to cancel pending invitations. 
-     * Review Invitation: Update Metadata
+     * Supports updating an existing review invitation. This endpoint will not create a new review invitation or trigger a new SMS/Email to be sent, it will only update the data and/or metadata for an existing review invitation. Any optional parameters which are excluded from the request will simply be ignored. 
+     * Review Invitation: Update
      */
-    async updateReviewInvitation(requestParameters: UpdateReviewInvitationOperationRequest): Promise<IdResponse> {
+    async updateReviewInvitation(requestParameters: UpdateReviewInvitationOperationRequest): Promise<UpdateReviewInvitationResponse> {
         const response = await this.updateReviewInvitationRaw(requestParameters);
         return await response.value();
     }
@@ -1059,10 +1120,6 @@ export class ReviewsApi extends runtime.BaseAPI {
 
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateReviewLabels.');
-        }
-
-        if (requestParameters.updateReviewLabelsRequest === null || requestParameters.updateReviewLabelsRequest === undefined) {
-            throw new runtime.RequiredError('updateReviewLabelsRequest','Required parameter requestParameters.updateReviewLabelsRequest was null or undefined when calling updateReviewLabels.');
         }
 
         const queryParameters: any = {};

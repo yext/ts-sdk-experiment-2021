@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Yext API
- * # Policies and Conventions  This section gives you the basic information you need to use our APIs.  ## API Availability  We currently offer three APIs: * **Knowledge API** * **Live API** * **Administrative API**  Each API is designed for a particular set of users.  To determine which APIs are available to users like you, see the \"Overview\" page in the Docs section of this site.  <a href=\"https://app.getpostman.com/run-collection/c42e6f39b0b10e56b1ca\"><img src=\"https://run.pstmn.io/button.svg\" alt=\"Run in Postman\" /></a>  (Postman collection includes Knowledge API, Live API, and Administrative API calls.)  ## Authentication All requests must be authenticated using an app’s API key via the api_key query parameter. Additionally, the API key can also be passed in as a header parameter named api-key. Note that this is slightly different from the parameter name accepted as a query param (api_key)  <pre>GET https://api.yext.com/v2/accounts/[accountId]/locations?<b>api_key=API_KEY</b>&v=YYYYMMDD</pre>  The API key should be kept secret.  ## Versioning All requests must be versioned using the **`v`** parameter.  <pre>GET https://api.yext.com/v2/accounts/[accountId]/locations?api_key=API_KEY&<b>v=YYYYMMDD</b></pre>  The **`v`** parameter (a date in `YYYYMMDD` format) is designed to give you the freedom to adapt to Yext API changes on your own schedule. When you pass this parameter, any backward-incompatible changes we made to the API after the specified date will not affect the behavior of the request or the content of the response. You will still benefit from any bug fixes or backward-compatible changes we may have made after the date you\'ve specified.  **NOTE:** Yext has the ability to make changes that affect previous versions of the API, if necessary.  ## Serialization API v2 only accepts data in JSON format.  ## Content-Type Headers For all requests that include a request body, the `Content-Type` header must be included and set to `application/json`.  ## PUT Requests Generally, all `PUT` operations behave as true RESTful `PUT`s, in which entire objects are overwritten with the provided content.  However, certain endpoints used to work with large, frequently-changing object models may have different semantics to prevent the accidental removal of content (e.g., Locations: Update lets you omit fields you don’t wish to change).  ## Errors and Warnings There are three kinds of issues that can be reported for a given request:  * **`FATAL_ERROR`**     * An issue caused the entire request to be rejected. * **`NON_FATAL_ERROR`**     * An item is rejected, but other items present in the request are accepted (e.g., one invalid Product List item).     * A field is rejected, but the item otherwise is accepted (e.g., invalid website URL in a Location). * **`WARNING`**     * The request did not adhere to our best practices or recommendations, but the data was accepted anyway (e.g., data was sent that may cause some listings to become unavailable, a deprecated API was used, or we changed the format of a field\'s content to meet our requirements).  ## Dates and Times * We always use milliseconds since epoch (a.k.a. Unix time) for timestamps (e.g., review creation times, webhook update times). * We always use ISO 8601 without timezone for local date times (e.g., Event start time, Event end time). Event times are always interpreted in the local timezone of their associated locations. * Dates are transmitted as strings: `YYYY-MM-DD`.  ## Account ID In keeping with RESTful design principles, every URL in API v2 has an account ID prefix. This prefix helps to ensure that you have unique URLs for all resources.  In addition to specifying resources by explicit account ID, the following two macros are defined: * **`me`** - refers to the account that owns the API key sent with the request * **`all`** - refers to the account that owns the API key sent with the request, as well as all sub-accounts (recursively)  **IMPORTANT:** The **`me`** macro is supported in all API methods.  The **`all`** macro will only be supported in certain URLs. Currently, it can only be used in Analytics, Reviews, and some Listings endpoints.  ### Examples This URL refers to an analytics report for all locations in account 123. <pre>https://api.yext.com/v2/accounts/<b>123</b>/analytics/reports?api_key=456&v=20160822</pre>  This URL refers to an analytics report for all locations in the account that owns API key 456. <pre>https://api.yext.com/v2/accounts/<b>me</b>/analytics/reports?<b>api_key=456</b>&v=20160822</pre>  This URL refers to an analytics report for all locations in the account that owns API key 456, as well as all locations from any of its child accounts. <pre>https://api.yext.com/v2/accounts/<b>all</b>/analytics/reports?<b>api_key=456</b>&v=20160822</pre>  ## Actor Headers  To attribute changes to a particular user, all `PUT`, `POST`, and `DELETE` requests may be passed with the following headers.  **NOTE:** If you choose to provide actor headers, and we are unable to authenticate the request using the values you provide, the request will result in an error and fail.  * Attribute activity to customer user via username     * Header: `Yext-Username`     * Value: Customer user’s username * Attribute activity to customer user via Yext user ID     * Header: `Yext-User-Id`     * Value: Customer user’s Yext user ID  Changes will be logged as follows:  * App with no designated actor     * History Entry \"Updated By\" Value: `App [App ID] - ‘[App Name]’`     * Example: `App 432 - ‘Hello World App’` * App with customer user actor     * History Entry \"Updated By\" Value: `[user name] ([user email]) (App [App ID] - ‘[App Name]’)`     * Example: `Jordan Smith (jsmith@example.com) (App 432 - ‘Hello World App’)`  ## Response Format * **`meta`**     * Response metadata * **`meta.uuid`**     * Unique ID for this request / response * **`meta.errors[]`**     * List of errors and warnings * **`meta.errors[].code`**     * Code that uniquely identifies the error or warning * **`meta.errors[].type`**     * One of:         * `FATAL_ERROR`         * `NON_FATAL_ERROR`         * `WARNING`     * See \"Errors and Warnings\" above for details. * **`meta.errors[].message`**     * An explanation of the issue * **`response`**     * The main content (body) of the response  Example: <pre><code> {     \"meta\": {         \"uuid\": \"bb0c7e19-4dc3-4891-bfa5-8593b1f124ad\",         \"errors\": [             {                 \"code\": ...error code...,                 \"type\": ...error, fatal error, non fatal error, or warning...,                 \"message\": ...explanation of the issue...             }         ]     },     \"response\": {         ...results...     } } </code></pre>  ## Status Codes * `200 OK`    * Either there are no errors or warnings, or the only issues are of type `WARNING`. * `207 Multi-Status`     * There are errors of type `itemError` or `fieldError` (but none of type `requestError`). * `400 Bad Request`     * A parameter is invalid, or a required parameter is missing. This includes the case where no API key is provided and the case where a resource ID is specified incorrectly in a path.     * This status is if any of the response errors are of type `requestError`. * `401 Unauthorized`     * The API key provided is invalid. * `403 Forbidden`     * The requested information cannot be viewed by the acting user. * `404 Not Found`     * The endpoint does not exist. * `405 Method Not Allowed`     * The request is using a method that is not allowed (e.g., `POST` with a `GET`-only endpoint). * `409 Conflict`     * The request could not be completed in its current state.     * Use the information included in the response to modify the request and retry. * `429 Too Many Requests`     * You have exceeded your rate limit / quota. * `500 Internal Server Error`     * Yext’s servers are not operating as expected. The request is likely valid but should be resent later. * `504 Timeout`     * Yext’s servers took too long to handle this request, and it timed out.  ## Quotas and Rate Limits Default quotas and rate limits are as follows.  * **Knowledge API** *(includes Analytics, Listings, Knowledge Manager, Reviews, Social, and User endpoints)*: 5,000 requests per hour * **Analytics API**: 1,000 requests per 60-minute sliding window (in addition to the Knowledge API quota) * **Administrative API**: 1,000 requests per hour * **Live API**: 100,000 requests per hour  With the exception of the Analytics API quota, hourly quotas are calculated from the beginning of the hour (minute zero, `:00`), not on a rolling basis past 60 minutes.  **NOTE:** Webhook requests do not count towards an account’s quota.  For the most current and accurate rate-limit usage information for a particular request type, check the **`Rate-Limit-Remaining`** and **`Rate-Limit-Limit`** HTTP headers of your API responses.  If you are currently over your limit, our API will return a `429` error, and the response object returned by our API will be empty. We will also include a **`Rate-Limit-Reset`** header in the response, which indicates when you will have additional quota.  ## Client- vs. Yext-assigned IDs You can set the ID for the following objects when you create them. If you do not provide an ID, Yext will generate one for you.  * Account * User * Location * Bio List * Menu * Product List * Event List * Bio List Item * Menu Item * Product List Item * Event List Item  ## Logging With the exception of Live API requests, all API requests are logged. API logs can be found in your Developer Console and are stored for 30 days. 
+ * No description provided (generated by Openapi Generator https://github.com/openapitools/openapi-generator)
  *
  * The version of the OpenAPI document: 2.0
  * 
@@ -36,15 +36,9 @@ import {
     BusinessCategoriesResponse,
     BusinessCategoriesResponseFromJSON,
     BusinessCategoriesResponseToJSON,
-    CustomField,
-    CustomFieldFromJSON,
-    CustomFieldToJSON,
     CustomFieldResponse,
     CustomFieldResponseFromJSON,
     CustomFieldResponseToJSON,
-    CustomFieldUpdate,
-    CustomFieldUpdateFromJSON,
-    CustomFieldUpdateToJSON,
     CustomFieldsResponse,
     CustomFieldsResponseFromJSON,
     CustomFieldsResponseToJSON,
@@ -57,15 +51,21 @@ import {
     ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
-    EventLegacy,
-    EventLegacyFromJSON,
-    EventLegacyToJSON,
+    Event,
+    EventFromJSON,
+    EventToJSON,
     EventListResponse,
     EventListResponseFromJSON,
     EventListResponseToJSON,
     EventListsResponse,
     EventListsResponseFromJSON,
     EventListsResponseToJSON,
+    Field,
+    FieldFromJSON,
+    FieldToJSON,
+    FieldUpdate,
+    FieldUpdateFromJSON,
+    FieldUpdateToJSON,
     FoldersResponse,
     FoldersResponseFromJSON,
     FoldersResponseToJSON,
@@ -75,15 +75,36 @@ import {
     IdResponse,
     IdResponseFromJSON,
     IdResponseToJSON,
+    InlineResponse200,
+    InlineResponse200FromJSON,
+    InlineResponse200ToJSON,
+    InlineResponse2001,
+    InlineResponse2001FromJSON,
+    InlineResponse2001ToJSON,
+    InlineResponse2002,
+    InlineResponse2002FromJSON,
+    InlineResponse2002ToJSON,
+    InlineResponse2003,
+    InlineResponse2003FromJSON,
+    InlineResponse2003ToJSON,
+    InlineResponse2004,
+    InlineResponse2004FromJSON,
+    InlineResponse2004ToJSON,
+    InlineResponse201,
+    InlineResponse201FromJSON,
+    InlineResponse201ToJSON,
+    InlineResponse400,
+    InlineResponse400FromJSON,
+    InlineResponse400ToJSON,
     LanguageProfileResponse,
     LanguageProfileResponseFromJSON,
     LanguageProfileResponseToJSON,
     LanguageProfilesResponse,
     LanguageProfilesResponseFromJSON,
     LanguageProfilesResponseToJSON,
-    LocationLegacy,
-    LocationLegacyFromJSON,
-    LocationLegacyToJSON,
+    Location,
+    LocationFromJSON,
+    LocationToJSON,
     LocationResponse,
     LocationResponseFromJSON,
     LocationResponseToJSON,
@@ -117,43 +138,43 @@ export interface CreateAssetRequest {
     accountId: string;
     v: string;
     format: string;
-    assetRequest: Asset;
+    asset: Asset;
 }
 
 export interface CreateBioRequest {
     accountId: string;
     v: string;
-    body: Bio;
+    bio: Bio;
 }
 
 export interface CreateCustomFieldRequest {
     v: string;
     accountId: string;
-    body: CustomField;
+    field: Field;
 }
 
 export interface CreateEventRequest {
     accountId: string;
     v: string;
-    body: EventLegacy;
+    event: Event;
 }
 
 export interface CreateLocationRequest {
     accountId: string;
     v: string;
-    locationRequest: LocationLegacy;
+    location: Location;
 }
 
 export interface CreateMenuRequest {
     accountId: string;
     v: string;
-    body: Menu;
+    menu: Menu;
 }
 
 export interface CreateProductRequest {
     accountId: string;
     v: string;
-    body: Product;
+    product: Product;
 }
 
 export interface DeleteAssetRequest {
@@ -328,7 +349,7 @@ export interface KnowledgeApiServerCreateEntityRequest {
     accountId: string;
     entityType: string;
     v: string;
-    body: EntityWrite;
+    entityWrite: EntityWrite;
     format?: string;
     stripUnsupportedFormats?: boolean;
     templateFields?: string;
@@ -412,7 +433,7 @@ export interface KnowledgeApiServerUpdateEntityRequest {
     accountId: string;
     entityId: string;
     v: string;
-    body: EntityWrite;
+    entityWrite: EntityWrite;
     format?: string;
     stripUnsupportedFormats?: boolean;
     templateFields?: string;
@@ -424,7 +445,7 @@ export interface KnowledgeApiServerUpsertLanguageProfileRequest {
     entityId: string;
     languageCode: string;
     v: string;
-    body: EntityWrite;
+    entityWrite: EntityWrite;
 }
 
 export interface ListAssetsRequest {
@@ -449,49 +470,49 @@ export interface UpdateAssetRequest {
     assetId: string;
     v: string;
     format: string;
-    assetRequest: Asset;
+    asset: Asset;
 }
 
 export interface UpdateBioRequest {
     accountId: string;
     listId: string;
     v: string;
-    body: Bio;
+    bio: Bio;
 }
 
 export interface UpdateCustomFieldRequest {
     v: string;
     accountId: string;
     customFieldId: string;
-    body: CustomFieldUpdate;
+    fieldUpdate: FieldUpdate;
 }
 
 export interface UpdateEventRequest {
     accountId: string;
     listId: string;
     v: string;
-    body: EventLegacy;
+    event: Event;
 }
 
 export interface UpdateLocationRequest {
     accountId: string;
     locationId: string;
     v: string;
-    locationRequest: LocationLegacy;
+    location: Location;
 }
 
 export interface UpdateMenuRequest {
     accountId: string;
     listId: string;
     v: string;
-    body: Menu;
+    menu: Menu;
 }
 
 export interface UpdateProductRequest {
     accountId: string;
     listId: string;
     v: string;
-    body: Product;
+    product: Product;
 }
 
 export interface UpsertLanguageProfileRequest {
@@ -499,7 +520,7 @@ export interface UpsertLanguageProfileRequest {
     locationId: string;
     languageCode: string;
     v: string;
-    body: LocationLegacy;
+    location: Location;
     primary?: boolean;
 }
 
@@ -525,8 +546,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('format','Required parameter requestParameters.format was null or undefined when calling createAsset.');
         }
 
-        if (requestParameters.assetRequest === null || requestParameters.assetRequest === undefined) {
-            throw new runtime.RequiredError('assetRequest','Required parameter requestParameters.assetRequest was null or undefined when calling createAsset.');
+        if (requestParameters.asset === null || requestParameters.asset === undefined) {
+            throw new runtime.RequiredError('asset','Required parameter requestParameters.asset was null or undefined when calling createAsset.');
         }
 
         const queryParameters: any = {};
@@ -556,7 +577,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: AssetToJSON(requestParameters.assetRequest),
+            body: AssetToJSON(requestParameters.asset),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -584,8 +605,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createBio.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling createBio.');
+        if (requestParameters.bio === null || requestParameters.bio === undefined) {
+            throw new runtime.RequiredError('bio','Required parameter requestParameters.bio was null or undefined when calling createBio.');
         }
 
         const queryParameters: any = {};
@@ -596,7 +617,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/kjson';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
@@ -611,7 +632,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: BioToJSON(requestParameters.body),
+            body: BioToJSON(requestParameters.bio),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -639,8 +660,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createCustomField.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling createCustomField.');
+        if (requestParameters.field === null || requestParameters.field === undefined) {
+            throw new runtime.RequiredError('field','Required parameter requestParameters.field was null or undefined when calling createCustomField.');
         }
 
         const queryParameters: any = {};
@@ -666,7 +687,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: CustomFieldToJSON(requestParameters.body),
+            body: FieldToJSON(requestParameters.field),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -694,8 +715,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createEvent.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling createEvent.');
+        if (requestParameters.event === null || requestParameters.event === undefined) {
+            throw new runtime.RequiredError('event','Required parameter requestParameters.event was null or undefined when calling createEvent.');
         }
 
         const queryParameters: any = {};
@@ -706,7 +727,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/kjson';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
@@ -721,7 +742,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: EventLegacyToJSON(requestParameters.body),
+            body: EventToJSON(requestParameters.event),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -749,8 +770,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createLocation.');
         }
 
-        if (requestParameters.locationRequest === null || requestParameters.locationRequest === undefined) {
-            throw new runtime.RequiredError('locationRequest','Required parameter requestParameters.locationRequest was null or undefined when calling createLocation.');
+        if (requestParameters.location === null || requestParameters.location === undefined) {
+            throw new runtime.RequiredError('location','Required parameter requestParameters.location was null or undefined when calling createLocation.');
         }
 
         const queryParameters: any = {};
@@ -776,7 +797,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LocationLegacyToJSON(requestParameters.locationRequest),
+            body: LocationToJSON(requestParameters.location),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -803,8 +824,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createMenu.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling createMenu.');
+        if (requestParameters.menu === null || requestParameters.menu === undefined) {
+            throw new runtime.RequiredError('menu','Required parameter requestParameters.menu was null or undefined when calling createMenu.');
         }
 
         const queryParameters: any = {};
@@ -830,7 +851,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: MenuToJSON(requestParameters.body),
+            body: MenuToJSON(requestParameters.menu),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -857,8 +878,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createProduct.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling createProduct.');
+        if (requestParameters.product === null || requestParameters.product === undefined) {
+            throw new runtime.RequiredError('product','Required parameter requestParameters.product was null or undefined when calling createProduct.');
         }
 
         const queryParameters: any = {};
@@ -869,7 +890,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/kjson';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
@@ -884,7 +905,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ProductToJSON(requestParameters.body),
+            body: ProductToJSON(requestParameters.product),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -2279,7 +2300,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Entity  **NOTE:**   * If the **`v`** parameter is before `20181129`: the 201 response contains the created Entity\'s **`id`**   * If the **`v`** parameter is on or after `20181129`: the 201 response contains the created Entity in its entirety 
      * Entities: Create
      */
-    async knowledgeApiServerCreateEntityRaw(requestParameters: KnowledgeApiServerCreateEntityRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerCreateEntityRaw(requestParameters: KnowledgeApiServerCreateEntityRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerCreateEntity.');
         }
@@ -2292,8 +2313,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerCreateEntity.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling knowledgeApiServerCreateEntity.');
+        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
+            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling knowledgeApiServerCreateEntity.');
         }
 
         const queryParameters: any = {};
@@ -2339,17 +2360,17 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: EntityWriteToJSON(requestParameters.body),
+            body: EntityWriteToJSON(requestParameters.entityWrite),
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
 
     /**
      * Create a new Entity  **NOTE:**   * If the **`v`** parameter is before `20181129`: the 201 response contains the created Entity\'s **`id`**   * If the **`v`** parameter is on or after `20181129`: the 201 response contains the created Entity in its entirety 
      * Entities: Create
      */
-    async knowledgeApiServerCreateEntity(requestParameters: KnowledgeApiServerCreateEntityRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerCreateEntity(requestParameters: KnowledgeApiServerCreateEntityRequest): Promise<InlineResponse201> {
         const response = await this.knowledgeApiServerCreateEntityRaw(requestParameters);
         return await response.value();
     }
@@ -2358,7 +2379,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete the Entity with the given ID
      * Entities: Delete
      */
-    async knowledgeApiServerDeleteEntityRaw(requestParameters: KnowledgeApiServerDeleteEntityRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerDeleteEntityRaw(requestParameters: KnowledgeApiServerDeleteEntityRequest): Promise<runtime.ApiResponse<InlineResponse2001>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerDeleteEntity.');
         }
@@ -2394,14 +2415,14 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2001FromJSON(jsonValue));
     }
 
     /**
      * Delete the Entity with the given ID
      * Entities: Delete
      */
-    async knowledgeApiServerDeleteEntity(requestParameters: KnowledgeApiServerDeleteEntityRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerDeleteEntity(requestParameters: KnowledgeApiServerDeleteEntityRequest): Promise<InlineResponse2001> {
         const response = await this.knowledgeApiServerDeleteEntityRaw(requestParameters);
         return await response.value();
     }
@@ -2410,7 +2431,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete a language profile
      * Entity Language Profiles: Delete
      */
-    async knowledgeApiServerDeleteLanguageProfileRaw(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerDeleteLanguageProfileRaw(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest): Promise<runtime.ApiResponse<InlineResponse2004>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerDeleteLanguageProfile.');
         }
@@ -2450,14 +2471,14 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2004FromJSON(jsonValue));
     }
 
     /**
      * Delete a language profile
      * Entity Language Profiles: Delete
      */
-    async knowledgeApiServerDeleteLanguageProfile(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerDeleteLanguageProfile(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest): Promise<InlineResponse2004> {
         const response = await this.knowledgeApiServerDeleteLanguageProfileRaw(requestParameters);
         return await response.value();
     }
@@ -2466,7 +2487,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve information for an Entity with a given ID
      * Entities: Get
      */
-    async knowledgeApiServerGetEntityRaw(requestParameters: KnowledgeApiServerGetEntityRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerGetEntityRaw(requestParameters: KnowledgeApiServerGetEntityRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerGetEntity.');
         }
@@ -2514,14 +2535,14 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
 
     /**
      * Retrieve information for an Entity with a given ID
      * Entities: Get
      */
-    async knowledgeApiServerGetEntity(requestParameters: KnowledgeApiServerGetEntityRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerGetEntity(requestParameters: KnowledgeApiServerGetEntityRequest): Promise<InlineResponse201> {
         const response = await this.knowledgeApiServerGetEntityRaw(requestParameters);
         return await response.value();
     }
@@ -2530,7 +2551,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a Language Profile for an Entity  **NOTE**:  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: Get
      */
-    async knowledgeApiServerGetLanguageProfileRaw(requestParameters: KnowledgeApiServerGetLanguageProfileRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerGetLanguageProfileRaw(requestParameters: KnowledgeApiServerGetLanguageProfileRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerGetLanguageProfile.');
         }
@@ -2582,14 +2603,14 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
 
     /**
      * Retrieve a Language Profile for an Entity  **NOTE**:  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: Get
      */
-    async knowledgeApiServerGetLanguageProfile(requestParameters: KnowledgeApiServerGetLanguageProfileRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerGetLanguageProfile(requestParameters: KnowledgeApiServerGetLanguageProfileRequest): Promise<InlineResponse201> {
         const response = await this.knowledgeApiServerGetLanguageProfileRaw(requestParameters);
         return await response.value();
     }
@@ -2598,7 +2619,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Language Profiles for Entities within an account  **NOTE:**  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List All
      */
-    async knowledgeApiServerListAllLanguageProfilesRaw(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerListAllLanguageProfilesRaw(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest): Promise<runtime.ApiResponse<InlineResponse2003>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListAllLanguageProfiles.');
         }
@@ -2670,14 +2691,14 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2003FromJSON(jsonValue));
     }
 
     /**
      * Retrieve a list of Language Profiles for Entities within an account  **NOTE:**  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List All
      */
-    async knowledgeApiServerListAllLanguageProfiles(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerListAllLanguageProfiles(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest): Promise<InlineResponse2003> {
         const response = await this.knowledgeApiServerListAllLanguageProfilesRaw(requestParameters);
         return await response.value();
     }
@@ -2686,7 +2707,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Entities within an account
      * Entities: List
      */
-    async knowledgeApiServerListEntitiesRaw(requestParameters: KnowledgeApiServerListEntitiesRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerListEntitiesRaw(requestParameters: KnowledgeApiServerListEntitiesRequest): Promise<runtime.ApiResponse<InlineResponse200>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListEntities.');
         }
@@ -2758,14 +2779,14 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse200FromJSON(jsonValue));
     }
 
     /**
      * Retrieve a list of Entities within an account
      * Entities: List
      */
-    async knowledgeApiServerListEntities(requestParameters: KnowledgeApiServerListEntitiesRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerListEntities(requestParameters: KnowledgeApiServerListEntitiesRequest): Promise<InlineResponse200> {
         const response = await this.knowledgeApiServerListEntitiesRaw(requestParameters);
         return await response.value();
     }
@@ -2774,7 +2795,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve Language Profiles for an Entity  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List
      */
-    async knowledgeApiServerListLanguageProfilesRaw(requestParameters: KnowledgeApiServerListLanguageProfilesRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerListLanguageProfilesRaw(requestParameters: KnowledgeApiServerListLanguageProfilesRequest): Promise<runtime.ApiResponse<InlineResponse2002>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListLanguageProfiles.');
         }
@@ -2830,14 +2851,14 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2002FromJSON(jsonValue));
     }
 
     /**
      * Retrieve Language Profiles for an Entity  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List
      */
-    async knowledgeApiServerListLanguageProfiles(requestParameters: KnowledgeApiServerListLanguageProfilesRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerListLanguageProfiles(requestParameters: KnowledgeApiServerListLanguageProfilesRequest): Promise<InlineResponse2002> {
         const response = await this.knowledgeApiServerListLanguageProfilesRaw(requestParameters);
         return await response.value();
     }
@@ -2846,7 +2867,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update the Entity with the given ID
      * Entities: Update
      */
-    async knowledgeApiServerUpdateEntityRaw(requestParameters: KnowledgeApiServerUpdateEntityRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerUpdateEntityRaw(requestParameters: KnowledgeApiServerUpdateEntityRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerUpdateEntity.');
         }
@@ -2859,8 +2880,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerUpdateEntity.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling knowledgeApiServerUpdateEntity.');
+        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
+            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling knowledgeApiServerUpdateEntity.');
         }
 
         const queryParameters: any = {};
@@ -2902,17 +2923,17 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: EntityWriteToJSON(requestParameters.body),
+            body: EntityWriteToJSON(requestParameters.entityWrite),
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
 
     /**
      * Update the Entity with the given ID
      * Entities: Update
      */
-    async knowledgeApiServerUpdateEntity(requestParameters: KnowledgeApiServerUpdateEntityRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerUpdateEntity(requestParameters: KnowledgeApiServerUpdateEntityRequest): Promise<InlineResponse201> {
         const response = await this.knowledgeApiServerUpdateEntityRaw(requestParameters);
         return await response.value();
     }
@@ -2921,7 +2942,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Add a language profile
      * Entity Language Profiles: Upsert
      */
-    async knowledgeApiServerUpsertLanguageProfileRaw(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest): Promise<runtime.ApiResponse<{ [key: string]: object; }>> {
+    async knowledgeApiServerUpsertLanguageProfileRaw(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
         }
@@ -2938,8 +2959,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
+        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
+            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
         }
 
         const queryParameters: any = {};
@@ -2965,17 +2986,17 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: EntityWriteToJSON(requestParameters.body),
+            body: EntityWriteToJSON(requestParameters.entityWrite),
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
 
     /**
      * Add a language profile
      * Entity Language Profiles: Upsert
      */
-    async knowledgeApiServerUpsertLanguageProfile(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest): Promise<{ [key: string]: object; }> {
+    async knowledgeApiServerUpsertLanguageProfile(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest): Promise<InlineResponse201> {
         const response = await this.knowledgeApiServerUpsertLanguageProfileRaw(requestParameters);
         return await response.value();
     }
@@ -3129,8 +3150,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('format','Required parameter requestParameters.format was null or undefined when calling updateAsset.');
         }
 
-        if (requestParameters.assetRequest === null || requestParameters.assetRequest === undefined) {
-            throw new runtime.RequiredError('assetRequest','Required parameter requestParameters.assetRequest was null or undefined when calling updateAsset.');
+        if (requestParameters.asset === null || requestParameters.asset === undefined) {
+            throw new runtime.RequiredError('asset','Required parameter requestParameters.asset was null or undefined when calling updateAsset.');
         }
 
         const queryParameters: any = {};
@@ -3160,7 +3181,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: AssetToJSON(requestParameters.assetRequest),
+            body: AssetToJSON(requestParameters.asset),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -3192,8 +3213,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateBio.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling updateBio.');
+        if (requestParameters.bio === null || requestParameters.bio === undefined) {
+            throw new runtime.RequiredError('bio','Required parameter requestParameters.bio was null or undefined when calling updateBio.');
         }
 
         const queryParameters: any = {};
@@ -3204,7 +3225,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/kjson';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
@@ -3219,7 +3240,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: BioToJSON(requestParameters.body),
+            body: BioToJSON(requestParameters.bio),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => BioListResponseFromJSON(jsonValue));
@@ -3251,8 +3272,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('customFieldId','Required parameter requestParameters.customFieldId was null or undefined when calling updateCustomField.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling updateCustomField.');
+        if (requestParameters.fieldUpdate === null || requestParameters.fieldUpdate === undefined) {
+            throw new runtime.RequiredError('fieldUpdate','Required parameter requestParameters.fieldUpdate was null or undefined when calling updateCustomField.');
         }
 
         const queryParameters: any = {};
@@ -3278,7 +3299,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: CustomFieldUpdateToJSON(requestParameters.body),
+            body: FieldUpdateToJSON(requestParameters.fieldUpdate),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -3310,8 +3331,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateEvent.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling updateEvent.');
+        if (requestParameters.event === null || requestParameters.event === undefined) {
+            throw new runtime.RequiredError('event','Required parameter requestParameters.event was null or undefined when calling updateEvent.');
         }
 
         const queryParameters: any = {};
@@ -3322,7 +3343,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/kjson';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
@@ -3337,7 +3358,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: EventLegacyToJSON(requestParameters.body),
+            body: EventToJSON(requestParameters.event),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EventListResponseFromJSON(jsonValue));
@@ -3369,8 +3390,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateLocation.');
         }
 
-        if (requestParameters.locationRequest === null || requestParameters.locationRequest === undefined) {
-            throw new runtime.RequiredError('locationRequest','Required parameter requestParameters.locationRequest was null or undefined when calling updateLocation.');
+        if (requestParameters.location === null || requestParameters.location === undefined) {
+            throw new runtime.RequiredError('location','Required parameter requestParameters.location was null or undefined when calling updateLocation.');
         }
 
         const queryParameters: any = {};
@@ -3396,7 +3417,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: LocationLegacyToJSON(requestParameters.locationRequest),
+            body: LocationToJSON(requestParameters.location),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
@@ -3428,8 +3449,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateMenu.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling updateMenu.');
+        if (requestParameters.menu === null || requestParameters.menu === undefined) {
+            throw new runtime.RequiredError('menu','Required parameter requestParameters.menu was null or undefined when calling updateMenu.');
         }
 
         const queryParameters: any = {};
@@ -3455,7 +3476,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: MenuToJSON(requestParameters.body),
+            body: MenuToJSON(requestParameters.menu),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => MenuListResponseFromJSON(jsonValue));
@@ -3487,8 +3508,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateProduct.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling updateProduct.');
+        if (requestParameters.product === null || requestParameters.product === undefined) {
+            throw new runtime.RequiredError('product','Required parameter requestParameters.product was null or undefined when calling updateProduct.');
         }
 
         const queryParameters: any = {};
@@ -3499,7 +3520,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
-        headerParameters['Content-Type'] = 'application/json';
+        headerParameters['Content-Type'] = 'application/kjson';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
@@ -3514,7 +3535,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ProductToJSON(requestParameters.body),
+            body: ProductToJSON(requestParameters.product),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProductListResponseFromJSON(jsonValue));
@@ -3550,8 +3571,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling upsertLanguageProfile.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling upsertLanguageProfile.');
+        if (requestParameters.location === null || requestParameters.location === undefined) {
+            throw new runtime.RequiredError('location','Required parameter requestParameters.location was null or undefined when calling upsertLanguageProfile.');
         }
 
         const queryParameters: any = {};
@@ -3581,7 +3602,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: LocationLegacyToJSON(requestParameters.body),
+            body: LocationToJSON(requestParameters.location),
         });
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
