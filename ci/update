@@ -51,6 +51,12 @@ cat >.npmignore <<'EOF'
 /deno/
 EOF
 
+# Apply fix for bug in OpenAPI Generator v5.2.1.
+# https://github.com/OpenAPITools/openapi-generator/pull/10216/files#diff-2398993b6bf8205a7bce135e6b7b4e13b13daad429efe080d623f8a7038fae38
+sed -i '' '/^    get fetchApi(): FetchAPI {$/c\
+\    get fetchApi(): FetchAPI | undefined {
+' src/runtime.ts
+
 ./ci/update_deno
 
 # Check that everything still compiles correctly.
