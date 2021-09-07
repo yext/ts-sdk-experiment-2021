@@ -14,6 +14,15 @@
 
 import { exists, mapValues } from '../runtime.ts';
 import {
+     AtmWriteFromJSONTyped,
+     EventWriteFromJSONTyped,
+     FaqWriteFromJSONTyped,
+     HealthcareFacilityWriteFromJSONTyped,
+     HealthcareProfessionalWriteFromJSONTyped,
+     HotelWriteFromJSONTyped,
+     JobWriteFromJSONTyped,
+     LocationWriteFromJSONTyped,
+     RestaurantWriteFromJSONTyped
 } from './index.ts';
 
 /**
@@ -40,6 +49,33 @@ export function EntityWriteFromJSONTyped(json: any, ignoreDiscriminator: boolean
         return json;
     }
     if (!ignoreDiscriminator) {
+        if (json['entityType'] === 'atm') {
+            return AtmWriteFromJSONTyped(json, true);
+        }
+        if (json['entityType'] === 'event') {
+            return EventWriteFromJSONTyped(json, true);
+        }
+        if (json['entityType'] === 'faq') {
+            return FaqWriteFromJSONTyped(json, true);
+        }
+        if (json['entityType'] === 'healthcareFacility') {
+            return HealthcareFacilityWriteFromJSONTyped(json, true);
+        }
+        if (json['entityType'] === 'healthcareProfessional') {
+            return HealthcareProfessionalWriteFromJSONTyped(json, true);
+        }
+        if (json['entityType'] === 'hotel') {
+            return HotelWriteFromJSONTyped(json, true);
+        }
+        if (json['entityType'] === 'job') {
+            return JobWriteFromJSONTyped(json, true);
+        }
+        if (json['entityType'] === 'location') {
+            return LocationWriteFromJSONTyped(json, true);
+        }
+        if (json['entityType'] === 'restaurant') {
+            return RestaurantWriteFromJSONTyped(json, true);
+        }
     }
     return {
         

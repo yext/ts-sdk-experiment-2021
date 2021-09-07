@@ -533,7 +533,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Creates a new asset in an account.  **NOTE:** * If the **`v`** parameter is on or before `20190624`: only the first folder the Asset is available for will be returned in the legacy **`folderId`** field. * If the **`v`** parameter is after `20190624`: the complete list of folders the Asset is available to will be returned in the new **`folderIds`** field. **`folderId`** will not be returned. 
      * Assets: Create
      */
-    async createAssetRaw(requestParameters: CreateAssetRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createAssetRaw(requestParameters: CreateAssetRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createAsset.');
         }
@@ -578,7 +578,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: AssetToJSON(requestParameters.asset),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -587,8 +587,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Creates a new asset in an account.  **NOTE:** * If the **`v`** parameter is on or before `20190624`: only the first folder the Asset is available for will be returned in the legacy **`folderId`** field. * If the **`v`** parameter is after `20190624`: the complete list of folders the Asset is available to will be returned in the new **`folderIds`** field. **`folderId`** will not be returned. 
      * Assets: Create
      */
-    async createAsset(requestParameters: CreateAssetRequest): Promise<IdResponse> {
-        const response = await this.createAssetRaw(requestParameters);
+    async createAsset(requestParameters: CreateAssetRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createAssetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -596,7 +596,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create new Bio List.
      * Bios: Create
      */
-    async createBioRaw(requestParameters: CreateBioRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createBioRaw(requestParameters: CreateBioRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createBio.');
         }
@@ -633,7 +633,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: BioToJSON(requestParameters.bio),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -642,8 +642,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create new Bio List.
      * Bios: Create
      */
-    async createBio(requestParameters: CreateBioRequest): Promise<IdResponse> {
-        const response = await this.createBioRaw(requestParameters);
+    async createBio(requestParameters: CreateBioRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createBioRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -651,7 +651,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Creates a new Custom Field in an Account. 
      * Custom Fields: Create
      */
-    async createCustomFieldRaw(requestParameters: CreateCustomFieldRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createCustomFieldRaw(requestParameters: CreateCustomFieldRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createCustomField.');
         }
@@ -688,7 +688,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: FieldToJSON(requestParameters.field),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -697,8 +697,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Creates a new Custom Field in an Account. 
      * Custom Fields: Create
      */
-    async createCustomField(requestParameters: CreateCustomFieldRequest): Promise<IdResponse> {
-        const response = await this.createCustomFieldRaw(requestParameters);
+    async createCustomField(requestParameters: CreateCustomFieldRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createCustomFieldRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -706,7 +706,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Event List.
      * Events (Legacy): Create
      */
-    async createEventRaw(requestParameters: CreateEventRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createEventRaw(requestParameters: CreateEventRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createEvent.');
         }
@@ -743,7 +743,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: EventToJSON(requestParameters.event),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -752,8 +752,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Event List.
      * Events (Legacy): Create
      */
-    async createEvent(requestParameters: CreateEventRequest): Promise<IdResponse> {
-        const response = await this.createEventRaw(requestParameters);
+    async createEvent(requestParameters: CreateEventRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createEventRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -761,7 +761,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Location.   ## Required fields * **`locationName`** * **`address`** * **`city`** * **`state`** * **`zip`**   ## Optional fields that trigger warnings Submitting invalid values for certain optional fields will not trigger an error response. Instead, the success response will contain warning messages explaining why the invalid optional values were not stored in the system. The fields that generate warning messages are: <br><br> * **`logo`** * **`photos`** * **`twitterHandle`** * **`facebookPageUrl`** * **`languages`** 
      * Locations (Legacy): Create
      */
-    async createLocationRaw(requestParameters: CreateLocationRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createLocationRaw(requestParameters: CreateLocationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createLocation.');
         }
@@ -798,7 +798,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: LocationToJSON(requestParameters.location),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -807,15 +807,15 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Location.   ## Required fields * **`locationName`** * **`address`** * **`city`** * **`state`** * **`zip`**   ## Optional fields that trigger warnings Submitting invalid values for certain optional fields will not trigger an error response. Instead, the success response will contain warning messages explaining why the invalid optional values were not stored in the system. The fields that generate warning messages are: <br><br> * **`logo`** * **`photos`** * **`twitterHandle`** * **`facebookPageUrl`** * **`languages`** 
      * Locations (Legacy): Create
      */
-    async createLocation(requestParameters: CreateLocationRequest): Promise<IdResponse> {
-        const response = await this.createLocationRaw(requestParameters);
+    async createLocation(requestParameters: CreateLocationRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createLocationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Menus: Create
      */
-    async createMenuRaw(requestParameters: CreateMenuRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createMenuRaw(requestParameters: CreateMenuRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createMenu.');
         }
@@ -852,7 +852,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: MenuToJSON(requestParameters.menu),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -860,8 +860,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
     /**
      * Menus: Create
      */
-    async createMenu(requestParameters: CreateMenuRequest): Promise<IdResponse> {
-        const response = await this.createMenuRaw(requestParameters);
+    async createMenu(requestParameters: CreateMenuRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createMenuRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -869,7 +869,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Product List.
      * Products: Create
      */
-    async createProductRaw(requestParameters: CreateProductRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createProductRaw(requestParameters: CreateProductRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createProduct.');
         }
@@ -906,7 +906,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: ProductToJSON(requestParameters.product),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -915,8 +915,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Product List.
      * Products: Create
      */
-    async createProduct(requestParameters: CreateProductRequest): Promise<IdResponse> {
-        const response = await this.createProductRaw(requestParameters);
+    async createProduct(requestParameters: CreateProductRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createProductRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -924,7 +924,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete a specific asset.
      * Assets: Delete
      */
-    async deleteAssetRaw(requestParameters: DeleteAssetRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteAssetRaw(requestParameters: DeleteAssetRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteAsset.');
         }
@@ -958,7 +958,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -967,8 +967,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete a specific asset.
      * Assets: Delete
      */
-    async deleteAsset(requestParameters: DeleteAssetRequest): Promise<EmptyResponse> {
-        const response = await this.deleteAssetRaw(requestParameters);
+    async deleteAsset(requestParameters: DeleteAssetRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteAssetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -976,7 +976,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete an existing Bios List.
      * Bios: Delete
      */
-    async deleteBioListRaw(requestParameters: DeleteBioListRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteBioListRaw(requestParameters: DeleteBioListRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteBioList.');
         }
@@ -1010,7 +1010,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1019,8 +1019,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete an existing Bios List.
      * Bios: Delete
      */
-    async deleteBioList(requestParameters: DeleteBioListRequest): Promise<EmptyResponse> {
-        const response = await this.deleteBioListRaw(requestParameters);
+    async deleteBioList(requestParameters: DeleteBioListRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteBioListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1028,7 +1028,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Deletes a Custom Field in an Account.  The Custom Field will be removed from all locations, and all content entered in the Custom Field will be deleted permanently. 
      * Custom Fields: Delete
      */
-    async deleteCustomFieldRaw(requestParameters: DeleteCustomFieldRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteCustomFieldRaw(requestParameters: DeleteCustomFieldRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling deleteCustomField.');
         }
@@ -1062,7 +1062,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1071,8 +1071,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Deletes a Custom Field in an Account.  The Custom Field will be removed from all locations, and all content entered in the Custom Field will be deleted permanently. 
      * Custom Fields: Delete
      */
-    async deleteCustomField(requestParameters: DeleteCustomFieldRequest): Promise<EmptyResponse> {
-        const response = await this.deleteCustomFieldRaw(requestParameters);
+    async deleteCustomField(requestParameters: DeleteCustomFieldRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteCustomFieldRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1080,7 +1080,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete an existing Event List.
      * Events (Legacy): Delete
      */
-    async deleteEventListRaw(requestParameters: DeleteEventListRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteEventListRaw(requestParameters: DeleteEventListRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteEventList.');
         }
@@ -1114,7 +1114,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1123,8 +1123,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete an existing Event List.
      * Events (Legacy): Delete
      */
-    async deleteEventList(requestParameters: DeleteEventListRequest): Promise<EmptyResponse> {
-        const response = await this.deleteEventListRaw(requestParameters);
+    async deleteEventList(requestParameters: DeleteEventListRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteEventListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1132,7 +1132,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Remove a Language Profile from a location.
      * Language Profiles (Legacy): Delete
      */
-    async deleteLanguageProfileRaw(requestParameters: DeleteLanguageProfileRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteLanguageProfileRaw(requestParameters: DeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteLanguageProfile.');
         }
@@ -1170,7 +1170,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1179,8 +1179,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Remove a Language Profile from a location.
      * Language Profiles (Legacy): Delete
      */
-    async deleteLanguageProfile(requestParameters: DeleteLanguageProfileRequest): Promise<EmptyResponse> {
-        const response = await this.deleteLanguageProfileRaw(requestParameters);
+    async deleteLanguageProfile(requestParameters: DeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1188,7 +1188,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete an existing Menu.
      * Menus: Delete
      */
-    async deleteMenuListRaw(requestParameters: DeleteMenuListRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteMenuListRaw(requestParameters: DeleteMenuListRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteMenuList.');
         }
@@ -1222,7 +1222,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1231,8 +1231,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete an existing Menu.
      * Menus: Delete
      */
-    async deleteMenuList(requestParameters: DeleteMenuListRequest): Promise<EmptyResponse> {
-        const response = await this.deleteMenuListRaw(requestParameters);
+    async deleteMenuList(requestParameters: DeleteMenuListRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteMenuListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1240,7 +1240,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete an existing Products List.
      * Products: Delete
      */
-    async deleteProductListRaw(requestParameters: DeleteProductListRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteProductListRaw(requestParameters: DeleteProductListRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteProductList.');
         }
@@ -1274,7 +1274,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1283,8 +1283,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete an existing Products List.
      * Products: Delete
      */
-    async deleteProductList(requestParameters: DeleteProductListRequest): Promise<EmptyResponse> {
-        const response = await this.deleteProductListRaw(requestParameters);
+    async deleteProductList(requestParameters: DeleteProductListRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteProductListRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1292,7 +1292,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get a specific asset.
      * Assets: Get
      */
-    async getAssetRaw(requestParameters: GetAssetRequest): Promise<runtime.ApiResponse<AssetResponse>> {
+    async getAssetRaw(requestParameters: GetAssetRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<AssetResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getAsset.');
         }
@@ -1334,7 +1334,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AssetResponseFromJSON(jsonValue));
     }
@@ -1343,8 +1343,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get a specific asset.
      * Assets: Get
      */
-    async getAsset(requestParameters: GetAssetRequest): Promise<AssetResponse> {
-        const response = await this.getAssetRaw(requestParameters);
+    async getAsset(requestParameters: GetAssetRequest, initOverrides?: RequestInit): Promise<AssetResponse> {
+        const response = await this.getAssetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1352,7 +1352,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a specific Bios List.
      * Bios: Get
      */
-    async getBioRaw(requestParameters: GetBioRequest): Promise<runtime.ApiResponse<BioListResponse>> {
+    async getBioRaw(requestParameters: GetBioRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<BioListResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getBio.');
         }
@@ -1386,7 +1386,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => BioListResponseFromJSON(jsonValue));
     }
@@ -1395,8 +1395,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a specific Bios List.
      * Bios: Get
      */
-    async getBio(requestParameters: GetBioRequest): Promise<BioListResponse> {
-        const response = await this.getBioRaw(requestParameters);
+    async getBio(requestParameters: GetBioRequest, initOverrides?: RequestInit): Promise<BioListResponse> {
+        const response = await this.getBioRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1404,7 +1404,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve all Bio Lists for an account.
      * Bios: List
      */
-    async getBiosRaw(requestParameters: GetBiosRequest): Promise<runtime.ApiResponse<BioListsResponse>> {
+    async getBiosRaw(requestParameters: GetBiosRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<BioListsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getBios.');
         }
@@ -1442,7 +1442,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => BioListsResponseFromJSON(jsonValue));
     }
@@ -1451,8 +1451,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve all Bio Lists for an account.
      * Bios: List
      */
-    async getBios(requestParameters: GetBiosRequest): Promise<BioListsResponse> {
-        const response = await this.getBiosRaw(requestParameters);
+    async getBios(requestParameters: GetBiosRequest, initOverrides?: RequestInit): Promise<BioListsResponse> {
+        const response = await this.getBiosRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1460,7 +1460,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get available Categories.  All Locations are required to have an associated Category to assist with organization and search. Yext provides a hierarchy of business categories for this purpose, exposed by this API. 
      * Categories: List
      */
-    async getBusinessCategoriesRaw(requestParameters: GetBusinessCategoriesRequest): Promise<runtime.ApiResponse<BusinessCategoriesResponse>> {
+    async getBusinessCategoriesRaw(requestParameters: GetBusinessCategoriesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<BusinessCategoriesResponse>> {
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling getBusinessCategories.');
         }
@@ -1498,7 +1498,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => BusinessCategoriesResponseFromJSON(jsonValue));
     }
@@ -1507,8 +1507,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get available Categories.  All Locations are required to have an associated Category to assist with organization and search. Yext provides a hierarchy of business categories for this purpose, exposed by this API. 
      * Categories: List
      */
-    async getBusinessCategories(requestParameters: GetBusinessCategoriesRequest): Promise<BusinessCategoriesResponse> {
-        const response = await this.getBusinessCategoriesRaw(requestParameters);
+    async getBusinessCategories(requestParameters: GetBusinessCategoriesRequest, initOverrides?: RequestInit): Promise<BusinessCategoriesResponse> {
+        const response = await this.getBusinessCategoriesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1516,7 +1516,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Gets a specific Custom Field in an Account.
      * Custom Fields: Get
      */
-    async getCustomFieldRaw(requestParameters: GetCustomFieldRequest): Promise<runtime.ApiResponse<CustomFieldResponse>> {
+    async getCustomFieldRaw(requestParameters: GetCustomFieldRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<CustomFieldResponse>> {
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling getCustomField.');
         }
@@ -1550,7 +1550,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CustomFieldResponseFromJSON(jsonValue));
     }
@@ -1559,8 +1559,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Gets a specific Custom Field in an Account.
      * Custom Fields: Get
      */
-    async getCustomField(requestParameters: GetCustomFieldRequest): Promise<CustomFieldResponse> {
-        const response = await this.getCustomFieldRaw(requestParameters);
+    async getCustomField(requestParameters: GetCustomFieldRequest, initOverrides?: RequestInit): Promise<CustomFieldResponse> {
+        const response = await this.getCustomFieldRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1568,7 +1568,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Returns a list of Custom Fields in an Account.
      * Custom Fields: List
      */
-    async getCustomFieldsRaw(requestParameters: GetCustomFieldsRequest): Promise<runtime.ApiResponse<CustomFieldsResponse>> {
+    async getCustomFieldsRaw(requestParameters: GetCustomFieldsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<CustomFieldsResponse>> {
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling getCustomFields.');
         }
@@ -1610,7 +1610,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CustomFieldsResponseFromJSON(jsonValue));
     }
@@ -1619,8 +1619,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Returns a list of Custom Fields in an Account.
      * Custom Fields: List
      */
-    async getCustomFields(requestParameters: GetCustomFieldsRequest): Promise<CustomFieldsResponse> {
-        const response = await this.getCustomFieldsRaw(requestParameters);
+    async getCustomFields(requestParameters: GetCustomFieldsRequest, initOverrides?: RequestInit): Promise<CustomFieldsResponse> {
+        const response = await this.getCustomFieldsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1628,7 +1628,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a specific Event List.
      * Events (Legacy): Get
      */
-    async getEventRaw(requestParameters: GetEventRequest): Promise<runtime.ApiResponse<EventListResponse>> {
+    async getEventRaw(requestParameters: GetEventRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EventListResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getEvent.');
         }
@@ -1662,7 +1662,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EventListResponseFromJSON(jsonValue));
     }
@@ -1671,8 +1671,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a specific Event List.
      * Events (Legacy): Get
      */
-    async getEvent(requestParameters: GetEventRequest): Promise<EventListResponse> {
-        const response = await this.getEventRaw(requestParameters);
+    async getEvent(requestParameters: GetEventRequest, initOverrides?: RequestInit): Promise<EventListResponse> {
+        const response = await this.getEventRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1680,7 +1680,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve all Event Lists for an account.
      * Events (Legacy): List
      */
-    async getEventsRaw(requestParameters: GetEventsRequest): Promise<runtime.ApiResponse<EventListsResponse>> {
+    async getEventsRaw(requestParameters: GetEventsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EventListsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getEvents.');
         }
@@ -1718,7 +1718,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EventListsResponseFromJSON(jsonValue));
     }
@@ -1727,8 +1727,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve all Event Lists for an account.
      * Events (Legacy): List
      */
-    async getEvents(requestParameters: GetEventsRequest): Promise<EventListsResponse> {
-        const response = await this.getEventsRaw(requestParameters);
+    async getEvents(requestParameters: GetEventsRequest, initOverrides?: RequestInit): Promise<EventListsResponse> {
+        const response = await this.getEventsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1736,7 +1736,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      *  Use the Google Fields endpoint to retrieve a complete list of Google\'s location attributes for each business category. This list includes attributes that may not apply to all Locations in an account. The set of attributes available to a Location depends on its primary business category. You can view and edit the attributes of Locations in the **`googleAttributes`** Location field.  **NOTE:** Google Attributes are managed by Google and are subject to change without notice. To prevent errors, make sure your API implementation is not dependent on the presence of specific attributes. 
      * Google Fields: List
      */
-    async getGoogleKeywordsRaw(requestParameters: GetGoogleKeywordsRequest): Promise<runtime.ApiResponse<GoogleFieldsResponse>> {
+    async getGoogleKeywordsRaw(requestParameters: GetGoogleKeywordsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<GoogleFieldsResponse>> {
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling getGoogleKeywords.');
         }
@@ -1774,7 +1774,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => GoogleFieldsResponseFromJSON(jsonValue));
     }
@@ -1783,8 +1783,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      *  Use the Google Fields endpoint to retrieve a complete list of Google\'s location attributes for each business category. This list includes attributes that may not apply to all Locations in an account. The set of attributes available to a Location depends on its primary business category. You can view and edit the attributes of Locations in the **`googleAttributes`** Location field.  **NOTE:** Google Attributes are managed by Google and are subject to change without notice. To prevent errors, make sure your API implementation is not dependent on the presence of specific attributes. 
      * Google Fields: List
      */
-    async getGoogleKeywords(requestParameters: GetGoogleKeywordsRequest): Promise<GoogleFieldsResponse> {
-        const response = await this.getGoogleKeywordsRaw(requestParameters);
+    async getGoogleKeywords(requestParameters: GetGoogleKeywordsRequest, initOverrides?: RequestInit): Promise<GoogleFieldsResponse> {
+        const response = await this.getGoogleKeywordsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1792,7 +1792,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Gets the the requested Language Profile for a given Location.
      * Language Profiles (Legacy): Get
      */
-    async getLanguageProfileRaw(requestParameters: GetLanguageProfileRequest): Promise<runtime.ApiResponse<LanguageProfileResponse>> {
+    async getLanguageProfileRaw(requestParameters: GetLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LanguageProfileResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLanguageProfile.');
         }
@@ -1834,7 +1834,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LanguageProfileResponseFromJSON(jsonValue));
     }
@@ -1843,8 +1843,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Gets the the requested Language Profile for a given Location.
      * Language Profiles (Legacy): Get
      */
-    async getLanguageProfile(requestParameters: GetLanguageProfileRequest): Promise<LanguageProfileResponse> {
-        const response = await this.getLanguageProfileRaw(requestParameters);
+    async getLanguageProfile(requestParameters: GetLanguageProfileRequest, initOverrides?: RequestInit): Promise<LanguageProfileResponse> {
+        const response = await this.getLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1852,7 +1852,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get Language Profiles for a Location.
      * Language Profiles (Legacy): List
      */
-    async getLanguageProfilesRaw(requestParameters: GetLanguageProfilesRequest): Promise<runtime.ApiResponse<LanguageProfilesResponse>> {
+    async getLanguageProfilesRaw(requestParameters: GetLanguageProfilesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LanguageProfilesResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLanguageProfiles.');
         }
@@ -1890,7 +1890,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LanguageProfilesResponseFromJSON(jsonValue));
     }
@@ -1899,8 +1899,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get Language Profiles for a Location.
      * Language Profiles (Legacy): List
      */
-    async getLanguageProfiles(requestParameters: GetLanguageProfilesRequest): Promise<LanguageProfilesResponse> {
-        const response = await this.getLanguageProfilesRaw(requestParameters);
+    async getLanguageProfiles(requestParameters: GetLanguageProfilesRequest, initOverrides?: RequestInit): Promise<LanguageProfilesResponse> {
+        const response = await this.getLanguageProfilesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1908,7 +1908,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Gets the primary profile for a single Location.
      * Locations (Legacy): Get
      */
-    async getLocationRaw(requestParameters: GetLocationRequest): Promise<runtime.ApiResponse<LocationResponse>> {
+    async getLocationRaw(requestParameters: GetLocationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LocationResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLocation.');
         }
@@ -1946,7 +1946,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LocationResponseFromJSON(jsonValue));
     }
@@ -1955,8 +1955,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Gets the primary profile for a single Location.
      * Locations (Legacy): Get
      */
-    async getLocation(requestParameters: GetLocationRequest): Promise<LocationResponse> {
-        const response = await this.getLocationRaw(requestParameters);
+    async getLocation(requestParameters: GetLocationRequest, initOverrides?: RequestInit): Promise<LocationResponse> {
+        const response = await this.getLocationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1964,7 +1964,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Returns a list of Location Folders in an Account.
      * Folders: List
      */
-    async getLocationFoldersRaw(requestParameters: GetLocationFoldersRequest): Promise<runtime.ApiResponse<FoldersResponse>> {
+    async getLocationFoldersRaw(requestParameters: GetLocationFoldersRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<FoldersResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLocationFolders.');
         }
@@ -2002,7 +2002,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FoldersResponseFromJSON(jsonValue));
     }
@@ -2011,8 +2011,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Returns a list of Location Folders in an Account.
      * Folders: List
      */
-    async getLocationFolders(requestParameters: GetLocationFoldersRequest): Promise<FoldersResponse> {
-        const response = await this.getLocationFoldersRaw(requestParameters);
+    async getLocationFolders(requestParameters: GetLocationFoldersRequest, initOverrides?: RequestInit): Promise<FoldersResponse> {
+        const response = await this.getLocationFoldersRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2020,7 +2020,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get multiple Locations (primary profiles only).
      * Locations (Legacy): List
      */
-    async getLocationsRaw(requestParameters: GetLocationsRequest): Promise<runtime.ApiResponse<LocationsResponse>> {
+    async getLocationsRaw(requestParameters: GetLocationsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LocationsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLocations.');
         }
@@ -2066,7 +2066,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LocationsResponseFromJSON(jsonValue));
     }
@@ -2075,8 +2075,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get multiple Locations (primary profiles only).
      * Locations (Legacy): List
      */
-    async getLocations(requestParameters: GetLocationsRequest): Promise<LocationsResponse> {
-        const response = await this.getLocationsRaw(requestParameters);
+    async getLocations(requestParameters: GetLocationsRequest, initOverrides?: RequestInit): Promise<LocationsResponse> {
+        const response = await this.getLocationsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2084,7 +2084,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a specific Menu.
      * Menus: Get
      */
-    async getMenuRaw(requestParameters: GetMenuRequest): Promise<runtime.ApiResponse<MenuListResponse>> {
+    async getMenuRaw(requestParameters: GetMenuRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<MenuListResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getMenu.');
         }
@@ -2118,7 +2118,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => MenuListResponseFromJSON(jsonValue));
     }
@@ -2127,8 +2127,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a specific Menu.
      * Menus: Get
      */
-    async getMenu(requestParameters: GetMenuRequest): Promise<MenuListResponse> {
-        const response = await this.getMenuRaw(requestParameters);
+    async getMenu(requestParameters: GetMenuRequest, initOverrides?: RequestInit): Promise<MenuListResponse> {
+        const response = await this.getMenuRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2136,7 +2136,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve all Menus for an account.
      * Menus: List
      */
-    async getMenusRaw(requestParameters: GetMenusRequest): Promise<runtime.ApiResponse<MenuListsResponse>> {
+    async getMenusRaw(requestParameters: GetMenusRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<MenuListsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getMenus.');
         }
@@ -2174,7 +2174,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => MenuListsResponseFromJSON(jsonValue));
     }
@@ -2183,8 +2183,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve all Menus for an account.
      * Menus: List
      */
-    async getMenus(requestParameters: GetMenusRequest): Promise<MenuListsResponse> {
-        const response = await this.getMenusRaw(requestParameters);
+    async getMenus(requestParameters: GetMenusRequest, initOverrides?: RequestInit): Promise<MenuListsResponse> {
+        const response = await this.getMenusRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2192,7 +2192,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a specific Product List.
      * Products: Get
      */
-    async getProductRaw(requestParameters: GetProductRequest): Promise<runtime.ApiResponse<ProductListResponse>> {
+    async getProductRaw(requestParameters: GetProductRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ProductListResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getProduct.');
         }
@@ -2226,7 +2226,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProductListResponseFromJSON(jsonValue));
     }
@@ -2235,8 +2235,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a specific Product List.
      * Products: Get
      */
-    async getProduct(requestParameters: GetProductRequest): Promise<ProductListResponse> {
-        const response = await this.getProductRaw(requestParameters);
+    async getProduct(requestParameters: GetProductRequest, initOverrides?: RequestInit): Promise<ProductListResponse> {
+        const response = await this.getProductRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2244,7 +2244,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve all Product Lists for an account.
      * Products: List
      */
-    async getProductsRaw(requestParameters: GetProductsRequest): Promise<runtime.ApiResponse<ProductListsResponse>> {
+    async getProductsRaw(requestParameters: GetProductsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ProductListsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getProducts.');
         }
@@ -2282,7 +2282,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProductListsResponseFromJSON(jsonValue));
     }
@@ -2291,8 +2291,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve all Product Lists for an account.
      * Products: List
      */
-    async getProducts(requestParameters: GetProductsRequest): Promise<ProductListsResponse> {
-        const response = await this.getProductsRaw(requestParameters);
+    async getProducts(requestParameters: GetProductsRequest, initOverrides?: RequestInit): Promise<ProductListsResponse> {
+        const response = await this.getProductsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2300,7 +2300,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Entity  **NOTE:**   * If the **`v`** parameter is before `20181129`: the 201 response contains the created Entity\'s **`id`**   * If the **`v`** parameter is on or after `20181129`: the 201 response contains the created Entity in its entirety 
      * Entities: Create
      */
-    async knowledgeApiServerCreateEntityRaw(requestParameters: KnowledgeApiServerCreateEntityRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
+    async knowledgeApiServerCreateEntityRaw(requestParameters: KnowledgeApiServerCreateEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerCreateEntity.');
         }
@@ -2361,7 +2361,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: EntityWriteToJSON(requestParameters.entityWrite),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
@@ -2370,8 +2370,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Create a new Entity  **NOTE:**   * If the **`v`** parameter is before `20181129`: the 201 response contains the created Entity\'s **`id`**   * If the **`v`** parameter is on or after `20181129`: the 201 response contains the created Entity in its entirety 
      * Entities: Create
      */
-    async knowledgeApiServerCreateEntity(requestParameters: KnowledgeApiServerCreateEntityRequest): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerCreateEntityRaw(requestParameters);
+    async knowledgeApiServerCreateEntity(requestParameters: KnowledgeApiServerCreateEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.knowledgeApiServerCreateEntityRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2379,7 +2379,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete the Entity with the given ID
      * Entities: Delete
      */
-    async knowledgeApiServerDeleteEntityRaw(requestParameters: KnowledgeApiServerDeleteEntityRequest): Promise<runtime.ApiResponse<InlineResponse2001>> {
+    async knowledgeApiServerDeleteEntityRaw(requestParameters: KnowledgeApiServerDeleteEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2001>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerDeleteEntity.');
         }
@@ -2413,7 +2413,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2001FromJSON(jsonValue));
     }
@@ -2422,8 +2422,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete the Entity with the given ID
      * Entities: Delete
      */
-    async knowledgeApiServerDeleteEntity(requestParameters: KnowledgeApiServerDeleteEntityRequest): Promise<InlineResponse2001> {
-        const response = await this.knowledgeApiServerDeleteEntityRaw(requestParameters);
+    async knowledgeApiServerDeleteEntity(requestParameters: KnowledgeApiServerDeleteEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse2001> {
+        const response = await this.knowledgeApiServerDeleteEntityRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2431,7 +2431,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete a language profile
      * Entity Language Profiles: Delete
      */
-    async knowledgeApiServerDeleteLanguageProfileRaw(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest): Promise<runtime.ApiResponse<InlineResponse2004>> {
+    async knowledgeApiServerDeleteLanguageProfileRaw(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2004>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerDeleteLanguageProfile.');
         }
@@ -2469,7 +2469,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2004FromJSON(jsonValue));
     }
@@ -2478,8 +2478,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Delete a language profile
      * Entity Language Profiles: Delete
      */
-    async knowledgeApiServerDeleteLanguageProfile(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest): Promise<InlineResponse2004> {
-        const response = await this.knowledgeApiServerDeleteLanguageProfileRaw(requestParameters);
+    async knowledgeApiServerDeleteLanguageProfile(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse2004> {
+        const response = await this.knowledgeApiServerDeleteLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2487,7 +2487,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve information for an Entity with a given ID
      * Entities: Get
      */
-    async knowledgeApiServerGetEntityRaw(requestParameters: KnowledgeApiServerGetEntityRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
+    async knowledgeApiServerGetEntityRaw(requestParameters: KnowledgeApiServerGetEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerGetEntity.');
         }
@@ -2533,7 +2533,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
@@ -2542,8 +2542,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve information for an Entity with a given ID
      * Entities: Get
      */
-    async knowledgeApiServerGetEntity(requestParameters: KnowledgeApiServerGetEntityRequest): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerGetEntityRaw(requestParameters);
+    async knowledgeApiServerGetEntity(requestParameters: KnowledgeApiServerGetEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.knowledgeApiServerGetEntityRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2551,7 +2551,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a Language Profile for an Entity  **NOTE**:  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: Get
      */
-    async knowledgeApiServerGetLanguageProfileRaw(requestParameters: KnowledgeApiServerGetLanguageProfileRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
+    async knowledgeApiServerGetLanguageProfileRaw(requestParameters: KnowledgeApiServerGetLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerGetLanguageProfile.');
         }
@@ -2601,7 +2601,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
@@ -2610,8 +2610,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a Language Profile for an Entity  **NOTE**:  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: Get
      */
-    async knowledgeApiServerGetLanguageProfile(requestParameters: KnowledgeApiServerGetLanguageProfileRequest): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerGetLanguageProfileRaw(requestParameters);
+    async knowledgeApiServerGetLanguageProfile(requestParameters: KnowledgeApiServerGetLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.knowledgeApiServerGetLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2619,7 +2619,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Language Profiles for Entities within an account  **NOTE:**  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List All
      */
-    async knowledgeApiServerListAllLanguageProfilesRaw(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest): Promise<runtime.ApiResponse<InlineResponse2003>> {
+    async knowledgeApiServerListAllLanguageProfilesRaw(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2003>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListAllLanguageProfiles.');
         }
@@ -2689,7 +2689,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2003FromJSON(jsonValue));
     }
@@ -2698,8 +2698,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Language Profiles for Entities within an account  **NOTE:**  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List All
      */
-    async knowledgeApiServerListAllLanguageProfiles(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest): Promise<InlineResponse2003> {
-        const response = await this.knowledgeApiServerListAllLanguageProfilesRaw(requestParameters);
+    async knowledgeApiServerListAllLanguageProfiles(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest, initOverrides?: RequestInit): Promise<InlineResponse2003> {
+        const response = await this.knowledgeApiServerListAllLanguageProfilesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2707,7 +2707,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Entities within an account
      * Entities: List
      */
-    async knowledgeApiServerListEntitiesRaw(requestParameters: KnowledgeApiServerListEntitiesRequest): Promise<runtime.ApiResponse<InlineResponse200>> {
+    async knowledgeApiServerListEntitiesRaw(requestParameters: KnowledgeApiServerListEntitiesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse200>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListEntities.');
         }
@@ -2777,7 +2777,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse200FromJSON(jsonValue));
     }
@@ -2786,8 +2786,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Entities within an account
      * Entities: List
      */
-    async knowledgeApiServerListEntities(requestParameters: KnowledgeApiServerListEntitiesRequest): Promise<InlineResponse200> {
-        const response = await this.knowledgeApiServerListEntitiesRaw(requestParameters);
+    async knowledgeApiServerListEntities(requestParameters: KnowledgeApiServerListEntitiesRequest, initOverrides?: RequestInit): Promise<InlineResponse200> {
+        const response = await this.knowledgeApiServerListEntitiesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2795,7 +2795,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve Language Profiles for an Entity  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List
      */
-    async knowledgeApiServerListLanguageProfilesRaw(requestParameters: KnowledgeApiServerListLanguageProfilesRequest): Promise<runtime.ApiResponse<InlineResponse2002>> {
+    async knowledgeApiServerListLanguageProfilesRaw(requestParameters: KnowledgeApiServerListLanguageProfilesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2002>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListLanguageProfiles.');
         }
@@ -2849,7 +2849,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2002FromJSON(jsonValue));
     }
@@ -2858,8 +2858,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve Language Profiles for an Entity  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List
      */
-    async knowledgeApiServerListLanguageProfiles(requestParameters: KnowledgeApiServerListLanguageProfilesRequest): Promise<InlineResponse2002> {
-        const response = await this.knowledgeApiServerListLanguageProfilesRaw(requestParameters);
+    async knowledgeApiServerListLanguageProfiles(requestParameters: KnowledgeApiServerListLanguageProfilesRequest, initOverrides?: RequestInit): Promise<InlineResponse2002> {
+        const response = await this.knowledgeApiServerListLanguageProfilesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2867,7 +2867,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update the Entity with the given ID
      * Entities: Update
      */
-    async knowledgeApiServerUpdateEntityRaw(requestParameters: KnowledgeApiServerUpdateEntityRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
+    async knowledgeApiServerUpdateEntityRaw(requestParameters: KnowledgeApiServerUpdateEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerUpdateEntity.');
         }
@@ -2924,7 +2924,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: EntityWriteToJSON(requestParameters.entityWrite),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
@@ -2933,8 +2933,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update the Entity with the given ID
      * Entities: Update
      */
-    async knowledgeApiServerUpdateEntity(requestParameters: KnowledgeApiServerUpdateEntityRequest): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerUpdateEntityRaw(requestParameters);
+    async knowledgeApiServerUpdateEntity(requestParameters: KnowledgeApiServerUpdateEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.knowledgeApiServerUpdateEntityRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2942,7 +2942,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Add a language profile
      * Entity Language Profiles: Upsert
      */
-    async knowledgeApiServerUpsertLanguageProfileRaw(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest): Promise<runtime.ApiResponse<InlineResponse201>> {
+    async knowledgeApiServerUpsertLanguageProfileRaw(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
         }
@@ -2987,7 +2987,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: EntityWriteToJSON(requestParameters.entityWrite),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
@@ -2996,8 +2996,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Add a language profile
      * Entity Language Profiles: Upsert
      */
-    async knowledgeApiServerUpsertLanguageProfile(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerUpsertLanguageProfileRaw(requestParameters);
+    async knowledgeApiServerUpsertLanguageProfile(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.knowledgeApiServerUpsertLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3005,7 +3005,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * List assets in an account.
      * Assets: List
      */
-    async listAssetsRaw(requestParameters: ListAssetsRequest): Promise<runtime.ApiResponse<AssetsResponse>> {
+    async listAssetsRaw(requestParameters: ListAssetsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<AssetsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listAssets.');
         }
@@ -3055,7 +3055,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AssetsResponseFromJSON(jsonValue));
     }
@@ -3064,8 +3064,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * List assets in an account.
      * Assets: List
      */
-    async listAssets(requestParameters: ListAssetsRequest): Promise<AssetsResponse> {
-        const response = await this.listAssetsRaw(requestParameters);
+    async listAssets(requestParameters: ListAssetsRequest, initOverrides?: RequestInit): Promise<AssetsResponse> {
+        const response = await this.listAssetsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3073,7 +3073,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get multiple Locations (primary profiles only) that match provided filters.
      * Locations (Legacy): Search
      */
-    async searchLocationsRaw(requestParameters: SearchLocationsRequest): Promise<runtime.ApiResponse<LocationsSearchResponse>> {
+    async searchLocationsRaw(requestParameters: SearchLocationsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LocationsSearchResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling searchLocations.');
         }
@@ -3115,7 +3115,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LocationsSearchResponseFromJSON(jsonValue));
     }
@@ -3124,8 +3124,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Get multiple Locations (primary profiles only) that match provided filters.
      * Locations (Legacy): Search
      */
-    async searchLocations(requestParameters: SearchLocationsRequest): Promise<LocationsSearchResponse> {
-        const response = await this.searchLocationsRaw(requestParameters);
+    async searchLocations(requestParameters: SearchLocationsRequest, initOverrides?: RequestInit): Promise<LocationsSearchResponse> {
+        const response = await this.searchLocationsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3133,7 +3133,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update a specific asset.  **NOTE**: This endpoint is a true PUT. Fields that are not provided in an update will be cleared. The entire Asset object must be provided in the request, except for its **`id`**, which is given in the path.  **NOTE:** * If the **`v`** parameter is on or before `20190624`: only the first folder the Asset is available for will be returned in the legacy **`folderId`** field. * If the **`v`** parameter is after `20190624`: the complete list of folders the Asset is available to will be returned in the new **`folderIds`** field. **`folderId`** will not be returned. 
      * Assets: Update
      */
-    async updateAssetRaw(requestParameters: UpdateAssetRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async updateAssetRaw(requestParameters: UpdateAssetRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateAsset.');
         }
@@ -3182,7 +3182,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: AssetToJSON(requestParameters.asset),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -3191,8 +3191,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update a specific asset.  **NOTE**: This endpoint is a true PUT. Fields that are not provided in an update will be cleared. The entire Asset object must be provided in the request, except for its **`id`**, which is given in the path.  **NOTE:** * If the **`v`** parameter is on or before `20190624`: only the first folder the Asset is available for will be returned in the legacy **`folderId`** field. * If the **`v`** parameter is after `20190624`: the complete list of folders the Asset is available to will be returned in the new **`folderIds`** field. **`folderId`** will not be returned. 
      * Assets: Update
      */
-    async updateAsset(requestParameters: UpdateAssetRequest): Promise<IdResponse> {
-        const response = await this.updateAssetRaw(requestParameters);
+    async updateAsset(requestParameters: UpdateAssetRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.updateAssetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3200,7 +3200,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update an existing Bios List.
      * Bios: Update
      */
-    async updateBioRaw(requestParameters: UpdateBioRequest): Promise<runtime.ApiResponse<BioListResponse>> {
+    async updateBioRaw(requestParameters: UpdateBioRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<BioListResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateBio.');
         }
@@ -3241,7 +3241,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: BioToJSON(requestParameters.bio),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => BioListResponseFromJSON(jsonValue));
     }
@@ -3250,8 +3250,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update an existing Bios List.
      * Bios: Update
      */
-    async updateBio(requestParameters: UpdateBioRequest): Promise<BioListResponse> {
-        const response = await this.updateBioRaw(requestParameters);
+    async updateBio(requestParameters: UpdateBioRequest, initOverrides?: RequestInit): Promise<BioListResponse> {
+        const response = await this.updateBioRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3259,7 +3259,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Updates a single Custom Field in an Account.  Note that the only updatable values in an existing Custom Field are its name, group, description, alternate language behavior, as well as available options if its `type` is `SINGLE_OPTION` or `MULTI_OPTION`.  * If options are modified, every location with that option selected will have the new value.  * If options are deleted, all locations with that option will no longer have that option selected.  * If the deleted options are the only options selected for a location, the location will no longer have a value set for that Custom Field. 
      * Custom Fields: Update
      */
-    async updateCustomFieldRaw(requestParameters: UpdateCustomFieldRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async updateCustomFieldRaw(requestParameters: UpdateCustomFieldRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateCustomField.');
         }
@@ -3300,7 +3300,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: FieldUpdateToJSON(requestParameters.fieldUpdate),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -3309,8 +3309,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Updates a single Custom Field in an Account.  Note that the only updatable values in an existing Custom Field are its name, group, description, alternate language behavior, as well as available options if its `type` is `SINGLE_OPTION` or `MULTI_OPTION`.  * If options are modified, every location with that option selected will have the new value.  * If options are deleted, all locations with that option will no longer have that option selected.  * If the deleted options are the only options selected for a location, the location will no longer have a value set for that Custom Field. 
      * Custom Fields: Update
      */
-    async updateCustomField(requestParameters: UpdateCustomFieldRequest): Promise<IdResponse> {
-        const response = await this.updateCustomFieldRaw(requestParameters);
+    async updateCustomField(requestParameters: UpdateCustomFieldRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.updateCustomFieldRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3318,7 +3318,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update an existing Event List.
      * Events (Legacy): Update
      */
-    async updateEventRaw(requestParameters: UpdateEventRequest): Promise<runtime.ApiResponse<EventListResponse>> {
+    async updateEventRaw(requestParameters: UpdateEventRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EventListResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateEvent.');
         }
@@ -3359,7 +3359,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: EventToJSON(requestParameters.event),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EventListResponseFromJSON(jsonValue));
     }
@@ -3368,8 +3368,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update an existing Event List.
      * Events (Legacy): Update
      */
-    async updateEvent(requestParameters: UpdateEventRequest): Promise<EventListResponse> {
-        const response = await this.updateEventRaw(requestParameters);
+    async updateEvent(requestParameters: UpdateEventRequest, initOverrides?: RequestInit): Promise<EventListResponse> {
+        const response = await this.updateEventRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3377,7 +3377,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Updates the primary profile for a Location.  **NOTE:** Despite using the PUT method, Locations: Update only updates supplied fields. Omitted fields are not modified.  **NOTE:** The Location\'s primary profile language can be changed by calling this endpoint with a different, but unused, language code. 
      * Locations (Legacy): Update
      */
-    async updateLocationRaw(requestParameters: UpdateLocationRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async updateLocationRaw(requestParameters: UpdateLocationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateLocation.');
         }
@@ -3418,7 +3418,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: LocationToJSON(requestParameters.location),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -3427,8 +3427,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Updates the primary profile for a Location.  **NOTE:** Despite using the PUT method, Locations: Update only updates supplied fields. Omitted fields are not modified.  **NOTE:** The Location\'s primary profile language can be changed by calling this endpoint with a different, but unused, language code. 
      * Locations (Legacy): Update
      */
-    async updateLocation(requestParameters: UpdateLocationRequest): Promise<IdResponse> {
-        const response = await this.updateLocationRaw(requestParameters);
+    async updateLocation(requestParameters: UpdateLocationRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.updateLocationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3436,7 +3436,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update an existing Menu.
      * Menus: Update
      */
-    async updateMenuRaw(requestParameters: UpdateMenuRequest): Promise<runtime.ApiResponse<MenuListResponse>> {
+    async updateMenuRaw(requestParameters: UpdateMenuRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<MenuListResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateMenu.');
         }
@@ -3477,7 +3477,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: MenuToJSON(requestParameters.menu),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => MenuListResponseFromJSON(jsonValue));
     }
@@ -3486,8 +3486,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update an existing Menu.
      * Menus: Update
      */
-    async updateMenu(requestParameters: UpdateMenuRequest): Promise<MenuListResponse> {
-        const response = await this.updateMenuRaw(requestParameters);
+    async updateMenu(requestParameters: UpdateMenuRequest, initOverrides?: RequestInit): Promise<MenuListResponse> {
+        const response = await this.updateMenuRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3495,7 +3495,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update an existing Product List.
      * Products: Update
      */
-    async updateProductRaw(requestParameters: UpdateProductRequest): Promise<runtime.ApiResponse<ProductListResponse>> {
+    async updateProductRaw(requestParameters: UpdateProductRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ProductListResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateProduct.');
         }
@@ -3536,7 +3536,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: ProductToJSON(requestParameters.product),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProductListResponseFromJSON(jsonValue));
     }
@@ -3545,8 +3545,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Update an existing Product List.
      * Products: Update
      */
-    async updateProduct(requestParameters: UpdateProductRequest): Promise<ProductListResponse> {
-        const response = await this.updateProductRaw(requestParameters);
+    async updateProduct(requestParameters: UpdateProductRequest, initOverrides?: RequestInit): Promise<ProductListResponse> {
+        const response = await this.updateProductRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3554,7 +3554,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Creates and / or sets the fields for a Language Profile  **NOTE:** You can change a Language Profile’s language by supplying a different (but unused) language code. 
      * Language Profiles (Legacy): Upsert
      */
-    async upsertLanguageProfileRaw(requestParameters: UpsertLanguageProfileRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async upsertLanguageProfileRaw(requestParameters: UpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling upsertLanguageProfile.');
         }
@@ -3603,7 +3603,7 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: LocationToJSON(requestParameters.location),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -3612,8 +3612,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Creates and / or sets the fields for a Language Profile  **NOTE:** You can change a Language Profile’s language by supplying a different (but unused) language code. 
      * Language Profiles (Legacy): Upsert
      */
-    async upsertLanguageProfile(requestParameters: UpsertLanguageProfileRequest): Promise<EmptyResponse> {
-        const response = await this.upsertLanguageProfileRaw(requestParameters);
+    async upsertLanguageProfile(requestParameters: UpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.upsertLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -18,10 +18,10 @@ import {
     ReviewInvitationDatesFromJSON,
     ReviewInvitationDatesFromJSONTyped,
     ReviewInvitationDatesToJSON,
-    ReviewInvitationEntity,
-    ReviewInvitationEntityFromJSON,
-    ReviewInvitationEntityFromJSONTyped,
-    ReviewInvitationEntityToJSON,
+    ReviewInvitationOptionalEntity,
+    ReviewInvitationOptionalEntityFromJSON,
+    ReviewInvitationOptionalEntityFromJSONTyped,
+    ReviewInvitationOptionalEntityToJSON,
     UpdatedReviewInvitationAllOf,
     UpdatedReviewInvitationAllOfFromJSON,
     UpdatedReviewInvitationAllOfFromJSONTyped,
@@ -46,10 +46,10 @@ export interface UpdatedReviewInvitation {
     readonly invitationUid?: string;
     /**
      * 
-     * @type {ReviewInvitationEntity}
+     * @type {ReviewInvitationOptionalEntity}
      * @memberof UpdatedReviewInvitation
      */
-    entity?: ReviewInvitationEntity;
+    entity?: ReviewInvitationOptionalEntity;
     /**
      * The first name of the person from whom a review is being requested.
      * 
@@ -188,7 +188,7 @@ export function UpdatedReviewInvitationFromJSONTyped(json: any, ignoreDiscrimina
     return {
         
         'invitationUid': !exists(json, 'invitationUid') ? undefined : json['invitationUid'],
-        'entity': !exists(json, 'entity') ? undefined : ReviewInvitationEntityFromJSON(json['entity']),
+        'entity': !exists(json, 'entity') ? undefined : ReviewInvitationOptionalEntityFromJSON(json['entity']),
         'firstName': !exists(json, 'firstName') ? undefined : json['firstName'],
         'lastName': !exists(json, 'lastName') ? undefined : json['lastName'],
         'title': !exists(json, 'title') ? undefined : json['title'],
@@ -214,7 +214,7 @@ export function UpdatedReviewInvitationToJSON(value?: UpdatedReviewInvitation | 
     }
     return {
         
-        'entity': ReviewInvitationEntityToJSON(value.entity),
+        'entity': ReviewInvitationOptionalEntityToJSON(value.entity),
         'firstName': value.firstName,
         'lastName': value.lastName,
         'title': value.title,

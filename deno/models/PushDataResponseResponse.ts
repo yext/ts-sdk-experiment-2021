@@ -20,7 +20,7 @@ import { exists, mapValues } from '../runtime.ts';
  */
 export interface PushDataResponseResponse {
     /**
-     * A comma-seperated list of IDs of all connectors for which a run attempt was initiated.
+     * A comma-seperated list of IDs of all Connectors for which a run attempt was initiated.
      * @type {string}
      * @memberof PushDataResponseResponse
      */

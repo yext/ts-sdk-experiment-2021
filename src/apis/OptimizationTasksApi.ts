@@ -50,7 +50,7 @@ export class OptimizationTasksApi extends runtime.BaseAPI {
      * Retrieve a link to perform any pending Optimization Tasks given a set of Optimization Tasks and a location
      * Optimization Tasks: Get Link
      */
-    async getLinkOptimizationTaskRaw(requestParameters: GetLinkOptimizationTaskRequest): Promise<runtime.ApiResponse<OptimizationTaskLinksResponse>> {
+    async getLinkOptimizationTaskRaw(requestParameters: GetLinkOptimizationTaskRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<OptimizationTaskLinksResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLinkOptimizationTask.');
         }
@@ -92,7 +92,7 @@ export class OptimizationTasksApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => OptimizationTaskLinksResponseFromJSON(jsonValue));
     }
@@ -101,8 +101,8 @@ export class OptimizationTasksApi extends runtime.BaseAPI {
      * Retrieve a link to perform any pending Optimization Tasks given a set of Optimization Tasks and a location
      * Optimization Tasks: Get Link
      */
-    async getLinkOptimizationTask(requestParameters: GetLinkOptimizationTaskRequest): Promise<OptimizationTaskLinksResponse> {
-        const response = await this.getLinkOptimizationTaskRaw(requestParameters);
+    async getLinkOptimizationTask(requestParameters: GetLinkOptimizationTaskRequest, initOverrides?: RequestInit): Promise<OptimizationTaskLinksResponse> {
+        const response = await this.getLinkOptimizationTaskRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -110,7 +110,7 @@ export class OptimizationTasksApi extends runtime.BaseAPI {
      * List Optimization Tasks for the account, optionally filtered by task and location.
      * Optimization Tasks: List
      */
-    async getOptimizationTasksRaw(requestParameters: GetOptimizationTasksRequest): Promise<runtime.ApiResponse<OptimizationTasksResponse>> {
+    async getOptimizationTasksRaw(requestParameters: GetOptimizationTasksRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<OptimizationTasksResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getOptimizationTasks.');
         }
@@ -148,7 +148,7 @@ export class OptimizationTasksApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => OptimizationTasksResponseFromJSON(jsonValue));
     }
@@ -157,8 +157,8 @@ export class OptimizationTasksApi extends runtime.BaseAPI {
      * List Optimization Tasks for the account, optionally filtered by task and location.
      * Optimization Tasks: List
      */
-    async getOptimizationTasks(requestParameters: GetOptimizationTasksRequest): Promise<OptimizationTasksResponse> {
-        const response = await this.getOptimizationTasksRaw(requestParameters);
+    async getOptimizationTasks(requestParameters: GetOptimizationTasksRequest, initOverrides?: RequestInit): Promise<OptimizationTasksResponse> {
+        const response = await this.getOptimizationTasksRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

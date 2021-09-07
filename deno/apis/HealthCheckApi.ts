@@ -24,7 +24,7 @@ export class HealthCheckApi extends runtime.BaseAPI {
      * The Health Check endpoint allows you to monitor the status of Yext\'s systems.  A response with a status code other than 200 OK indicates that our systems are not operational.  The body of the response may contain information about the status. However, no part of your Yext integration should depend on the content of the response.  **NOTE:** This call does not require authentication. 
      * Health Check
      */
-    async healthCheckRaw(): Promise<runtime.ApiResponse<string>> {
+    async healthCheckRaw(initOverrides?: RequestInit): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -42,7 +42,7 @@ export class HealthCheckApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.TextApiResponse(response) as any;
     }
@@ -51,8 +51,8 @@ export class HealthCheckApi extends runtime.BaseAPI {
      * The Health Check endpoint allows you to monitor the status of Yext\'s systems.  A response with a status code other than 200 OK indicates that our systems are not operational.  The body of the response may contain information about the status. However, no part of your Yext integration should depend on the content of the response.  **NOTE:** This call does not require authentication. 
      * Health Check
      */
-    async healthCheck(): Promise<string> {
-        const response = await this.healthCheckRaw();
+    async healthCheck(initOverrides?: RequestInit): Promise<string> {
+        const response = await this.healthCheckRaw(initOverrides);
         return await response.value();
     }
 

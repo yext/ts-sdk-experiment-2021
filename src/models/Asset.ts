@@ -25,6 +25,9 @@ import {
 } from './';
 
 import {
+     AssetForComplexImageFromJSONTyped,
+     AssetForComplexVideoFromJSONTyped,
+     AssetForTextFromJSONTyped
 } from './';
 
 /**
@@ -100,6 +103,15 @@ export function AssetFromJSONTyped(json: any, ignoreDiscriminator: boolean): Ass
         return json;
     }
     if (!ignoreDiscriminator) {
+        if (json['type'] === 'complexImage') {
+            return AssetForComplexImageFromJSONTyped(json, true);
+        }
+        if (json['type'] === 'complexVideo') {
+            return AssetForComplexVideoFromJSONTyped(json, true);
+        }
+        if (json['type'] === 'text') {
+            return AssetForTextFromJSONTyped(json, true);
+        }
     }
     return {
         

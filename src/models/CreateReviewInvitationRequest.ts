@@ -22,10 +22,10 @@ import {
     ReviewInvitationFromJSON,
     ReviewInvitationFromJSONTyped,
     ReviewInvitationToJSON,
-    ReviewInvitationEntity,
-    ReviewInvitationEntityFromJSON,
-    ReviewInvitationEntityFromJSONTyped,
-    ReviewInvitationEntityToJSON,
+    ReviewInvitationOptionalEntity,
+    ReviewInvitationOptionalEntityFromJSON,
+    ReviewInvitationOptionalEntityFromJSONTyped,
+    ReviewInvitationOptionalEntityToJSON,
 } from './';
 
 /**
@@ -46,10 +46,10 @@ export interface CreateReviewInvitationRequest {
     readonly invitationUid?: string;
     /**
      * 
-     * @type {ReviewInvitationEntity}
+     * @type {ReviewInvitationOptionalEntity}
      * @memberof CreateReviewInvitationRequest
      */
-    entity: ReviewInvitationEntity;
+    entity: ReviewInvitationOptionalEntity;
     /**
      * The first name of the person from whom a review is being requested.
      * @type {string}
@@ -209,7 +209,7 @@ export function CreateReviewInvitationRequestFromJSONTyped(json: any, ignoreDisc
     return {
         
         'invitationUid': !exists(json, 'invitationUid') ? undefined : json['invitationUid'],
-        'entity': ReviewInvitationEntityFromJSON(json['entity']),
+        'entity': ReviewInvitationOptionalEntityFromJSON(json['entity']),
         'firstName': json['firstName'],
         'lastName': json['lastName'],
         'title': json['title'],
@@ -237,7 +237,7 @@ export function CreateReviewInvitationRequestToJSON(value?: CreateReviewInvitati
     }
     return {
         
-        'entity': ReviewInvitationEntityToJSON(value.entity),
+        'entity': ReviewInvitationOptionalEntityToJSON(value.entity),
         'firstName': value.firstName,
         'lastName': value.lastName,
         'title': value.title,

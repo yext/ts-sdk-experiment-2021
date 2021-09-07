@@ -193,7 +193,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Copy an eligible Linked Account from the top-level parent account to a subaccount. Optionally assign the Linked Account to an entity in the subaccount.  This functionality is only available for certain Yext accounts. Please reach out to your Yext representative for more information. 
      * LinkedAccounts: Assign
      */
-    async assignLinkedAccountRaw(requestParameters: AssignLinkedAccountOperationRequest): Promise<runtime.ApiResponse<AssignLinkedAccountResponse>> {
+    async assignLinkedAccountRaw(requestParameters: AssignLinkedAccountOperationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<AssignLinkedAccountResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling assignLinkedAccount.');
         }
@@ -234,7 +234,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: AssignLinkedAccountRequestToJSON(requestParameters.assignLinkedAccountRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AssignLinkedAccountResponseFromJSON(jsonValue));
     }
@@ -243,8 +243,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Copy an eligible Linked Account from the top-level parent account to a subaccount. Optionally assign the Linked Account to an entity in the subaccount.  This functionality is only available for certain Yext accounts. Please reach out to your Yext representative for more information. 
      * LinkedAccounts: Assign
      */
-    async assignLinkedAccount(requestParameters: AssignLinkedAccountOperationRequest): Promise<AssignLinkedAccountResponse> {
-        const response = await this.assignLinkedAccountRaw(requestParameters);
+    async assignLinkedAccount(requestParameters: AssignLinkedAccountOperationRequest, initOverrides?: RequestInit): Promise<AssignLinkedAccountResponse> {
+        const response = await this.assignLinkedAccountRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -252,7 +252,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Creates an Approval Group.
      * Approval Groups: Create
      */
-    async createApprovalGroupRaw(requestParameters: CreateApprovalGroupOperationRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createApprovalGroupRaw(requestParameters: CreateApprovalGroupOperationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createApprovalGroup.');
         }
@@ -289,7 +289,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: CreateApprovalGroupRequestToJSON(requestParameters.createApprovalGroupRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -298,8 +298,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Creates an Approval Group.
      * Approval Groups: Create
      */
-    async createApprovalGroup(requestParameters: CreateApprovalGroupOperationRequest): Promise<IdResponse> {
-        const response = await this.createApprovalGroupRaw(requestParameters);
+    async createApprovalGroup(requestParameters: CreateApprovalGroupOperationRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createApprovalGroupRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -307,7 +307,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Create a new User  **NOTE**:  If the **`v`** parameter is before `20190225`: **`displayLanguagePreference`** and **`emailLanguagePreference`** will not be accepted in the request body.  If the **`v`** parameter is `20190225` or later: **`displayLanguagePreference`** and **`emailLanguagePreference`** will be accepted in the request body. 
      * Users: Create
      */
-    async createUserRaw(requestParameters: CreateUserOperationRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createUserRaw(requestParameters: CreateUserOperationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createUser.');
         }
@@ -344,7 +344,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: CreateUserRequestToJSON(requestParameters.createUserRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -353,8 +353,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Create a new User  **NOTE**:  If the **`v`** parameter is before `20190225`: **`displayLanguagePreference`** and **`emailLanguagePreference`** will not be accepted in the request body.  If the **`v`** parameter is `20190225` or later: **`displayLanguagePreference`** and **`emailLanguagePreference`** will be accepted in the request body. 
      * Users: Create
      */
-    async createUser(requestParameters: CreateUserOperationRequest): Promise<IdResponse> {
-        const response = await this.createUserRaw(requestParameters);
+    async createUser(requestParameters: CreateUserOperationRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -362,7 +362,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Deletes an Approval Group.
      * ApprovalGroups: Delete
      */
-    async deleteApprovalGroupRaw(requestParameters: DeleteApprovalGroupRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteApprovalGroupRaw(requestParameters: DeleteApprovalGroupRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteApprovalGroup.');
         }
@@ -396,7 +396,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -405,8 +405,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Deletes an Approval Group.
      * ApprovalGroups: Delete
      */
-    async deleteApprovalGroup(requestParameters: DeleteApprovalGroupRequest): Promise<EmptyResponse> {
-        const response = await this.deleteApprovalGroupRaw(requestParameters);
+    async deleteApprovalGroup(requestParameters: DeleteApprovalGroupRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteApprovalGroupRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -414,7 +414,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Deletes an existing User.
      * Users: Delete
      */
-    async deleteUserRaw(requestParameters: DeleteUserRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteUserRaw(requestParameters: DeleteUserRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteUser.');
         }
@@ -448,7 +448,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -457,8 +457,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Deletes an existing User.
      * Users: Delete
      */
-    async deleteUser(requestParameters: DeleteUserRequest): Promise<EmptyResponse> {
-        const response = await this.deleteUserRaw(requestParameters);
+    async deleteUser(requestParameters: DeleteUserRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -466,7 +466,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Get details for an account
      * Accounts: Get
      */
-    async getAccountRaw(requestParameters: GetAccountRequest): Promise<runtime.ApiResponse<AccountResponse>> {
+    async getAccountRaw(requestParameters: GetAccountRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<AccountResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getAccount.');
         }
@@ -496,7 +496,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AccountResponseFromJSON(jsonValue));
     }
@@ -505,8 +505,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Get details for an account
      * Accounts: Get
      */
-    async getAccount(requestParameters: GetAccountRequest): Promise<AccountResponse> {
-        const response = await this.getAccountRaw(requestParameters);
+    async getAccount(requestParameters: GetAccountRequest, initOverrides?: RequestInit): Promise<AccountResponse> {
+        const response = await this.getAccountRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -514,7 +514,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Gets a single Approval Group.
      * ApprovalGroups: Get
      */
-    async getApprovalGroupRaw(requestParameters: GetApprovalGroupRequest): Promise<runtime.ApiResponse<ApprovalGroupResponse>> {
+    async getApprovalGroupRaw(requestParameters: GetApprovalGroupRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ApprovalGroupResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getApprovalGroup.');
         }
@@ -548,7 +548,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ApprovalGroupResponseFromJSON(jsonValue));
     }
@@ -557,8 +557,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Gets a single Approval Group.
      * ApprovalGroups: Get
      */
-    async getApprovalGroup(requestParameters: GetApprovalGroupRequest): Promise<ApprovalGroupResponse> {
-        const response = await this.getApprovalGroupRaw(requestParameters);
+    async getApprovalGroup(requestParameters: GetApprovalGroupRequest, initOverrides?: RequestInit): Promise<ApprovalGroupResponse> {
+        const response = await this.getApprovalGroupRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -566,7 +566,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Lists all Approval Groups in the account.
      * ApprovalGroups: List
      */
-    async getApprovalGroupsRaw(requestParameters: GetApprovalGroupsRequest): Promise<runtime.ApiResponse<ApprovalGroupsResponse>> {
+    async getApprovalGroupsRaw(requestParameters: GetApprovalGroupsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ApprovalGroupsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getApprovalGroups.');
         }
@@ -596,7 +596,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ApprovalGroupsResponseFromJSON(jsonValue));
     }
@@ -605,8 +605,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Lists all Approval Groups in the account.
      * ApprovalGroups: List
      */
-    async getApprovalGroups(requestParameters: GetApprovalGroupsRequest): Promise<ApprovalGroupsResponse> {
-        const response = await this.getApprovalGroupsRaw(requestParameters);
+    async getApprovalGroups(requestParameters: GetApprovalGroupsRequest, initOverrides?: RequestInit): Promise<ApprovalGroupsResponse> {
+        const response = await this.getApprovalGroupsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -614,7 +614,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Get details for an linked account.
      * LinkedAccounts: Get
      */
-    async getLinkedAccountRaw(requestParameters: GetLinkedAccountRequest): Promise<runtime.ApiResponse<LinkedAccountResponse>> {
+    async getLinkedAccountRaw(requestParameters: GetLinkedAccountRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LinkedAccountResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLinkedAccount.');
         }
@@ -648,7 +648,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LinkedAccountResponseFromJSON(jsonValue));
     }
@@ -657,8 +657,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Get details for an linked account.
      * LinkedAccounts: Get
      */
-    async getLinkedAccount(requestParameters: GetLinkedAccountRequest): Promise<LinkedAccountResponse> {
-        const response = await this.getLinkedAccountRaw(requestParameters);
+    async getLinkedAccount(requestParameters: GetLinkedAccountRequest, initOverrides?: RequestInit): Promise<LinkedAccountResponse> {
+        const response = await this.getLinkedAccountRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -666,7 +666,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Retrieves a list of the roles that users can have within a customer’s account.
      * Roles: Get
      */
-    async getRolesRaw(requestParameters: GetRolesRequest): Promise<runtime.ApiResponse<RolesResponse>> {
+    async getRolesRaw(requestParameters: GetRolesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<RolesResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getRoles.');
         }
@@ -696,7 +696,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RolesResponseFromJSON(jsonValue));
     }
@@ -705,8 +705,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Retrieves a list of the roles that users can have within a customer’s account.
      * Roles: Get
      */
-    async getRoles(requestParameters: GetRolesRequest): Promise<RolesResponse> {
-        const response = await this.getRolesRaw(requestParameters);
+    async getRoles(requestParameters: GetRolesRequest, initOverrides?: RequestInit): Promise<RolesResponse> {
+        const response = await this.getRolesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -714,7 +714,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Retrieves details of a specific User.  **NOTE**:  If the **`v`** parameter is before `20190225`: **`displayLanguagePreference`** and **`emailLanguagePreference`** will not be included in the response.  If the **`v`** parameter is `20190225` or later: **`displayLanguagePreference`** and **`emailLanguagePreference`** will be included in the response. 
      * Users: Get
      */
-    async getUserRaw(requestParameters: GetUserRequest): Promise<runtime.ApiResponse<UserResponse>> {
+    async getUserRaw(requestParameters: GetUserRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<UserResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getUser.');
         }
@@ -748,7 +748,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
     }
@@ -757,8 +757,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Retrieves details of a specific User.  **NOTE**:  If the **`v`** parameter is before `20190225`: **`displayLanguagePreference`** and **`emailLanguagePreference`** will not be included in the response.  If the **`v`** parameter is `20190225` or later: **`displayLanguagePreference`** and **`emailLanguagePreference`** will be included in the response. 
      * Users: Get
      */
-    async getUser(requestParameters: GetUserRequest): Promise<UserResponse> {
-        const response = await this.getUserRaw(requestParameters);
+    async getUser(requestParameters: GetUserRequest, initOverrides?: RequestInit): Promise<UserResponse> {
+        const response = await this.getUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -766,7 +766,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Lists all Users in an account.  **NOTE**:  If the **`v`** parameter is before `20190225`: **`displayLanguagePreference`** and **`emailLanguagePreference`** will not be included in the response.  If the **`v`** parameter is `20190225` or later: **`displayLanguagePreference`** and **`emailLanguagePreference`** will be included in the response.  This endpoint does not support the **`all`** macro. 
      * Users: List
      */
-    async getUsersRaw(requestParameters: GetUsersRequest): Promise<runtime.ApiResponse<UsersResponse>> {
+    async getUsersRaw(requestParameters: GetUsersRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<UsersResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getUsers.');
         }
@@ -804,7 +804,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UsersResponseFromJSON(jsonValue));
     }
@@ -813,8 +813,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Lists all Users in an account.  **NOTE**:  If the **`v`** parameter is before `20190225`: **`displayLanguagePreference`** and **`emailLanguagePreference`** will not be included in the response.  If the **`v`** parameter is `20190225` or later: **`displayLanguagePreference`** and **`emailLanguagePreference`** will be included in the response.  This endpoint does not support the **`all`** macro. 
      * Users: List
      */
-    async getUsers(requestParameters: GetUsersRequest): Promise<UsersResponse> {
-        const response = await this.getUsersRaw(requestParameters);
+    async getUsers(requestParameters: GetUsersRequest, initOverrides?: RequestInit): Promise<UsersResponse> {
+        const response = await this.getUsersRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -822,7 +822,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * List all accounts that you have access to. Unless you are in Partner Portal mode, this will only be your own account.
      * Accounts: List
      */
-    async listAccountsRaw(requestParameters: ListAccountsRequest): Promise<runtime.ApiResponse<AccountsResponse>> {
+    async listAccountsRaw(requestParameters: ListAccountsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<AccountsResponse>> {
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling listAccounts.');
         }
@@ -860,7 +860,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => AccountsResponseFromJSON(jsonValue));
     }
@@ -869,8 +869,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * List all accounts that you have access to. Unless you are in Partner Portal mode, this will only be your own account.
      * Accounts: List
      */
-    async listAccounts(requestParameters: ListAccountsRequest): Promise<AccountsResponse> {
-        const response = await this.listAccountsRaw(requestParameters);
+    async listAccounts(requestParameters: ListAccountsRequest, initOverrides?: RequestInit): Promise<AccountsResponse> {
+        const response = await this.listAccountsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -878,7 +878,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Lists all linked accounts in an account.
      * LinkedAccounts: List
      */
-    async listLinkedAccountsRaw(requestParameters: ListLinkedAccountsRequest): Promise<runtime.ApiResponse<LinkedAccountsResponse>> {
+    async listLinkedAccountsRaw(requestParameters: ListLinkedAccountsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LinkedAccountsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listLinkedAccounts.');
         }
@@ -932,7 +932,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => LinkedAccountsResponseFromJSON(jsonValue));
     }
@@ -941,8 +941,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Lists all linked accounts in an account.
      * LinkedAccounts: List
      */
-    async listLinkedAccounts(requestParameters: ListLinkedAccountsRequest): Promise<LinkedAccountsResponse> {
-        const response = await this.listLinkedAccountsRaw(requestParameters);
+    async listLinkedAccounts(requestParameters: ListLinkedAccountsRequest, initOverrides?: RequestInit): Promise<LinkedAccountsResponse> {
+        const response = await this.listLinkedAccountsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -950,7 +950,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Updates a single Approval Group.  **NOTE:** Despite using the PUT method, Approval Groups: Update only updates supplied fields. Omitted fields are not modified. However, the users list will be overwritten with what the user provides. 
      * ApprovalGroups: Update
      */
-    async updateApprovalGroupRaw(requestParameters: UpdateApprovalGroupRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async updateApprovalGroupRaw(requestParameters: UpdateApprovalGroupRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateApprovalGroup.');
         }
@@ -991,7 +991,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: ApprovalGroupToJSON(requestParameters.approvalGroup),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -1000,8 +1000,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Updates a single Approval Group.  **NOTE:** Despite using the PUT method, Approval Groups: Update only updates supplied fields. Omitted fields are not modified. However, the users list will be overwritten with what the user provides. 
      * ApprovalGroups: Update
      */
-    async updateApprovalGroup(requestParameters: UpdateApprovalGroupRequest): Promise<IdResponse> {
-        const response = await this.updateApprovalGroupRaw(requestParameters);
+    async updateApprovalGroup(requestParameters: UpdateApprovalGroupRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.updateApprovalGroupRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1009,7 +1009,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Updates an existing User.  **NOTE**:  If the **`v`** parameter is before `20190225`: **`displayLanguagePreference`** and **`emailLanguagePreference`** will not be accepted in the request body.  If the **`v`** parameter is `20190225` or later: **`displayLanguagePreference`** and **`emailLanguagePreference`** will be accepted in the request body. If not provided, existing values will be cleared. 
      * Users: Update
      */
-    async updateUserRaw(requestParameters: UpdateUserOperationRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async updateUserRaw(requestParameters: UpdateUserOperationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateUser.');
         }
@@ -1050,7 +1050,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: UpdateUserRequestToJSON(requestParameters.updateUserRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -1059,8 +1059,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Updates an existing User.  **NOTE**:  If the **`v`** parameter is before `20190225`: **`displayLanguagePreference`** and **`emailLanguagePreference`** will not be accepted in the request body.  If the **`v`** parameter is `20190225` or later: **`displayLanguagePreference`** and **`emailLanguagePreference`** will be accepted in the request body. If not provided, existing values will be cleared. 
      * Users: Update
      */
-    async updateUser(requestParameters: UpdateUserOperationRequest): Promise<IdResponse> {
-        const response = await this.updateUserRaw(requestParameters);
+    async updateUser(requestParameters: UpdateUserOperationRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.updateUserRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1068,7 +1068,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Updates a User\'s password.
      * Users: Update Password
      */
-    async updateUserPasswordRaw(requestParameters: UpdateUserPasswordRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async updateUserPasswordRaw(requestParameters: UpdateUserPasswordRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateUserPassword.');
         }
@@ -1105,7 +1105,7 @@ export class AccountSettingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: UpdatePasswordRequestToJSON(requestParameters.updatePasswordRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1114,8 +1114,8 @@ export class AccountSettingsApi extends runtime.BaseAPI {
      * Updates a User\'s password.
      * Users: Update Password
      */
-    async updateUserPassword(requestParameters: UpdateUserPasswordRequest): Promise<EmptyResponse> {
-        const response = await this.updateUserPasswordRaw(requestParameters);
+    async updateUserPassword(requestParameters: UpdateUserPasswordRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.updateUserPasswordRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

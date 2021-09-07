@@ -46,10 +46,10 @@ export interface TriggerConnectorRequest {
 export class ConnectorsApi extends runtime.BaseAPI {
 
     /**
-     * Pushes data to be processed by a connector, then initiates a run for that connector.  **NOTE**: If no connector is specified, all connectors with app-based source configurations will run. 
+     * Pushes data to be processed by a Connector, then initiates a run for that Connector.  **NOTE**: If no Connector ID is specified, all Connectors with the associated app (API key) will run. 
      * Connectors: Push Data
      */
-    async pushDataRaw(requestParameters: PushDataRequest): Promise<runtime.ApiResponse<PushDataResponse>> {
+    async pushDataRaw(requestParameters: PushDataRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<PushDataResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling pushData.');
         }
@@ -90,25 +90,25 @@ export class ConnectorsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters.body as any,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PushDataResponseFromJSON(jsonValue));
     }
 
     /**
-     * Pushes data to be processed by a connector, then initiates a run for that connector.  **NOTE**: If no connector is specified, all connectors with app-based source configurations will run. 
+     * Pushes data to be processed by a Connector, then initiates a run for that Connector.  **NOTE**: If no Connector ID is specified, all Connectors with the associated app (API key) will run. 
      * Connectors: Push Data
      */
-    async pushData(requestParameters: PushDataRequest): Promise<PushDataResponse> {
-        const response = await this.pushDataRaw(requestParameters);
+    async pushData(requestParameters: PushDataRequest, initOverrides?: RequestInit): Promise<PushDataResponse> {
+        const response = await this.pushDataRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
-     * Triggers a run of the specified connector.
+     * Triggers a run of the specified Connector.
      * Connectors: Trigger
      */
-    async triggerConnectorRaw(requestParameters: TriggerConnectorRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async triggerConnectorRaw(requestParameters: TriggerConnectorRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling triggerConnector.');
         }
@@ -146,17 +146,17 @@ export class ConnectorsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
 
     /**
-     * Triggers a run of the specified connector.
+     * Triggers a run of the specified Connector.
      * Connectors: Trigger
      */
-    async triggerConnector(requestParameters: TriggerConnectorRequest): Promise<IdResponse> {
-        const response = await this.triggerConnectorRaw(requestParameters);
+    async triggerConnector(requestParameters: TriggerConnectorRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.triggerConnectorRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

@@ -14,10 +14,10 @@
 
 import { exists, mapValues } from '../runtime.ts';
 import {
-    ReviewInvitationEntity,
-    ReviewInvitationEntityFromJSON,
-    ReviewInvitationEntityFromJSONTyped,
-    ReviewInvitationEntityToJSON,
+    ReviewInvitationOptionalEntity,
+    ReviewInvitationOptionalEntityFromJSON,
+    ReviewInvitationOptionalEntityFromJSONTyped,
+    ReviewInvitationOptionalEntityToJSON,
 } from './index.ts';
 
 /**
@@ -38,10 +38,10 @@ export interface UpdatedReviewInvitationAllOf {
     readonly invitationUid?: string;
     /**
      * 
-     * @type {ReviewInvitationEntity}
+     * @type {ReviewInvitationOptionalEntity}
      * @memberof UpdatedReviewInvitationAllOf
      */
-    entity?: ReviewInvitationEntity;
+    entity?: ReviewInvitationOptionalEntity;
     /**
      * The first name of the person from whom a review is being requested.
      * 
@@ -152,7 +152,7 @@ export function UpdatedReviewInvitationAllOfFromJSONTyped(json: any, ignoreDiscr
     return {
         
         'invitationUid': !exists(json, 'invitationUid') ? undefined : json['invitationUid'],
-        'entity': !exists(json, 'entity') ? undefined : ReviewInvitationEntityFromJSON(json['entity']),
+        'entity': !exists(json, 'entity') ? undefined : ReviewInvitationOptionalEntityFromJSON(json['entity']),
         'firstName': !exists(json, 'firstName') ? undefined : json['firstName'],
         'lastName': !exists(json, 'lastName') ? undefined : json['lastName'],
         'title': !exists(json, 'title') ? undefined : json['title'],
@@ -174,7 +174,7 @@ export function UpdatedReviewInvitationAllOfToJSON(value?: UpdatedReviewInvitati
     }
     return {
         
-        'entity': ReviewInvitationEntityToJSON(value.entity),
+        'entity': ReviewInvitationOptionalEntityToJSON(value.entity),
         'firstName': value.firstName,
         'lastName': value.lastName,
         'title': value.title,

@@ -216,7 +216,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Creates a new Comment on a Review. <br><br>  ## Required fields * **`content`** <br><br>  ## Optional fields * **`parentId`** * **`visibility`** <br><br> 
      * Comment: Create
      */
-    async createCommentRaw(requestParameters: CreateCommentRequest): Promise<runtime.ApiResponse<CreateReviewCommentResponse>> {
+    async createCommentRaw(requestParameters: CreateCommentRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<CreateReviewCommentResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createComment.');
         }
@@ -257,7 +257,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: ReviewCommentToJSON(requestParameters.reviewComment),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CreateReviewCommentResponseFromJSON(jsonValue));
     }
@@ -266,8 +266,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Creates a new Comment on a Review. <br><br>  ## Required fields * **`content`** <br><br>  ## Optional fields * **`parentId`** * **`visibility`** <br><br> 
      * Comment: Create
      */
-    async createComment(requestParameters: CreateCommentRequest): Promise<CreateReviewCommentResponse> {
-        const response = await this.createCommentRaw(requestParameters);
+    async createComment(requestParameters: CreateCommentRequest, initOverrides?: RequestInit): Promise<CreateReviewCommentResponse> {
+        const response = await this.createCommentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -275,7 +275,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Create a new External First Party Review. 
      * Reviews: Create
      */
-    async createReviewRaw(requestParameters: CreateReviewRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createReviewRaw(requestParameters: CreateReviewRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createReview.');
         }
@@ -312,7 +312,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: CreateReviewToJSON(requestParameters.createReview),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -321,8 +321,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Create a new External First Party Review. 
      * Reviews: Create
      */
-    async createReview(requestParameters: CreateReviewRequest): Promise<IdResponse> {
-        const response = await this.createReviewRaw(requestParameters);
+    async createReview(requestParameters: CreateReviewRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createReviewRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -330,7 +330,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Sends review invitations to one or more consumers. <br><br>  ## Optional fields * **`templateId`** * **`transactionId`** <br><br> 
      * Review Invitations: Create
      */
-    async createReviewInvitesRaw(requestParameters: CreateReviewInvitesRequest): Promise<runtime.ApiResponse<CreateReviewInvitationsResponse>> {
+    async createReviewInvitesRaw(requestParameters: CreateReviewInvitesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<CreateReviewInvitationsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createReviewInvites.');
         }
@@ -367,7 +367,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters.createReviewInvitationRequest.map(CreateReviewInvitationRequestToJSON),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CreateReviewInvitationsResponseFromJSON(jsonValue));
     }
@@ -376,8 +376,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Sends review invitations to one or more consumers. <br><br>  ## Optional fields * **`templateId`** * **`transactionId`** <br><br> 
      * Review Invitations: Create
      */
-    async createReviewInvites(requestParameters: CreateReviewInvitesRequest): Promise<CreateReviewInvitationsResponse> {
-        const response = await this.createReviewInvitesRaw(requestParameters);
+    async createReviewInvites(requestParameters: CreateReviewInvitesRequest, initOverrides?: RequestInit): Promise<CreateReviewInvitationsResponse> {
+        const response = await this.createReviewInvitesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -385,7 +385,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Deletes a Comment on a Review. <br><br> 
      * Comment: Delete
      */
-    async deleteCommentRaw(requestParameters: DeleteCommentRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteCommentRaw(requestParameters: DeleteCommentRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteComment.');
         }
@@ -423,7 +423,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -432,8 +432,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Deletes a Comment on a Review. <br><br> 
      * Comment: Delete
      */
-    async deleteComment(requestParameters: DeleteCommentRequest): Promise<EmptyResponse> {
-        const response = await this.deleteCommentRaw(requestParameters);
+    async deleteComment(requestParameters: DeleteCommentRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteCommentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -441,7 +441,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Delete a specific review invitation.
      * Review Invitation: Delete
      */
-    async deleteInvitationRaw(requestParameters: DeleteInvitationRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteInvitationRaw(requestParameters: DeleteInvitationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteInvitation.');
         }
@@ -475,7 +475,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -484,8 +484,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Delete a specific review invitation.
      * Review Invitation: Delete
      */
-    async deleteInvitation(requestParameters: DeleteInvitationRequest): Promise<EmptyResponse> {
-        const response = await this.deleteInvitationRaw(requestParameters);
+    async deleteInvitation(requestParameters: DeleteInvitationRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteInvitationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -493,7 +493,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Retrieve a specific Review.
      * Review: Get
      */
-    async getReviewRaw(requestParameters: GetReviewRequest): Promise<runtime.ApiResponse<ReviewResponse>> {
+    async getReviewRaw(requestParameters: GetReviewRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ReviewResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getReview.');
         }
@@ -527,7 +527,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ReviewResponseFromJSON(jsonValue));
     }
@@ -536,8 +536,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Retrieve a specific Review.
      * Review: Get
      */
-    async getReview(requestParameters: GetReviewRequest): Promise<ReviewResponse> {
-        const response = await this.getReviewRaw(requestParameters);
+    async getReview(requestParameters: GetReviewRequest, initOverrides?: RequestInit): Promise<ReviewResponse> {
+        const response = await this.getReviewRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -545,7 +545,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Returns all current generation settings for a specified account.
      * Review Generation Settings: Get
      */
-    async getReviewGenerationSettingsRaw(requestParameters: GetReviewGenerationSettingsRequest): Promise<runtime.ApiResponse<ReviewGenerationSettingsResponse>> {
+    async getReviewGenerationSettingsRaw(requestParameters: GetReviewGenerationSettingsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ReviewGenerationSettingsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getReviewGenerationSettings.');
         }
@@ -575,7 +575,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ReviewGenerationSettingsResponseFromJSON(jsonValue));
     }
@@ -584,8 +584,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Returns all current generation settings for a specified account.
      * Review Generation Settings: Get
      */
-    async getReviewGenerationSettings(requestParameters: GetReviewGenerationSettingsRequest): Promise<ReviewGenerationSettingsResponse> {
-        const response = await this.getReviewGenerationSettingsRaw(requestParameters);
+    async getReviewGenerationSettings(requestParameters: GetReviewGenerationSettingsRequest, initOverrides?: RequestInit): Promise<ReviewGenerationSettingsResponse> {
+        const response = await this.getReviewGenerationSettingsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -593,7 +593,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Retrieve a specific review invitation.
      * Review Invitation: Get
      */
-    async getReviewInvitationRaw(requestParameters: GetReviewInvitationRequest): Promise<runtime.ApiResponse<ReviewInvitationResponse>> {
+    async getReviewInvitationRaw(requestParameters: GetReviewInvitationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ReviewInvitationResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getReviewInvitation.');
         }
@@ -627,7 +627,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ReviewInvitationResponseFromJSON(jsonValue));
     }
@@ -636,8 +636,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Retrieve a specific review invitation.
      * Review Invitation: Get
      */
-    async getReviewInvitation(requestParameters: GetReviewInvitationRequest): Promise<ReviewInvitationResponse> {
-        const response = await this.getReviewInvitationRaw(requestParameters);
+    async getReviewInvitation(requestParameters: GetReviewInvitationRequest, initOverrides?: RequestInit): Promise<ReviewInvitationResponse> {
+        const response = await this.getReviewInvitationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -645,7 +645,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Retrieves all review invitations for an account
      * Review Invitations: List
      */
-    async listReviewInvitationsRaw(requestParameters: ListReviewInvitationsRequest): Promise<runtime.ApiResponse<ReviewInvitationsResponse>> {
+    async listReviewInvitationsRaw(requestParameters: ListReviewInvitationsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ReviewInvitationsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listReviewInvitations.');
         }
@@ -707,7 +707,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ReviewInvitationsResponseFromJSON(jsonValue));
     }
@@ -716,8 +716,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Retrieves all review invitations for an account
      * Review Invitations: List
      */
-    async listReviewInvitations(requestParameters: ListReviewInvitationsRequest): Promise<ReviewInvitationsResponse> {
-        const response = await this.listReviewInvitationsRaw(requestParameters);
+    async listReviewInvitations(requestParameters: ListReviewInvitationsRequest, initOverrides?: RequestInit): Promise<ReviewInvitationsResponse> {
+        const response = await this.listReviewInvitationsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -725,7 +725,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Retrieve all Reviews matching the given criteria.  **NOTE:** Not all publishers\' reviews will be included in the response. For more details, please contact your Account Manager. 
      * Reviews: List
      */
-    async listReviewsRaw(requestParameters: ListReviewsRequest): Promise<runtime.ApiResponse<ReviewsResponse>> {
+    async listReviewsRaw(requestParameters: ListReviewsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ReviewsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listReviews.');
         }
@@ -855,7 +855,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ReviewsResponseFromJSON(jsonValue));
     }
@@ -864,8 +864,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Retrieve all Reviews matching the given criteria.  **NOTE:** Not all publishers\' reviews will be included in the response. For more details, please contact your Account Manager. 
      * Reviews: List
      */
-    async listReviews(requestParameters: ListReviewsRequest): Promise<ReviewsResponse> {
-        const response = await this.listReviewsRaw(requestParameters);
+    async listReviews(requestParameters: ListReviewsRequest, initOverrides?: RequestInit): Promise<ReviewsResponse> {
+        const response = await this.listReviewsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -873,7 +873,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Updates a Comment on a Review. <br><br>  ## Optional fields * **`content`** * **`visibility`** <br><br> 
      * Comment: Update
      */
-    async updateCommentRaw(requestParameters: UpdateCommentRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async updateCommentRaw(requestParameters: UpdateCommentRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateComment.');
         }
@@ -918,7 +918,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: ReviewCommentUpdateToJSON(requestParameters.reviewCommentUpdate),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -927,8 +927,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Updates a Comment on a Review. <br><br>  ## Optional fields * **`content`** * **`visibility`** <br><br> 
      * Comment: Update
      */
-    async updateComment(requestParameters: UpdateCommentRequest): Promise<EmptyResponse> {
-        const response = await this.updateCommentRaw(requestParameters);
+    async updateComment(requestParameters: UpdateCommentRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.updateCommentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -936,7 +936,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Updates an External First Party Review or a First Party Review. <br><br> **NOTE:** Despite using the `PUT` method, Reviews: Update only updates supplied fields. Omitted fields are not modified. <br><br> 
      * Review: Update
      */
-    async updateReviewRaw(requestParameters: UpdateReviewRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async updateReviewRaw(requestParameters: UpdateReviewRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateReview.');
         }
@@ -977,7 +977,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: UpdateReviewToJSON(requestParameters.updateReview),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -986,8 +986,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Updates an External First Party Review or a First Party Review. <br><br> **NOTE:** Despite using the `PUT` method, Reviews: Update only updates supplied fields. Omitted fields are not modified. <br><br> 
      * Review: Update
      */
-    async updateReview(requestParameters: UpdateReviewRequest): Promise<IdResponse> {
-        const response = await this.updateReviewRaw(requestParameters);
+    async updateReview(requestParameters: UpdateReviewRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.updateReviewRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -995,7 +995,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Updates any generation settings specified in a specified account. Call may include any/all settings available to the account. Settings not included will remain unchanged. 
      * Review Generation Settings: Update
      */
-    async updateReviewGenerationSettingsRaw(requestParameters: UpdateReviewGenerationSettingsRequest): Promise<runtime.ApiResponse<UpdateReviewGenerationSettingsResponse>> {
+    async updateReviewGenerationSettingsRaw(requestParameters: UpdateReviewGenerationSettingsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<UpdateReviewGenerationSettingsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateReviewGenerationSettings.');
         }
@@ -1032,7 +1032,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: ReviewGenerationSettingsToJSON(requestParameters.reviewGenerationSettings),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UpdateReviewGenerationSettingsResponseFromJSON(jsonValue));
     }
@@ -1041,8 +1041,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Updates any generation settings specified in a specified account. Call may include any/all settings available to the account. Settings not included will remain unchanged. 
      * Review Generation Settings: Update
      */
-    async updateReviewGenerationSettings(requestParameters: UpdateReviewGenerationSettingsRequest): Promise<UpdateReviewGenerationSettingsResponse> {
-        const response = await this.updateReviewGenerationSettingsRaw(requestParameters);
+    async updateReviewGenerationSettings(requestParameters: UpdateReviewGenerationSettingsRequest, initOverrides?: RequestInit): Promise<UpdateReviewGenerationSettingsResponse> {
+        const response = await this.updateReviewGenerationSettingsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1050,7 +1050,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Supports updating an existing review invitation. This endpoint will not create a new review invitation or trigger a new SMS/Email to be sent, it will only update the data and/or metadata for an existing review invitation. Any optional parameters which are excluded from the request will simply be ignored. 
      * Review Invitation: Update
      */
-    async updateReviewInvitationRaw(requestParameters: UpdateReviewInvitationOperationRequest): Promise<runtime.ApiResponse<UpdateReviewInvitationResponse>> {
+    async updateReviewInvitationRaw(requestParameters: UpdateReviewInvitationOperationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<UpdateReviewInvitationResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateReviewInvitation.');
         }
@@ -1091,7 +1091,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: UpdateReviewInvitationRequestToJSON(requestParameters.updateReviewInvitationRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UpdateReviewInvitationResponseFromJSON(jsonValue));
     }
@@ -1100,8 +1100,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Supports updating an existing review invitation. This endpoint will not create a new review invitation or trigger a new SMS/Email to be sent, it will only update the data and/or metadata for an existing review invitation. Any optional parameters which are excluded from the request will simply be ignored. 
      * Review Invitation: Update
      */
-    async updateReviewInvitation(requestParameters: UpdateReviewInvitationOperationRequest): Promise<UpdateReviewInvitationResponse> {
-        const response = await this.updateReviewInvitationRaw(requestParameters);
+    async updateReviewInvitation(requestParameters: UpdateReviewInvitationOperationRequest, initOverrides?: RequestInit): Promise<UpdateReviewInvitationResponse> {
+        const response = await this.updateReviewInvitationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1109,7 +1109,7 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Adds the specified review labels to the specified review.
      * Review Labels: Update
      */
-    async updateReviewLabelsRaw(requestParameters: UpdateReviewLabelsOperationRequest): Promise<runtime.ApiResponse<UpdateReviewLabelsResponse>> {
+    async updateReviewLabelsRaw(requestParameters: UpdateReviewLabelsOperationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<UpdateReviewLabelsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateReviewLabels.');
         }
@@ -1146,7 +1146,7 @@ export class ReviewsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: UpdateReviewLabelsRequestToJSON(requestParameters.updateReviewLabelsRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UpdateReviewLabelsResponseFromJSON(jsonValue));
     }
@@ -1155,8 +1155,8 @@ export class ReviewsApi extends runtime.BaseAPI {
      * Adds the specified review labels to the specified review.
      * Review Labels: Update
      */
-    async updateReviewLabels(requestParameters: UpdateReviewLabelsOperationRequest): Promise<UpdateReviewLabelsResponse> {
-        const response = await this.updateReviewLabelsRaw(requestParameters);
+    async updateReviewLabels(requestParameters: UpdateReviewLabelsOperationRequest, initOverrides?: RequestInit): Promise<UpdateReviewLabelsResponse> {
+        const response = await this.updateReviewLabelsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

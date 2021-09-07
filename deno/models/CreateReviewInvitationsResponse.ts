@@ -18,10 +18,10 @@ import {
     ResponseMetaFromJSON,
     ResponseMetaFromJSONTyped,
     ResponseMetaToJSON,
-    ReviewInvitation,
-    ReviewInvitationFromJSON,
-    ReviewInvitationFromJSONTyped,
-    ReviewInvitationToJSON,
+    ReviewInvitationOptional,
+    ReviewInvitationOptionalFromJSON,
+    ReviewInvitationOptionalFromJSONTyped,
+    ReviewInvitationOptionalToJSON,
 } from './index.ts';
 
 /**
@@ -38,10 +38,10 @@ export interface CreateReviewInvitationsResponse {
     meta?: ResponseMeta;
     /**
      * 
-     * @type {Array<ReviewInvitation>}
+     * @type {Array<ReviewInvitationOptional>}
      * @memberof CreateReviewInvitationsResponse
      */
-    response?: Array<ReviewInvitation>;
+    response?: Array<ReviewInvitationOptional>;
 }
 
 export function CreateReviewInvitationsResponseFromJSON(json: any): CreateReviewInvitationsResponse {
@@ -55,7 +55,7 @@ export function CreateReviewInvitationsResponseFromJSONTyped(json: any, ignoreDi
     return {
         
         'meta': !exists(json, 'meta') ? undefined : ResponseMetaFromJSON(json['meta']),
-        'response': !exists(json, 'response') ? undefined : ((json['response'] as Array<any>).map(ReviewInvitationFromJSON)),
+        'response': !exists(json, 'response') ? undefined : ((json['response'] as Array<any>).map(ReviewInvitationOptionalFromJSON)),
     };
 }
 
@@ -69,7 +69,7 @@ export function CreateReviewInvitationsResponseToJSON(value?: CreateReviewInvita
     return {
         
         'meta': ResponseMetaToJSON(value.meta),
-        'response': value.response === undefined ? undefined : ((value.response as Array<any>).map(ReviewInvitationToJSON)),
+        'response': value.response === undefined ? undefined : ((value.response as Array<any>).map(ReviewInvitationOptionalToJSON)),
     };
 }
 

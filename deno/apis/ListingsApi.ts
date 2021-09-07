@@ -289,7 +289,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Provides verification codes to complete the verification for entities in an account. 
      * Verification: Complete
      */
-    async completeVerificationRaw(requestParameters: CompleteVerificationRequest): Promise<runtime.ApiResponse<CompleteVerificationResponse>> {
+    async completeVerificationRaw(requestParameters: CompleteVerificationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<CompleteVerificationResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling completeVerification.');
         }
@@ -330,7 +330,7 @@ export class ListingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters.verificationCompletion.map(VerificationCompletionToJSON),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CompleteVerificationResponseFromJSON(jsonValue));
     }
@@ -339,8 +339,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Provides verification codes to complete the verification for entities in an account. 
      * Verification: Complete
      */
-    async completeVerification(requestParameters: CompleteVerificationRequest): Promise<CompleteVerificationResponse> {
-        const response = await this.completeVerificationRaw(requestParameters);
+    async completeVerification(requestParameters: CompleteVerificationRequest, initOverrides?: RequestInit): Promise<CompleteVerificationResponse> {
+        const response = await this.completeVerificationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -348,7 +348,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Creates a new Answer on a Question.
      * Answer: Create
      */
-    async createAnswerRaw(requestParameters: CreateAnswerRequest): Promise<runtime.ApiResponse<CreateAnswerResponse>> {
+    async createAnswerRaw(requestParameters: CreateAnswerRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<CreateAnswerResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createAnswer.');
         }
@@ -385,7 +385,7 @@ export class ListingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: AnswerRequestToJSON(requestParameters.answerRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CreateAnswerResponseFromJSON(jsonValue));
     }
@@ -394,8 +394,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Creates a new Answer on a Question.
      * Answer: Create
      */
-    async createAnswer(requestParameters: CreateAnswerRequest): Promise<CreateAnswerResponse> {
-        const response = await this.createAnswerRaw(requestParameters);
+    async createAnswer(requestParameters: CreateAnswerRequest, initOverrides?: RequestInit): Promise<CreateAnswerResponse> {
+        const response = await this.createAnswerRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -403,7 +403,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Creates a new Duplicate with **`status`** `SUPPRESSION_REQUESTED`.  **NOTE:** When sending requests to this endpoint, you must provide your Yext user ID in the **`Yext-User-Id`** header. 
      * Duplicates: Create
      */
-    async createDuplicateRaw(requestParameters: CreateDuplicateRequest): Promise<runtime.ApiResponse<IdResponse>> {
+    async createDuplicateRaw(requestParameters: CreateDuplicateRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<IdResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createDuplicate.');
         }
@@ -453,7 +453,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => IdResponseFromJSON(jsonValue));
     }
@@ -462,8 +462,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Creates a new Duplicate with **`status`** `SUPPRESSION_REQUESTED`.  **NOTE:** When sending requests to this endpoint, you must provide your Yext user ID in the **`Yext-User-Id`** header. 
      * Duplicates: Create
      */
-    async createDuplicate(requestParameters: CreateDuplicateRequest): Promise<IdResponse> {
-        const response = await this.createDuplicateRaw(requestParameters);
+    async createDuplicate(requestParameters: CreateDuplicateRequest, initOverrides?: RequestInit): Promise<IdResponse> {
+        const response = await this.createDuplicateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -471,7 +471,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Deletes an Answer for a Question
      * Answer: Delete
      */
-    async deleteAnswerRaw(requestParameters: DeleteAnswerRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteAnswerRaw(requestParameters: DeleteAnswerRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteAnswer.');
         }
@@ -509,7 +509,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -518,8 +518,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Deletes an Answer for a Question
      * Answer: Delete
      */
-    async deleteAnswer(requestParameters: DeleteAnswerRequest): Promise<EmptyResponse> {
-        const response = await this.deleteAnswerRaw(requestParameters);
+    async deleteAnswer(requestParameters: DeleteAnswerRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteAnswerRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -527,7 +527,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Indicates that a Duplicate should be ignored.  **NOTE:** When sending requests to this endpoint, you must provide your Yext user ID in the **`Yext-User-Id`** header. 
      * Duplicates: Delete
      */
-    async deleteDuplicateRaw(requestParameters: DeleteDuplicateRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteDuplicateRaw(requestParameters: DeleteDuplicateRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteDuplicate.');
         }
@@ -561,7 +561,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -570,8 +570,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Indicates that a Duplicate should be ignored.  **NOTE:** When sending requests to this endpoint, you must provide your Yext user ID in the **`Yext-User-Id`** header. 
      * Duplicates: Delete
      */
-    async deleteDuplicate(requestParameters: DeleteDuplicateRequest): Promise<EmptyResponse> {
-        const response = await this.deleteDuplicateRaw(requestParameters);
+    async deleteDuplicate(requestParameters: DeleteDuplicateRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteDuplicateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -579,7 +579,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Deletes event listings from publishers. If deletion is not supported by the publisher, then service is removed instead.  **NOTE:** You can delete a maximum of 100 listings in a single request. If the number of Entity IDs multiplied by the number of Publisher IDs in your request exceeds 100, you will receive a 400 error response.  **Support for `all` macro:** If you would like to use this endpoint to take action on your account and all of its sub-accounts, you can use the `all` macro in place of your account ID in your request URLs. For more information, see the \"Account ID\" section of \"Policies and Conventions\" at the top of this page. 
      * Entity Listings: Delete
      */
-    async deleteListingsRaw(requestParameters: DeleteListingsRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteListingsRaw(requestParameters: DeleteListingsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteListings.');
         }
@@ -617,7 +617,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -626,8 +626,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Deletes event listings from publishers. If deletion is not supported by the publisher, then service is removed instead.  **NOTE:** You can delete a maximum of 100 listings in a single request. If the number of Entity IDs multiplied by the number of Publisher IDs in your request exceeds 100, you will receive a 400 error response.  **Support for `all` macro:** If you would like to use this endpoint to take action on your account and all of its sub-accounts, you can use the `all` macro in place of your account ID in your request URLs. For more information, see the \"Account ID\" section of \"Policies and Conventions\" at the top of this page. 
      * Entity Listings: Delete
      */
-    async deleteListings(requestParameters: DeleteListingsRequest): Promise<EmptyResponse> {
-        const response = await this.deleteListingsRaw(requestParameters);
+    async deleteListings(requestParameters: DeleteListingsRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteListingsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -635,7 +635,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Fetches details of a specific Publisher Suggestion
      * Publisher Suggestions: Get
      */
-    async getPublisherSuggestionRaw(requestParameters: GetPublisherSuggestionRequest): Promise<runtime.ApiResponse<PublisherSuggestionResponse>> {
+    async getPublisherSuggestionRaw(requestParameters: GetPublisherSuggestionRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<PublisherSuggestionResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getPublisherSuggestion.');
         }
@@ -669,7 +669,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PublisherSuggestionResponseFromJSON(jsonValue));
     }
@@ -678,8 +678,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Fetches details of a specific Publisher Suggestion
      * Publisher Suggestions: Get
      */
-    async getPublisherSuggestion(requestParameters: GetPublisherSuggestionRequest): Promise<PublisherSuggestionResponse> {
-        const response = await this.getPublisherSuggestionRaw(requestParameters);
+    async getPublisherSuggestion(requestParameters: GetPublisherSuggestionRequest, initOverrides?: RequestInit): Promise<PublisherSuggestionResponse> {
+        const response = await this.getPublisherSuggestionRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -687,7 +687,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve information for a Question
      * Question: Get
      */
-    async getQuestionRaw(requestParameters: GetQuestionRequest): Promise<runtime.ApiResponse<QuestionResponse>> {
+    async getQuestionRaw(requestParameters: GetQuestionRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<QuestionResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getQuestion.');
         }
@@ -721,7 +721,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => QuestionResponseFromJSON(jsonValue));
     }
@@ -730,8 +730,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve information for a Question
      * Question: Get
      */
-    async getQuestion(requestParameters: GetQuestionRequest): Promise<QuestionResponse> {
-        const response = await this.getQuestionRaw(requestParameters);
+    async getQuestion(requestParameters: GetQuestionRequest, initOverrides?: RequestInit): Promise<QuestionResponse> {
+        const response = await this.getQuestionRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -739,7 +739,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Initiate verification for entities in an account. This request will trigger verification codes being sent to the specified addresses, phone numbers, or email addresses. 
      * Verification: Initiate
      */
-    async initiateVerificationRaw(requestParameters: InitiateVerificationRequest): Promise<runtime.ApiResponse<InitiateVerificationResponse>> {
+    async initiateVerificationRaw(requestParameters: InitiateVerificationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InitiateVerificationResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling initiateVerification.');
         }
@@ -784,7 +784,7 @@ export class ListingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters.verificationInitiation.map(VerificationInitiationToJSON),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InitiateVerificationResponseFromJSON(jsonValue));
     }
@@ -793,8 +793,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Initiate verification for entities in an account. This request will trigger verification codes being sent to the specified addresses, phone numbers, or email addresses. 
      * Verification: Initiate
      */
-    async initiateVerification(requestParameters: InitiateVerificationRequest): Promise<InitiateVerificationResponse> {
-        const response = await this.initiateVerificationRaw(requestParameters);
+    async initiateVerification(requestParameters: InitiateVerificationRequest, initOverrides?: RequestInit): Promise<InitiateVerificationResponse> {
+        const response = await this.initiateVerificationRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -802,7 +802,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Sends invitations to new listing admins for entities in an account. For Google My Business listings, the admins will be given owner-level access. 
      * Listing Admin: Invite
      */
-    async inviteAdminsRaw(requestParameters: InviteAdminsRequest): Promise<runtime.ApiResponse<InviteAdminsResponse>> {
+    async inviteAdminsRaw(requestParameters: InviteAdminsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InviteAdminsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling inviteAdmins.');
         }
@@ -843,7 +843,7 @@ export class ListingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters.adminInvite.map(AdminInviteToJSON),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => InviteAdminsResponseFromJSON(jsonValue));
     }
@@ -852,8 +852,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Sends invitations to new listing admins for entities in an account. For Google My Business listings, the admins will be given owner-level access. 
      * Listing Admin: Invite
      */
-    async inviteAdmins(requestParameters: InviteAdminsRequest): Promise<InviteAdminsResponse> {
-        const response = await this.inviteAdminsRaw(requestParameters);
+    async inviteAdmins(requestParameters: InviteAdminsRequest, initOverrides?: RequestInit): Promise<InviteAdminsResponse> {
+        const response = await this.inviteAdminsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -861,7 +861,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve listing admins for entities in an account. 
      * Listing Admins: List
      */
-    async listAdminsRaw(requestParameters: ListAdminsRequest): Promise<runtime.ApiResponse<ListAdminsResponse>> {
+    async listAdminsRaw(requestParameters: ListAdminsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ListAdminsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listAdmins.');
         }
@@ -911,7 +911,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ListAdminsResponseFromJSON(jsonValue));
     }
@@ -920,8 +920,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve listing admins for entities in an account. 
      * Listing Admins: List
      */
-    async listAdmins(requestParameters: ListAdminsRequest): Promise<ListAdminsResponse> {
-        const response = await this.listAdminsRaw(requestParameters);
+    async listAdmins(requestParameters: ListAdminsRequest, initOverrides?: RequestInit): Promise<ListAdminsResponse> {
+        const response = await this.listAdminsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -929,7 +929,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve Duplicates for an account  If the **`v`** parameter is `20180802` or later: only duplicates of live listings (**`status`**: `LIVE`) will be included 
      * Duplicates: List
      */
-    async listDuplicatesRaw(requestParameters: ListDuplicatesRequest): Promise<runtime.ApiResponse<DuplicatesResponse>> {
+    async listDuplicatesRaw(requestParameters: ListDuplicatesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<DuplicatesResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listDuplicates.');
         }
@@ -979,7 +979,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DuplicatesResponseFromJSON(jsonValue));
     }
@@ -988,8 +988,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve Duplicates for an account  If the **`v`** parameter is `20180802` or later: only duplicates of live listings (**`status`**: `LIVE`) will be included 
      * Duplicates: List
      */
-    async listDuplicates(requestParameters: ListDuplicatesRequest): Promise<DuplicatesResponse> {
-        const response = await this.listDuplicatesRaw(requestParameters);
+    async listDuplicates(requestParameters: ListDuplicatesRequest, initOverrides?: RequestInit): Promise<DuplicatesResponse> {
+        const response = await this.listDuplicatesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -997,7 +997,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve all Entity Listings matching the given criteria. Includes the status of each Listing and reasons why a Listing may not be live. This endpoint currently only supports Event Listings.  The results will first be sorted by publisher and then by Entity.  **Support for `all` macro:** If you would like to use this endpoint to take action on your account and all of its sub-accounts, you can use the `all` macro in place of your account ID in your request URLs. For more information, see the \"Account ID\" section of \"Policies and Conventions\" at the top of this page. 
      * Entity Listings: List
      */
-    async listEntityListingsRaw(requestParameters: ListEntityListingsRequest): Promise<runtime.ApiResponse<EntityListingsResponse>> {
+    async listEntityListingsRaw(requestParameters: ListEntityListingsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EntityListingsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listEntityListings.');
         }
@@ -1055,7 +1055,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EntityListingsResponseFromJSON(jsonValue));
     }
@@ -1064,8 +1064,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve all Entity Listings matching the given criteria. Includes the status of each Listing and reasons why a Listing may not be live. This endpoint currently only supports Event Listings.  The results will first be sorted by publisher and then by Entity.  **Support for `all` macro:** If you would like to use this endpoint to take action on your account and all of its sub-accounts, you can use the `all` macro in place of your account ID in your request URLs. For more information, see the \"Account ID\" section of \"Policies and Conventions\" at the top of this page. 
      * Entity Listings: List
      */
-    async listEntityListings(requestParameters: ListEntityListingsRequest): Promise<EntityListingsResponse> {
-        const response = await this.listEntityListingsRaw(requestParameters);
+    async listEntityListings(requestParameters: ListEntityListingsRequest, initOverrides?: RequestInit): Promise<EntityListingsResponse> {
+        const response = await this.listEntityListingsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1073,7 +1073,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve all Listings matching the given criteria including status and reasons why a Listing may be unavailable  The results will first be sorted by publisher and then by Location.  **Support for `all` macro:** If you would like to use this endpoint to take action on your account and all of its sub-accounts, you can use the `all` macro in place of your account ID in your request URLs. For more information, see the \"Account ID\" section of \"Policies and Conventions\" at the top of this page. 
      * Listings: List
      */
-    async listListingsRaw(requestParameters: ListListingsRequest): Promise<runtime.ApiResponse<ListingsResponse>> {
+    async listListingsRaw(requestParameters: ListListingsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ListingsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listListings.');
         }
@@ -1127,7 +1127,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ListingsResponseFromJSON(jsonValue));
     }
@@ -1136,8 +1136,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve all Listings matching the given criteria including status and reasons why a Listing may be unavailable  The results will first be sorted by publisher and then by Location.  **Support for `all` macro:** If you would like to use this endpoint to take action on your account and all of its sub-accounts, you can use the `all` macro in place of your account ID in your request URLs. For more information, see the \"Account ID\" section of \"Policies and Conventions\" at the top of this page. 
      * Listings: List
      */
-    async listListings(requestParameters: ListListingsRequest): Promise<ListingsResponse> {
-        const response = await this.listListingsRaw(requestParameters);
+    async listListings(requestParameters: ListListingsRequest, initOverrides?: RequestInit): Promise<ListingsResponse> {
+        const response = await this.listListingsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1145,7 +1145,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve verification methods for entities in an account 
      * Verification Methods: List
      */
-    async listMethodsRaw(requestParameters: ListMethodsRequest): Promise<runtime.ApiResponse<ListMethodsResponse>> {
+    async listMethodsRaw(requestParameters: ListMethodsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ListMethodsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listMethods.');
         }
@@ -1199,7 +1199,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ListMethodsResponseFromJSON(jsonValue));
     }
@@ -1208,8 +1208,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve verification methods for entities in an account 
      * Verification Methods: List
      */
-    async listMethods(requestParameters: ListMethodsRequest): Promise<ListMethodsResponse> {
-        const response = await this.listMethodsRaw(requestParameters);
+    async listMethods(requestParameters: ListMethodsRequest, initOverrides?: RequestInit): Promise<ListMethodsResponse> {
+        const response = await this.listMethodsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1217,7 +1217,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve suggestions publishers have submitted for the Locations in an account
      * Publisher Suggestions: List
      */
-    async listPublisherSuggestionsRaw(requestParameters: ListPublisherSuggestionsRequest): Promise<runtime.ApiResponse<PublisherSuggestionsResponse>> {
+    async listPublisherSuggestionsRaw(requestParameters: ListPublisherSuggestionsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<PublisherSuggestionsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listPublisherSuggestions.');
         }
@@ -1267,7 +1267,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PublisherSuggestionsResponseFromJSON(jsonValue));
     }
@@ -1276,8 +1276,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve suggestions publishers have submitted for the Locations in an account
      * Publisher Suggestions: List
      */
-    async listPublisherSuggestions(requestParameters: ListPublisherSuggestionsRequest): Promise<PublisherSuggestionsResponse> {
-        const response = await this.listPublisherSuggestionsRaw(requestParameters);
+    async listPublisherSuggestions(requestParameters: ListPublisherSuggestionsRequest, initOverrides?: RequestInit): Promise<PublisherSuggestionsResponse> {
+        const response = await this.listPublisherSuggestionsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1285,7 +1285,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve a list of publishers included in an account\'s subscription 
      * Publishers: List
      */
-    async listPublishersRaw(requestParameters: ListPublishersRequest): Promise<runtime.ApiResponse<PublishersResponse>> {
+    async listPublishersRaw(requestParameters: ListPublishersRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<PublishersResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listPublishers.');
         }
@@ -1323,7 +1323,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PublishersResponseFromJSON(jsonValue));
     }
@@ -1332,8 +1332,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve a list of publishers included in an account\'s subscription 
      * Publishers: List
      */
-    async listPublishers(requestParameters: ListPublishersRequest): Promise<PublishersResponse> {
-        const response = await this.listPublishersRaw(requestParameters);
+    async listPublishers(requestParameters: ListPublishersRequest, initOverrides?: RequestInit): Promise<PublishersResponse> {
+        const response = await this.listPublishersRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1341,7 +1341,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve a list of Questions within an account.
      * Questions: List 
      */
-    async listQuestionsRaw(requestParameters: ListQuestionsRequest): Promise<runtime.ApiResponse<ListQuestionsReponse>> {
+    async listQuestionsRaw(requestParameters: ListQuestionsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ListQuestionsReponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listQuestions.');
         }
@@ -1387,7 +1387,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ListQuestionsReponseFromJSON(jsonValue));
     }
@@ -1396,8 +1396,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve a list of Questions within an account.
      * Questions: List 
      */
-    async listQuestions(requestParameters: ListQuestionsRequest): Promise<ListQuestionsReponse> {
-        const response = await this.listQuestionsRaw(requestParameters);
+    async listQuestions(requestParameters: ListQuestionsRequest, initOverrides?: RequestInit): Promise<ListQuestionsReponse> {
+        const response = await this.listQuestionsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1405,7 +1405,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve verification statuses for entities in an account 
      * Verification Statuses: List
      */
-    async listStatusesRaw(requestParameters: ListStatusesRequest): Promise<runtime.ApiResponse<ListStatusesResponse>> {
+    async listStatusesRaw(requestParameters: ListStatusesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ListStatusesResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listStatuses.');
         }
@@ -1455,7 +1455,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ListStatusesResponseFromJSON(jsonValue));
     }
@@ -1464,8 +1464,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Retrieve verification statuses for entities in an account 
      * Verification Statuses: List
      */
-    async listStatuses(requestParameters: ListStatusesRequest): Promise<ListStatusesResponse> {
-        const response = await this.listStatusesRaw(requestParameters);
+    async listStatuses(requestParameters: ListStatusesRequest, initOverrides?: RequestInit): Promise<ListStatusesResponse> {
+        const response = await this.listStatusesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1473,7 +1473,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Opts designated locations into designated publishers  **NOTE:** The number of Location IDs multiplied by the number of Publisher IDs is capped at 100. If you exceed this, you will receive a 400 error response. 
      * Listings: Opt In
      */
-    async optInListingsRaw(requestParameters: OptInListingsRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async optInListingsRaw(requestParameters: OptInListingsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling optInListings.');
         }
@@ -1511,7 +1511,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1520,8 +1520,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Opts designated locations into designated publishers  **NOTE:** The number of Location IDs multiplied by the number of Publisher IDs is capped at 100. If you exceed this, you will receive a 400 error response. 
      * Listings: Opt In
      */
-    async optInListings(requestParameters: OptInListingsRequest): Promise<EmptyResponse> {
-        const response = await this.optInListingsRaw(requestParameters);
+    async optInListings(requestParameters: OptInListingsRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.optInListingsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1529,7 +1529,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Opts designated locations out of designated publishers  **NOTE:** The number of Location IDs multiplied by the number of Publisher IDs is capped at 100. If you exceed this, you will receive a 400 error response. 
      * Listings: Opt Out
      */
-    async optOutListingsRaw(requestParameters: OptOutListingsRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async optOutListingsRaw(requestParameters: OptOutListingsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling optOutListings.');
         }
@@ -1567,7 +1567,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1576,8 +1576,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Opts designated locations out of designated publishers  **NOTE:** The number of Location IDs multiplied by the number of Publisher IDs is capped at 100. If you exceed this, you will receive a 400 error response. 
      * Listings: Opt Out
      */
-    async optOutListings(requestParameters: OptOutListingsRequest): Promise<EmptyResponse> {
-        const response = await this.optOutListingsRaw(requestParameters);
+    async optOutListings(requestParameters: OptOutListingsRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.optOutListingsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1585,7 +1585,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Request suppression of a Duplicate.  **NOTE:** When sending requests to this endpoint, you must provide your Yext user ID in the **`Yext-User-Id`** header. 
      * Duplicates: Suppress
      */
-    async suppressDuplicateRaw(requestParameters: SuppressDuplicateRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async suppressDuplicateRaw(requestParameters: SuppressDuplicateRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling suppressDuplicate.');
         }
@@ -1619,7 +1619,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1628,8 +1628,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Request suppression of a Duplicate.  **NOTE:** When sending requests to this endpoint, you must provide your Yext user ID in the **`Yext-User-Id`** header. 
      * Duplicates: Suppress
      */
-    async suppressDuplicate(requestParameters: SuppressDuplicateRequest): Promise<EmptyResponse> {
-        const response = await this.suppressDuplicateRaw(requestParameters);
+    async suppressDuplicate(requestParameters: SuppressDuplicateRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.suppressDuplicateRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1637,7 +1637,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Updates an Answer for a Question
      * Answer: Update
      */
-    async updateAnswerRaw(requestParameters: UpdateAnswerRequest): Promise<runtime.ApiResponse<UpdateAnswerResponse>> {
+    async updateAnswerRaw(requestParameters: UpdateAnswerRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<UpdateAnswerResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateAnswer.');
         }
@@ -1678,7 +1678,7 @@ export class ListingsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: AnswerRequestToJSON(requestParameters.answerRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UpdateAnswerResponseFromJSON(jsonValue));
     }
@@ -1687,8 +1687,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Updates an Answer for a Question
      * Answer: Update
      */
-    async updateAnswer(requestParameters: UpdateAnswerRequest): Promise<UpdateAnswerResponse> {
-        const response = await this.updateAnswerRaw(requestParameters);
+    async updateAnswer(requestParameters: UpdateAnswerRequest, initOverrides?: RequestInit): Promise<UpdateAnswerResponse> {
+        const response = await this.updateAnswerRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1696,7 +1696,7 @@ export class ListingsApi extends runtime.BaseAPI {
      * Accept or reject a Publisher Suggestion.  **NOTE:** When sending requests to this endpoint, you must provide your Yext user ID in the **`Yext-User-Id`** header. 
      * Publisher Suggestions: Update
      */
-    async updatePublisherSuggestionRaw(requestParameters: UpdatePublisherSuggestionRequest): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async updatePublisherSuggestionRaw(requestParameters: UpdatePublisherSuggestionRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updatePublisherSuggestion.');
         }
@@ -1738,7 +1738,7 @@ export class ListingsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmptyResponseFromJSON(jsonValue));
     }
@@ -1747,8 +1747,8 @@ export class ListingsApi extends runtime.BaseAPI {
      * Accept or reject a Publisher Suggestion.  **NOTE:** When sending requests to this endpoint, you must provide your Yext user ID in the **`Yext-User-Id`** header. 
      * Publisher Suggestions: Update
      */
-    async updatePublisherSuggestion(requestParameters: UpdatePublisherSuggestionRequest): Promise<EmptyResponse> {
-        const response = await this.updatePublisherSuggestionRaw(requestParameters);
+    async updatePublisherSuggestion(requestParameters: UpdatePublisherSuggestionRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.updatePublisherSuggestionRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

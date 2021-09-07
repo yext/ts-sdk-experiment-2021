@@ -22,18 +22,18 @@ import {
     GetReviewInvitationAllOf1FromJSON,
     GetReviewInvitationAllOf1FromJSONTyped,
     GetReviewInvitationAllOf1ToJSON,
-    ReviewInvitation,
-    ReviewInvitationFromJSON,
-    ReviewInvitationFromJSONTyped,
-    ReviewInvitationToJSON,
     ReviewInvitationDates,
     ReviewInvitationDatesFromJSON,
     ReviewInvitationDatesFromJSONTyped,
     ReviewInvitationDatesToJSON,
-    ReviewInvitationEntity,
-    ReviewInvitationEntityFromJSON,
-    ReviewInvitationEntityFromJSONTyped,
-    ReviewInvitationEntityToJSON,
+    ReviewInvitationOptional,
+    ReviewInvitationOptionalFromJSON,
+    ReviewInvitationOptionalFromJSONTyped,
+    ReviewInvitationOptionalToJSON,
+    ReviewInvitationOptionalEntity,
+    ReviewInvitationOptionalEntityFromJSON,
+    ReviewInvitationOptionalEntityFromJSONTyped,
+    ReviewInvitationOptionalEntityToJSON,
 } from './';
 
 /**
@@ -54,29 +54,29 @@ export interface GetReviewInvitation {
     readonly invitationUid?: string;
     /**
      * 
-     * @type {ReviewInvitationEntity}
+     * @type {ReviewInvitationOptionalEntity}
      * @memberof GetReviewInvitation
      */
-    entity: ReviewInvitationEntity;
+    entity?: ReviewInvitationOptionalEntity;
     /**
      * The first name of the person from whom a review is being requested.
      * @type {string}
      * @memberof GetReviewInvitation
      */
-    firstName: string;
+    firstName?: string;
     /**
      * The last name of the person from whom a review is being requested.
      * @type {string}
      * @memberof GetReviewInvitation
      */
-    lastName: string;
+    lastName?: string;
     /**
      * The title of the person from whom a review is being requested
      * (e.g., Mr., Mrs., Miss, etc.).
      * @type {string}
      * @memberof GetReviewInvitation
      */
-    title: string;
+    title?: string;
     /**
      * The email address or phone number of the person from whom a review is being requested.
      * 
@@ -86,7 +86,7 @@ export interface GetReviewInvitation {
      * @type {string}
      * @memberof GetReviewInvitation
      */
-    contact: string;
+    contact?: string;
     /**
      * Only valid for SMS invitations.
      * 
@@ -267,11 +267,11 @@ export function GetReviewInvitationFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'invitationUid': !exists(json, 'invitationUid') ? undefined : json['invitationUid'],
-        'entity': ReviewInvitationEntityFromJSON(json['entity']),
-        'firstName': json['firstName'],
-        'lastName': json['lastName'],
-        'title': json['title'],
-        'contact': json['contact'],
+        'entity': !exists(json, 'entity') ? undefined : ReviewInvitationOptionalEntityFromJSON(json['entity']),
+        'firstName': !exists(json, 'firstName') ? undefined : json['firstName'],
+        'lastName': !exists(json, 'lastName') ? undefined : json['lastName'],
+        'title': !exists(json, 'title') ? undefined : json['title'],
+        'contact': !exists(json, 'contact') ? undefined : json['contact'],
         'includeImage': !exists(json, 'includeImage') ? undefined : json['includeImage'],
         'templateId': !exists(json, 'templateId') ? undefined : json['templateId'],
         'transactionId': !exists(json, 'transactionId') ? undefined : json['transactionId'],
@@ -302,7 +302,7 @@ export function GetReviewInvitationToJSON(value?: GetReviewInvitation | null): a
     }
     return {
         
-        'entity': ReviewInvitationEntityToJSON(value.entity),
+        'entity': ReviewInvitationOptionalEntityToJSON(value.entity),
         'firstName': value.firstName,
         'lastName': value.lastName,
         'title': value.title,

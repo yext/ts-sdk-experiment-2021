@@ -80,7 +80,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * Fetches account activity information.
      * Activity Log
      */
-    async activityLogRaw(requestParameters: ActivityLogOperationRequest): Promise<runtime.ApiResponse<ActivitiesResponse>> {
+    async activityLogRaw(requestParameters: ActivityLogOperationRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ActivitiesResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling activityLog.');
         }
@@ -113,7 +113,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: ActivityLogRequestToJSON(requestParameters.activityLogRequest),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ActivitiesResponseFromJSON(jsonValue));
     }
@@ -122,8 +122,8 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * Fetches account activity information.
      * Activity Log
      */
-    async activityLog(requestParameters: ActivityLogOperationRequest): Promise<ActivitiesResponse> {
-        const response = await this.activityLogRaw(requestParameters);
+    async activityLog(requestParameters: ActivityLogOperationRequest, initOverrides?: RequestInit): Promise<ActivitiesResponse> {
+        const response = await this.activityLogRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -131,7 +131,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * Create a report to retrieve analytics for each of your products using synchronous or asynchronous requests depending on the size of your data.
      * Reports
      */
-    async createReportsRaw(requestParameters: CreateReportsRequest): Promise<runtime.ApiResponse<CreateReportsResponse>> {
+    async createReportsRaw(requestParameters: CreateReportsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<CreateReportsResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createReports.');
         }
@@ -172,7 +172,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
             headers: headerParameters,
             query: queryParameters,
             body: CreateReportRequestBodyToJSON(requestParameters.createReportRequestBody),
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CreateReportsResponseFromJSON(jsonValue));
     }
@@ -181,8 +181,8 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * Create a report to retrieve analytics for each of your products using synchronous or asynchronous requests depending on the size of your data.
      * Reports
      */
-    async createReports(requestParameters: CreateReportsRequest): Promise<CreateReportsResponse> {
-        const response = await this.createReportsRaw(requestParameters);
+    async createReports(requestParameters: CreateReportsRequest, initOverrides?: RequestInit): Promise<CreateReportsResponse> {
+        const response = await this.createReportsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -190,7 +190,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * List of all metrics for which reporting data is available, along with their completed dates.
      * Catalog
      */
-    async getCatalogRaw(requestParameters: GetCatalogRequest): Promise<runtime.ApiResponse<CatalogResponse>> {
+    async getCatalogRaw(requestParameters: GetCatalogRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<CatalogResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getCatalog.');
         }
@@ -220,7 +220,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => CatalogResponseFromJSON(jsonValue));
     }
@@ -229,8 +229,8 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * List of all metrics for which reporting data is available, along with their completed dates.
      * Catalog
      */
-    async getCatalog(requestParameters: GetCatalogRequest): Promise<CatalogResponse> {
-        const response = await this.getCatalogRaw(requestParameters);
+    async getCatalog(requestParameters: GetCatalogRequest, initOverrides?: RequestInit): Promise<CatalogResponse> {
+        const response = await this.getCatalogRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -238,7 +238,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * Fetch the completed date for Listings and Bing metrics. Fetching the completed date for individual metrics can be done using the catalog endpoint.
      * Max Dates
      */
-    async getMaxDatesRaw(requestParameters: GetMaxDatesRequest): Promise<runtime.ApiResponse<MaximumDatesResponse>> {
+    async getMaxDatesRaw(requestParameters: GetMaxDatesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<MaximumDatesResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getMaxDates.');
         }
@@ -268,7 +268,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => MaximumDatesResponseFromJSON(jsonValue));
     }
@@ -277,8 +277,8 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * Fetch the completed date for Listings and Bing metrics. Fetching the completed date for individual metrics can be done using the catalog endpoint.
      * Max Dates
      */
-    async getMaxDates(requestParameters: GetMaxDatesRequest): Promise<MaximumDatesResponse> {
-        const response = await this.getMaxDatesRaw(requestParameters);
+    async getMaxDates(requestParameters: GetMaxDatesRequest, initOverrides?: RequestInit): Promise<MaximumDatesResponse> {
+        const response = await this.getMaxDatesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -286,7 +286,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * Checks the status of a Report created with async=true.
      * Report Status
      */
-    async reportStatusRaw(requestParameters: ReportStatusRequest): Promise<runtime.ApiResponse<ReportStatusResponse>> {
+    async reportStatusRaw(requestParameters: ReportStatusRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<ReportStatusResponse>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling reportStatus.');
         }
@@ -320,7 +320,7 @@ export class AnalyticsApi extends runtime.BaseAPI {
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        });
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ReportStatusResponseFromJSON(jsonValue));
     }
@@ -329,8 +329,8 @@ export class AnalyticsApi extends runtime.BaseAPI {
      * Checks the status of a Report created with async=true.
      * Report Status
      */
-    async reportStatus(requestParameters: ReportStatusRequest): Promise<ReportStatusResponse> {
-        const response = await this.reportStatusRaw(requestParameters);
+    async reportStatus(requestParameters: ReportStatusRequest, initOverrides?: RequestInit): Promise<ReportStatusResponse> {
+        const response = await this.reportStatusRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
