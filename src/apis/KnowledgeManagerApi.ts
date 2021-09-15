@@ -153,6 +153,17 @@ export interface CreateCustomFieldRequest {
     field: Field;
 }
 
+export interface CreateEntityRequest {
+    accountId: string;
+    entityType: string;
+    v: string;
+    entityWrite: EntityWrite;
+    format?: string;
+    stripUnsupportedFormats?: boolean;
+    templateFields?: string;
+    templateId?: string;
+}
+
 export interface CreateEventRequest {
     accountId: string;
     v: string;
@@ -195,6 +206,12 @@ export interface DeleteCustomFieldRequest {
     customFieldId: string;
 }
 
+export interface DeleteEntityRequest {
+    accountId: string;
+    entityId: string;
+    v: string;
+}
+
 export interface DeleteEventListRequest {
     accountId: string;
     listId: string;
@@ -202,6 +219,13 @@ export interface DeleteEventListRequest {
 }
 
 export interface DeleteLanguageProfileRequest {
+    accountId: string;
+    entityId: string;
+    languageCode: string;
+    v: string;
+}
+
+export interface DeleteLocationLanguageProfileRequest {
     accountId: string;
     locationId: string;
     languageCode: string;
@@ -261,6 +285,15 @@ export interface GetCustomFieldsRequest {
     pageToken?: string;
 }
 
+export interface GetEntityRequest {
+    accountId: string;
+    entityId: string;
+    v: string;
+    fields?: string;
+    format?: string;
+    resolvePlaceholders?: boolean;
+}
+
 export interface GetEventRequest {
     accountId: string;
     listId: string;
@@ -283,10 +316,12 @@ export interface GetGoogleKeywordsRequest {
 
 export interface GetLanguageProfileRequest {
     accountId: string;
-    locationId: string;
+    entityId: string;
     languageCode: string;
     v: string;
-    resolvePlaceholders?: boolean;
+    fields?: string;
+    format?: string;
+    rendered?: boolean;
 }
 
 export interface GetLanguageProfilesRequest {
@@ -308,6 +343,14 @@ export interface GetLocationFoldersRequest {
     v: string;
     offset?: number;
     limit?: number;
+}
+
+export interface GetLocationLanguageProfileRequest {
+    accountId: string;
+    locationId: string;
+    languageCode: string;
+    v: string;
+    resolvePlaceholders?: boolean;
 }
 
 export interface GetLocationsRequest {
@@ -345,50 +388,7 @@ export interface GetProductsRequest {
     offset?: number;
 }
 
-export interface KnowledgeApiServerCreateEntityRequest {
-    accountId: string;
-    entityType: string;
-    v: string;
-    entityWrite: EntityWrite;
-    format?: string;
-    stripUnsupportedFormats?: boolean;
-    templateFields?: string;
-    templateId?: string;
-}
-
-export interface KnowledgeApiServerDeleteEntityRequest {
-    accountId: string;
-    entityId: string;
-    v: string;
-}
-
-export interface KnowledgeApiServerDeleteLanguageProfileRequest {
-    accountId: string;
-    entityId: string;
-    languageCode: string;
-    v: string;
-}
-
-export interface KnowledgeApiServerGetEntityRequest {
-    accountId: string;
-    entityId: string;
-    v: string;
-    fields?: string;
-    format?: string;
-    resolvePlaceholders?: boolean;
-}
-
-export interface KnowledgeApiServerGetLanguageProfileRequest {
-    accountId: string;
-    entityId: string;
-    languageCode: string;
-    v: string;
-    fields?: string;
-    format?: string;
-    rendered?: boolean;
-}
-
-export interface KnowledgeApiServerListAllLanguageProfilesRequest {
+export interface ListAllLanguageProfilesRequest {
     accountId: string;
     v: string;
     entityTypes?: string;
@@ -403,7 +403,16 @@ export interface KnowledgeApiServerListAllLanguageProfilesRequest {
     sortBy?: string;
 }
 
-export interface KnowledgeApiServerListEntitiesRequest {
+export interface ListAssetsRequest {
+    accountId: string;
+    v: string;
+    format: string;
+    offset?: number;
+    limit?: number;
+    pageToken?: string;
+}
+
+export interface ListEntitiesRequest {
     accountId: string;
     v: string;
     entityTypes?: string;
@@ -418,7 +427,7 @@ export interface KnowledgeApiServerListEntitiesRequest {
     sortBy?: string;
 }
 
-export interface KnowledgeApiServerListLanguageProfilesRequest {
+export interface ListLanguageProfilesRequest {
     accountId: string;
     entityId: string;
     v: string;
@@ -427,34 +436,6 @@ export interface KnowledgeApiServerListLanguageProfilesRequest {
     format?: string;
     languageCodes?: string;
     rendered?: string;
-}
-
-export interface KnowledgeApiServerUpdateEntityRequest {
-    accountId: string;
-    entityId: string;
-    v: string;
-    entityWrite: EntityWrite;
-    format?: string;
-    stripUnsupportedFormats?: boolean;
-    templateFields?: string;
-    templateId?: string;
-}
-
-export interface KnowledgeApiServerUpsertLanguageProfileRequest {
-    accountId: string;
-    entityId: string;
-    languageCode: string;
-    v: string;
-    entityWrite: EntityWrite;
-}
-
-export interface ListAssetsRequest {
-    accountId: string;
-    v: string;
-    format: string;
-    offset?: number;
-    limit?: number;
-    pageToken?: string;
 }
 
 export interface SearchLocationsRequest {
@@ -487,6 +468,17 @@ export interface UpdateCustomFieldRequest {
     fieldUpdate: FieldUpdate;
 }
 
+export interface UpdateEntityRequest {
+    accountId: string;
+    entityId: string;
+    v: string;
+    entityWrite: EntityWrite;
+    format?: string;
+    stripUnsupportedFormats?: boolean;
+    templateFields?: string;
+    templateId?: string;
+}
+
 export interface UpdateEventRequest {
     accountId: string;
     listId: string;
@@ -516,6 +508,14 @@ export interface UpdateProductRequest {
 }
 
 export interface UpsertLanguageProfileRequest {
+    accountId: string;
+    entityId: string;
+    languageCode: string;
+    v: string;
+    entityWrite: EntityWrite;
+}
+
+export interface UpsertLocationLanguageProfileRequest {
     accountId: string;
     locationId: string;
     languageCode: string;
@@ -699,6 +699,85 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      */
     async createCustomField(requestParameters: CreateCustomFieldRequest, initOverrides?: RequestInit): Promise<IdResponse> {
         const response = await this.createCustomFieldRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Create a new Entity  **NOTE:**   * If the **`v`** parameter is before `20181129`: the 201 response contains the created Entity\'s **`id`**   * If the **`v`** parameter is on or after `20181129`: the 201 response contains the created Entity in its entirety 
+     * Entities: Create
+     */
+    async createEntityRaw(requestParameters: CreateEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling createEntity.');
+        }
+
+        if (requestParameters.entityType === null || requestParameters.entityType === undefined) {
+            throw new runtime.RequiredError('entityType','Required parameter requestParameters.entityType was null or undefined when calling createEntity.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling createEntity.');
+        }
+
+        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
+            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling createEntity.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.entityType !== undefined) {
+            queryParameters['entityType'] = requestParameters.entityType;
+        }
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        if (requestParameters.format !== undefined) {
+            queryParameters['format'] = requestParameters.format;
+        }
+
+        if (requestParameters.stripUnsupportedFormats !== undefined) {
+            queryParameters['stripUnsupportedFormats'] = requestParameters.stripUnsupportedFormats;
+        }
+
+        if (requestParameters.templateFields !== undefined) {
+            queryParameters['templateFields'] = requestParameters.templateFields;
+        }
+
+        if (requestParameters.templateId !== undefined) {
+            queryParameters['templateId'] = requestParameters.templateId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/entities`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))),
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: EntityWriteToJSON(requestParameters.entityWrite),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
+    }
+
+    /**
+     * Create a new Entity  **NOTE:**   * If the **`v`** parameter is before `20181129`: the 201 response contains the created Entity\'s **`id`**   * If the **`v`** parameter is on or after `20181129`: the 201 response contains the created Entity in its entirety 
+     * Entities: Create
+     */
+    async createEntity(requestParameters: CreateEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.createEntityRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1077,6 +1156,58 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
     }
 
     /**
+     * Delete the Entity with the given ID
+     * Entities: Delete
+     */
+    async deleteEntityRaw(requestParameters: DeleteEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2001>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteEntity.');
+        }
+
+        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
+            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling deleteEntity.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling deleteEntity.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/entities/{entityId}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2001FromJSON(jsonValue));
+    }
+
+    /**
+     * Delete the Entity with the given ID
+     * Entities: Delete
+     */
+    async deleteEntity(requestParameters: DeleteEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse2001> {
+        const response = await this.deleteEntityRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Delete an existing Event List.
      * Events (Legacy): Delete
      */
@@ -1129,16 +1260,16 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
     }
 
     /**
-     * Remove a Language Profile from a location.
-     * Language Profiles (Legacy): Delete
+     * Delete a language profile
+     * Entity Language Profiles: Delete
      */
-    async deleteLanguageProfileRaw(requestParameters: DeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async deleteLanguageProfileRaw(requestParameters: DeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2004>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteLanguageProfile.');
         }
 
-        if (requestParameters.locationId === null || requestParameters.locationId === undefined) {
-            throw new runtime.RequiredError('locationId','Required parameter requestParameters.locationId was null or undefined when calling deleteLanguageProfile.');
+        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
+            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling deleteLanguageProfile.');
         }
 
         if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
@@ -1147,6 +1278,62 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
 
         if (requestParameters.v === null || requestParameters.v === undefined) {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling deleteLanguageProfile.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/entityprofiles/{entityId}/{languageCode}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))).replace(`{${"languageCode"}}`, encodeURIComponent(String(requestParameters.languageCode))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2004FromJSON(jsonValue));
+    }
+
+    /**
+     * Delete a language profile
+     * Entity Language Profiles: Delete
+     */
+    async deleteLanguageProfile(requestParameters: DeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse2004> {
+        const response = await this.deleteLanguageProfileRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Remove a Language Profile from a location.
+     * Language Profiles (Legacy): Delete
+     */
+    async deleteLocationLanguageProfileRaw(requestParameters: DeleteLocationLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling deleteLocationLanguageProfile.');
+        }
+
+        if (requestParameters.locationId === null || requestParameters.locationId === undefined) {
+            throw new runtime.RequiredError('locationId','Required parameter requestParameters.locationId was null or undefined when calling deleteLocationLanguageProfile.');
+        }
+
+        if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
+            throw new runtime.RequiredError('languageCode','Required parameter requestParameters.languageCode was null or undefined when calling deleteLocationLanguageProfile.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling deleteLocationLanguageProfile.');
         }
 
         const queryParameters: any = {};
@@ -1179,8 +1366,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Remove a Language Profile from a location.
      * Language Profiles (Legacy): Delete
      */
-    async deleteLanguageProfile(requestParameters: DeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
-        const response = await this.deleteLanguageProfileRaw(requestParameters, initOverrides);
+    async deleteLocationLanguageProfile(requestParameters: DeleteLocationLanguageProfileRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.deleteLocationLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1625,6 +1812,70 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
     }
 
     /**
+     * Retrieve information for an Entity with a given ID
+     * Entities: Get
+     */
+    async getEntityRaw(requestParameters: GetEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getEntity.');
+        }
+
+        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
+            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling getEntity.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling getEntity.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        if (requestParameters.fields !== undefined) {
+            queryParameters['fields'] = requestParameters.fields;
+        }
+
+        if (requestParameters.format !== undefined) {
+            queryParameters['format'] = requestParameters.format;
+        }
+
+        if (requestParameters.resolvePlaceholders !== undefined) {
+            queryParameters['resolvePlaceholders'] = requestParameters.resolvePlaceholders;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/entities/{entityId}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieve information for an Entity with a given ID
+     * Entities: Get
+     */
+    async getEntity(requestParameters: GetEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.getEntityRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Retrieve a specific Event List.
      * Events (Legacy): Get
      */
@@ -1789,16 +2040,16 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
     }
 
     /**
-     * Gets the the requested Language Profile for a given Location.
-     * Language Profiles (Legacy): Get
+     * Retrieve a Language Profile for an Entity  **NOTE**:  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
+     * Entity Language Profiles: Get
      */
-    async getLanguageProfileRaw(requestParameters: GetLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LanguageProfileResponse>> {
+    async getLanguageProfileRaw(requestParameters: GetLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLanguageProfile.');
         }
 
-        if (requestParameters.locationId === null || requestParameters.locationId === undefined) {
-            throw new runtime.RequiredError('locationId','Required parameter requestParameters.locationId was null or undefined when calling getLanguageProfile.');
+        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
+            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling getLanguageProfile.');
         }
 
         if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
@@ -1815,8 +2066,16 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             queryParameters['v'] = requestParameters.v;
         }
 
-        if (requestParameters.resolvePlaceholders !== undefined) {
-            queryParameters['resolvePlaceholders'] = requestParameters.resolvePlaceholders;
+        if (requestParameters.fields !== undefined) {
+            queryParameters['fields'] = requestParameters.fields;
+        }
+
+        if (requestParameters.format !== undefined) {
+            queryParameters['format'] = requestParameters.format;
+        }
+
+        if (requestParameters.rendered !== undefined) {
+            queryParameters['rendered'] = requestParameters.rendered;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1830,20 +2089,20 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/accounts/{accountId}/locations/{locationId}/profiles/{language_code}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"locationId"}}`, encodeURIComponent(String(requestParameters.locationId))).replace(`{${"language_code"}}`, encodeURIComponent(String(requestParameters.languageCode))),
+            path: `/accounts/{accountId}/entityprofiles/{entityId}/{languageCode}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))).replace(`{${"languageCode"}}`, encodeURIComponent(String(requestParameters.languageCode))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LanguageProfileResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
     }
 
     /**
-     * Gets the the requested Language Profile for a given Location.
-     * Language Profiles (Legacy): Get
+     * Retrieve a Language Profile for an Entity  **NOTE**:  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
+     * Entity Language Profiles: Get
      */
-    async getLanguageProfile(requestParameters: GetLanguageProfileRequest, initOverrides?: RequestInit): Promise<LanguageProfileResponse> {
+    async getLanguageProfile(requestParameters: GetLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
         const response = await this.getLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -2013,6 +2272,66 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      */
     async getLocationFolders(requestParameters: GetLocationFoldersRequest, initOverrides?: RequestInit): Promise<FoldersResponse> {
         const response = await this.getLocationFoldersRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Gets the the requested Language Profile for a given Location.
+     * Language Profiles (Legacy): Get
+     */
+    async getLocationLanguageProfileRaw(requestParameters: GetLocationLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<LanguageProfileResponse>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling getLocationLanguageProfile.');
+        }
+
+        if (requestParameters.locationId === null || requestParameters.locationId === undefined) {
+            throw new runtime.RequiredError('locationId','Required parameter requestParameters.locationId was null or undefined when calling getLocationLanguageProfile.');
+        }
+
+        if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
+            throw new runtime.RequiredError('languageCode','Required parameter requestParameters.languageCode was null or undefined when calling getLocationLanguageProfile.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling getLocationLanguageProfile.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        if (requestParameters.resolvePlaceholders !== undefined) {
+            queryParameters['resolvePlaceholders'] = requestParameters.resolvePlaceholders;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/locations/{locationId}/profiles/{language_code}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"locationId"}}`, encodeURIComponent(String(requestParameters.locationId))).replace(`{${"language_code"}}`, encodeURIComponent(String(requestParameters.languageCode))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => LanguageProfileResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Gets the the requested Language Profile for a given Location.
+     * Language Profiles (Legacy): Get
+     */
+    async getLocationLanguageProfile(requestParameters: GetLocationLanguageProfileRequest, initOverrides?: RequestInit): Promise<LanguageProfileResponse> {
+        const response = await this.getLocationLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2297,335 +2616,16 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
     }
 
     /**
-     * Create a new Entity  **NOTE:**   * If the **`v`** parameter is before `20181129`: the 201 response contains the created Entity\'s **`id`**   * If the **`v`** parameter is on or after `20181129`: the 201 response contains the created Entity in its entirety 
-     * Entities: Create
-     */
-    async knowledgeApiServerCreateEntityRaw(requestParameters: KnowledgeApiServerCreateEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
-        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerCreateEntity.');
-        }
-
-        if (requestParameters.entityType === null || requestParameters.entityType === undefined) {
-            throw new runtime.RequiredError('entityType','Required parameter requestParameters.entityType was null or undefined when calling knowledgeApiServerCreateEntity.');
-        }
-
-        if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerCreateEntity.');
-        }
-
-        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
-            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling knowledgeApiServerCreateEntity.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.entityType !== undefined) {
-            queryParameters['entityType'] = requestParameters.entityType;
-        }
-
-        if (requestParameters.v !== undefined) {
-            queryParameters['v'] = requestParameters.v;
-        }
-
-        if (requestParameters.format !== undefined) {
-            queryParameters['format'] = requestParameters.format;
-        }
-
-        if (requestParameters.stripUnsupportedFormats !== undefined) {
-            queryParameters['stripUnsupportedFormats'] = requestParameters.stripUnsupportedFormats;
-        }
-
-        if (requestParameters.templateFields !== undefined) {
-            queryParameters['templateFields'] = requestParameters.templateFields;
-        }
-
-        if (requestParameters.templateId !== undefined) {
-            queryParameters['templateId'] = requestParameters.templateId;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
-        }
-
-        const response = await this.request({
-            path: `/accounts/{accountId}/entities`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))),
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: EntityWriteToJSON(requestParameters.entityWrite),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
-    }
-
-    /**
-     * Create a new Entity  **NOTE:**   * If the **`v`** parameter is before `20181129`: the 201 response contains the created Entity\'s **`id`**   * If the **`v`** parameter is on or after `20181129`: the 201 response contains the created Entity in its entirety 
-     * Entities: Create
-     */
-    async knowledgeApiServerCreateEntity(requestParameters: KnowledgeApiServerCreateEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerCreateEntityRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Delete the Entity with the given ID
-     * Entities: Delete
-     */
-    async knowledgeApiServerDeleteEntityRaw(requestParameters: KnowledgeApiServerDeleteEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2001>> {
-        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerDeleteEntity.');
-        }
-
-        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
-            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling knowledgeApiServerDeleteEntity.');
-        }
-
-        if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerDeleteEntity.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.v !== undefined) {
-            queryParameters['v'] = requestParameters.v;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
-        }
-
-        const response = await this.request({
-            path: `/accounts/{accountId}/entities/{entityId}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2001FromJSON(jsonValue));
-    }
-
-    /**
-     * Delete the Entity with the given ID
-     * Entities: Delete
-     */
-    async knowledgeApiServerDeleteEntity(requestParameters: KnowledgeApiServerDeleteEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse2001> {
-        const response = await this.knowledgeApiServerDeleteEntityRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Delete a language profile
-     * Entity Language Profiles: Delete
-     */
-    async knowledgeApiServerDeleteLanguageProfileRaw(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2004>> {
-        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerDeleteLanguageProfile.');
-        }
-
-        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
-            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling knowledgeApiServerDeleteLanguageProfile.');
-        }
-
-        if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
-            throw new runtime.RequiredError('languageCode','Required parameter requestParameters.languageCode was null or undefined when calling knowledgeApiServerDeleteLanguageProfile.');
-        }
-
-        if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerDeleteLanguageProfile.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.v !== undefined) {
-            queryParameters['v'] = requestParameters.v;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
-        }
-
-        const response = await this.request({
-            path: `/accounts/{accountId}/entityprofiles/{entityId}/{languageCode}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))).replace(`{${"languageCode"}}`, encodeURIComponent(String(requestParameters.languageCode))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse2004FromJSON(jsonValue));
-    }
-
-    /**
-     * Delete a language profile
-     * Entity Language Profiles: Delete
-     */
-    async knowledgeApiServerDeleteLanguageProfile(requestParameters: KnowledgeApiServerDeleteLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse2004> {
-        const response = await this.knowledgeApiServerDeleteLanguageProfileRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Retrieve information for an Entity with a given ID
-     * Entities: Get
-     */
-    async knowledgeApiServerGetEntityRaw(requestParameters: KnowledgeApiServerGetEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
-        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerGetEntity.');
-        }
-
-        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
-            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling knowledgeApiServerGetEntity.');
-        }
-
-        if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerGetEntity.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.v !== undefined) {
-            queryParameters['v'] = requestParameters.v;
-        }
-
-        if (requestParameters.fields !== undefined) {
-            queryParameters['fields'] = requestParameters.fields;
-        }
-
-        if (requestParameters.format !== undefined) {
-            queryParameters['format'] = requestParameters.format;
-        }
-
-        if (requestParameters.resolvePlaceholders !== undefined) {
-            queryParameters['resolvePlaceholders'] = requestParameters.resolvePlaceholders;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
-        }
-
-        const response = await this.request({
-            path: `/accounts/{accountId}/entities/{entityId}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieve information for an Entity with a given ID
-     * Entities: Get
-     */
-    async knowledgeApiServerGetEntity(requestParameters: KnowledgeApiServerGetEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerGetEntityRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Retrieve a Language Profile for an Entity  **NOTE**:  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
-     * Entity Language Profiles: Get
-     */
-    async knowledgeApiServerGetLanguageProfileRaw(requestParameters: KnowledgeApiServerGetLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
-        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerGetLanguageProfile.');
-        }
-
-        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
-            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling knowledgeApiServerGetLanguageProfile.');
-        }
-
-        if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
-            throw new runtime.RequiredError('languageCode','Required parameter requestParameters.languageCode was null or undefined when calling knowledgeApiServerGetLanguageProfile.');
-        }
-
-        if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerGetLanguageProfile.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.v !== undefined) {
-            queryParameters['v'] = requestParameters.v;
-        }
-
-        if (requestParameters.fields !== undefined) {
-            queryParameters['fields'] = requestParameters.fields;
-        }
-
-        if (requestParameters.format !== undefined) {
-            queryParameters['format'] = requestParameters.format;
-        }
-
-        if (requestParameters.rendered !== undefined) {
-            queryParameters['rendered'] = requestParameters.rendered;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
-        }
-
-        const response = await this.request({
-            path: `/accounts/{accountId}/entityprofiles/{entityId}/{languageCode}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))).replace(`{${"languageCode"}}`, encodeURIComponent(String(requestParameters.languageCode))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieve a Language Profile for an Entity  **NOTE**:  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
-     * Entity Language Profiles: Get
-     */
-    async knowledgeApiServerGetLanguageProfile(requestParameters: KnowledgeApiServerGetLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerGetLanguageProfileRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Retrieve a list of Language Profiles for Entities within an account  **NOTE:**  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List All
      */
-    async knowledgeApiServerListAllLanguageProfilesRaw(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2003>> {
+    async listAllLanguageProfilesRaw(requestParameters: ListAllLanguageProfilesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2003>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListAllLanguageProfiles.');
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listAllLanguageProfiles.');
         }
 
         if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerListAllLanguageProfiles.');
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling listAllLanguageProfiles.');
         }
 
         const queryParameters: any = {};
@@ -2698,8 +2698,76 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Language Profiles for Entities within an account  **NOTE:**  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List All
      */
-    async knowledgeApiServerListAllLanguageProfiles(requestParameters: KnowledgeApiServerListAllLanguageProfilesRequest, initOverrides?: RequestInit): Promise<InlineResponse2003> {
-        const response = await this.knowledgeApiServerListAllLanguageProfilesRaw(requestParameters, initOverrides);
+    async listAllLanguageProfiles(requestParameters: ListAllLanguageProfilesRequest, initOverrides?: RequestInit): Promise<InlineResponse2003> {
+        const response = await this.listAllLanguageProfilesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * List assets in an account.
+     * Assets: List
+     */
+    async listAssetsRaw(requestParameters: ListAssetsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<AssetsResponse>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listAssets.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling listAssets.');
+        }
+
+        if (requestParameters.format === null || requestParameters.format === undefined) {
+            throw new runtime.RequiredError('format','Required parameter requestParameters.format was null or undefined when calling listAssets.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        if (requestParameters.offset !== undefined) {
+            queryParameters['offset'] = requestParameters.offset;
+        }
+
+        if (requestParameters.limit !== undefined) {
+            queryParameters['limit'] = requestParameters.limit;
+        }
+
+        if (requestParameters.pageToken !== undefined) {
+            queryParameters['pageToken'] = requestParameters.pageToken;
+        }
+
+        if (requestParameters.format !== undefined) {
+            queryParameters['format'] = requestParameters.format;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/assets`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AssetsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List assets in an account.
+     * Assets: List
+     */
+    async listAssets(requestParameters: ListAssetsRequest, initOverrides?: RequestInit): Promise<AssetsResponse> {
+        const response = await this.listAssetsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2707,13 +2775,13 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Entities within an account
      * Entities: List
      */
-    async knowledgeApiServerListEntitiesRaw(requestParameters: KnowledgeApiServerListEntitiesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse200>> {
+    async listEntitiesRaw(requestParameters: ListEntitiesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse200>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListEntities.');
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listEntities.');
         }
 
         if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerListEntities.');
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling listEntities.');
         }
 
         const queryParameters: any = {};
@@ -2786,8 +2854,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve a list of Entities within an account
      * Entities: List
      */
-    async knowledgeApiServerListEntities(requestParameters: KnowledgeApiServerListEntitiesRequest, initOverrides?: RequestInit): Promise<InlineResponse200> {
-        const response = await this.knowledgeApiServerListEntitiesRaw(requestParameters, initOverrides);
+    async listEntities(requestParameters: ListEntitiesRequest, initOverrides?: RequestInit): Promise<InlineResponse200> {
+        const response = await this.listEntitiesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -2795,17 +2863,17 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve Language Profiles for an Entity  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List
      */
-    async knowledgeApiServerListLanguageProfilesRaw(requestParameters: KnowledgeApiServerListLanguageProfilesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2002>> {
+    async listLanguageProfilesRaw(requestParameters: ListLanguageProfilesRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse2002>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerListLanguageProfiles.');
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listLanguageProfiles.');
         }
 
         if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
-            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling knowledgeApiServerListLanguageProfiles.');
+            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling listLanguageProfiles.');
         }
 
         if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerListLanguageProfiles.');
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling listLanguageProfiles.');
         }
 
         const queryParameters: any = {};
@@ -2858,214 +2926,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Retrieve Language Profiles for an Entity  * If the **`v`** parameter is before `20190103`: by default, returned alternate Language Profiles include **`googleAttributes`** and **`categoryIds`** fields * If the **`v`** parameter is `20190103` or later: by default, returned alternate Language Profiles do not include **`googleAttributes`** and **`categoryIds`** fields. However, these fields can still be retrieved if the **`rendered`** parameter in the request is set to `true`. 
      * Entity Language Profiles: List
      */
-    async knowledgeApiServerListLanguageProfiles(requestParameters: KnowledgeApiServerListLanguageProfilesRequest, initOverrides?: RequestInit): Promise<InlineResponse2002> {
-        const response = await this.knowledgeApiServerListLanguageProfilesRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Update the Entity with the given ID
-     * Entities: Update
-     */
-    async knowledgeApiServerUpdateEntityRaw(requestParameters: KnowledgeApiServerUpdateEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
-        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerUpdateEntity.');
-        }
-
-        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
-            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling knowledgeApiServerUpdateEntity.');
-        }
-
-        if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerUpdateEntity.');
-        }
-
-        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
-            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling knowledgeApiServerUpdateEntity.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.v !== undefined) {
-            queryParameters['v'] = requestParameters.v;
-        }
-
-        if (requestParameters.format !== undefined) {
-            queryParameters['format'] = requestParameters.format;
-        }
-
-        if (requestParameters.stripUnsupportedFormats !== undefined) {
-            queryParameters['stripUnsupportedFormats'] = requestParameters.stripUnsupportedFormats;
-        }
-
-        if (requestParameters.templateFields !== undefined) {
-            queryParameters['templateFields'] = requestParameters.templateFields;
-        }
-
-        if (requestParameters.templateId !== undefined) {
-            queryParameters['templateId'] = requestParameters.templateId;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
-        }
-
-        const response = await this.request({
-            path: `/accounts/{accountId}/entities/{entityId}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))),
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: EntityWriteToJSON(requestParameters.entityWrite),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
-    }
-
-    /**
-     * Update the Entity with the given ID
-     * Entities: Update
-     */
-    async knowledgeApiServerUpdateEntity(requestParameters: KnowledgeApiServerUpdateEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerUpdateEntityRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Add a language profile
-     * Entity Language Profiles: Upsert
-     */
-    async knowledgeApiServerUpsertLanguageProfileRaw(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
-        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
-        }
-
-        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
-            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
-        }
-
-        if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
-            throw new runtime.RequiredError('languageCode','Required parameter requestParameters.languageCode was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
-        }
-
-        if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
-        }
-
-        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
-            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling knowledgeApiServerUpsertLanguageProfile.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.v !== undefined) {
-            queryParameters['v'] = requestParameters.v;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
-        }
-
-        const response = await this.request({
-            path: `/accounts/{accountId}/entityprofiles/{entityId}/{languageCode}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))).replace(`{${"languageCode"}}`, encodeURIComponent(String(requestParameters.languageCode))),
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: EntityWriteToJSON(requestParameters.entityWrite),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
-    }
-
-    /**
-     * Add a language profile
-     * Entity Language Profiles: Upsert
-     */
-    async knowledgeApiServerUpsertLanguageProfile(requestParameters: KnowledgeApiServerUpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
-        const response = await this.knowledgeApiServerUpsertLanguageProfileRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * List assets in an account.
-     * Assets: List
-     */
-    async listAssetsRaw(requestParameters: ListAssetsRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<AssetsResponse>> {
-        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
-            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling listAssets.');
-        }
-
-        if (requestParameters.v === null || requestParameters.v === undefined) {
-            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling listAssets.');
-        }
-
-        if (requestParameters.format === null || requestParameters.format === undefined) {
-            throw new runtime.RequiredError('format','Required parameter requestParameters.format was null or undefined when calling listAssets.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.v !== undefined) {
-            queryParameters['v'] = requestParameters.v;
-        }
-
-        if (requestParameters.offset !== undefined) {
-            queryParameters['offset'] = requestParameters.offset;
-        }
-
-        if (requestParameters.limit !== undefined) {
-            queryParameters['limit'] = requestParameters.limit;
-        }
-
-        if (requestParameters.pageToken !== undefined) {
-            queryParameters['pageToken'] = requestParameters.pageToken;
-        }
-
-        if (requestParameters.format !== undefined) {
-            queryParameters['format'] = requestParameters.format;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
-        }
-
-        const response = await this.request({
-            path: `/accounts/{accountId}/assets`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => AssetsResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * List assets in an account.
-     * Assets: List
-     */
-    async listAssets(requestParameters: ListAssetsRequest, initOverrides?: RequestInit): Promise<AssetsResponse> {
-        const response = await this.listAssetsRaw(requestParameters, initOverrides);
+    async listLanguageProfiles(requestParameters: ListLanguageProfilesRequest, initOverrides?: RequestInit): Promise<InlineResponse2002> {
+        const response = await this.listLanguageProfilesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -3315,6 +3177,81 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
     }
 
     /**
+     * Update the Entity with the given ID
+     * Entities: Update
+     */
+    async updateEntityRaw(requestParameters: UpdateEntityRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling updateEntity.');
+        }
+
+        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
+            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling updateEntity.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling updateEntity.');
+        }
+
+        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
+            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling updateEntity.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        if (requestParameters.format !== undefined) {
+            queryParameters['format'] = requestParameters.format;
+        }
+
+        if (requestParameters.stripUnsupportedFormats !== undefined) {
+            queryParameters['stripUnsupportedFormats'] = requestParameters.stripUnsupportedFormats;
+        }
+
+        if (requestParameters.templateFields !== undefined) {
+            queryParameters['templateFields'] = requestParameters.templateFields;
+        }
+
+        if (requestParameters.templateId !== undefined) {
+            queryParameters['templateId'] = requestParameters.templateId;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/entities/{entityId}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: EntityWriteToJSON(requestParameters.entityWrite),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
+    }
+
+    /**
+     * Update the Entity with the given ID
+     * Entities: Update
+     */
+    async updateEntity(requestParameters: UpdateEntityRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.updateEntityRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Update an existing Event List.
      * Events (Legacy): Update
      */
@@ -3551,16 +3488,16 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates and / or sets the fields for a Language Profile  **NOTE:** You can change a Language Profile’s language by supplying a different (but unused) language code. 
-     * Language Profiles (Legacy): Upsert
+     * Add a language profile
+     * Entity Language Profiles: Upsert
      */
-    async upsertLanguageProfileRaw(requestParameters: UpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
+    async upsertLanguageProfileRaw(requestParameters: UpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<InlineResponse201>> {
         if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
             throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling upsertLanguageProfile.');
         }
 
-        if (requestParameters.locationId === null || requestParameters.locationId === undefined) {
-            throw new runtime.RequiredError('locationId','Required parameter requestParameters.locationId was null or undefined when calling upsertLanguageProfile.');
+        if (requestParameters.entityId === null || requestParameters.entityId === undefined) {
+            throw new runtime.RequiredError('entityId','Required parameter requestParameters.entityId was null or undefined when calling upsertLanguageProfile.');
         }
 
         if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
@@ -3571,8 +3508,71 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling upsertLanguageProfile.');
         }
 
+        if (requestParameters.entityWrite === null || requestParameters.entityWrite === undefined) {
+            throw new runtime.RequiredError('entityWrite','Required parameter requestParameters.entityWrite was null or undefined when calling upsertLanguageProfile.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.v !== undefined) {
+            queryParameters['v'] = requestParameters.v;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["api-key"] = this.configuration.apiKey("api-key"); // api-key authentication
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            queryParameters["api_key"] = this.configuration.apiKey("api_key"); // api_key authentication
+        }
+
+        const response = await this.request({
+            path: `/accounts/{accountId}/entityprofiles/{entityId}/{languageCode}`.replace(`{${"accountId"}}`, encodeURIComponent(String(requestParameters.accountId))).replace(`{${"entityId"}}`, encodeURIComponent(String(requestParameters.entityId))).replace(`{${"languageCode"}}`, encodeURIComponent(String(requestParameters.languageCode))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: EntityWriteToJSON(requestParameters.entityWrite),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => InlineResponse201FromJSON(jsonValue));
+    }
+
+    /**
+     * Add a language profile
+     * Entity Language Profiles: Upsert
+     */
+    async upsertLanguageProfile(requestParameters: UpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<InlineResponse201> {
+        const response = await this.upsertLanguageProfileRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates and / or sets the fields for a Language Profile  **NOTE:** You can change a Language Profile’s language by supplying a different (but unused) language code. 
+     * Language Profiles (Legacy): Upsert
+     */
+    async upsertLocationLanguageProfileRaw(requestParameters: UpsertLocationLanguageProfileRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<EmptyResponse>> {
+        if (requestParameters.accountId === null || requestParameters.accountId === undefined) {
+            throw new runtime.RequiredError('accountId','Required parameter requestParameters.accountId was null or undefined when calling upsertLocationLanguageProfile.');
+        }
+
+        if (requestParameters.locationId === null || requestParameters.locationId === undefined) {
+            throw new runtime.RequiredError('locationId','Required parameter requestParameters.locationId was null or undefined when calling upsertLocationLanguageProfile.');
+        }
+
+        if (requestParameters.languageCode === null || requestParameters.languageCode === undefined) {
+            throw new runtime.RequiredError('languageCode','Required parameter requestParameters.languageCode was null or undefined when calling upsertLocationLanguageProfile.');
+        }
+
+        if (requestParameters.v === null || requestParameters.v === undefined) {
+            throw new runtime.RequiredError('v','Required parameter requestParameters.v was null or undefined when calling upsertLocationLanguageProfile.');
+        }
+
         if (requestParameters.location === null || requestParameters.location === undefined) {
-            throw new runtime.RequiredError('location','Required parameter requestParameters.location was null or undefined when calling upsertLanguageProfile.');
+            throw new runtime.RequiredError('location','Required parameter requestParameters.location was null or undefined when calling upsertLocationLanguageProfile.');
         }
 
         const queryParameters: any = {};
@@ -3612,8 +3612,8 @@ export class KnowledgeManagerApi extends runtime.BaseAPI {
      * Creates and / or sets the fields for a Language Profile  **NOTE:** You can change a Language Profile’s language by supplying a different (but unused) language code. 
      * Language Profiles (Legacy): Upsert
      */
-    async upsertLanguageProfile(requestParameters: UpsertLanguageProfileRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
-        const response = await this.upsertLanguageProfileRaw(requestParameters, initOverrides);
+    async upsertLocationLanguageProfile(requestParameters: UpsertLocationLanguageProfileRequest, initOverrides?: RequestInit): Promise<EmptyResponse> {
+        const response = await this.upsertLocationLanguageProfileRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
